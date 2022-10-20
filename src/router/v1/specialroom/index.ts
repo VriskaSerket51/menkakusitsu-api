@@ -11,8 +11,8 @@ import {
     getTeacherInfo,
 } from "../../../utils/Utility";
 import { SpecialroomInfo } from "@common-jshs/menkakusitsu-lib/v1";
-import { readFileSync } from "fs";
-import { join } from "path";
+import fs from "fs";
+import path from "path";
 
 class Specialroom extends V1 {
     static _lastApplyId: number = -1;
@@ -354,8 +354,8 @@ class Specialroom extends V1 {
                 }
             };
             const parseAttendanceList = (path: string): string[][] => {
-                const csv = readFileSync(path, "utf-8");
-                const rows = csv.split("\r\n");
+                const csv = fs.readFileSync(path, "utf-8");
+                const rows = csv.split("\n");
                 const result: string[][] = [];
                 for (let i = 0; i < rows.length; i++) {
                     const columns = rows[i].split(",");
@@ -382,17 +382,21 @@ class Specialroom extends V1 {
                 message: "",
                 list: {
                     big: parseAttendanceList(
-                        join(
+                        path.join(
                             __dirname,
-                            "../../..",
+                            "..",
+                            "..",
+                            "..",
                             "files",
                             "attendance_list_big.csv"
                         )
                     ),
                     small: parseAttendanceList(
-                        join(
+                        path.join(
                             __dirname,
-                            "../../..",
+                            "..",
+                            "..",
+                            "..",
                             "files",
                             "attendance_list_small.csv"
                         )
