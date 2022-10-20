@@ -1,5 +1,6 @@
 import { StudentInfo, TeacherInfo } from "@common-jshs/menkakusitsu-lib/v1";
 import fs from "fs";
+import path from "path";
 import { query } from "../mysql";
 
 export const readAllFiles = (
@@ -9,9 +10,9 @@ export const readAllFiles = (
 ) => {
     fs.readdirSync(dirName, { withFileTypes: true }).forEach((dir) => {
         if (dir.isDirectory()) {
-            readAllFiles(`${dirName}\\${dir.name}`, fileNames, filter);
+            readAllFiles(path.join(dirName, dir.name), fileNames, filter);
         } else if (!filter || filter(dir.name)) {
-            fileNames.push(`${dirName}\\${dir.name}`);
+            fileNames.push(path.join(dirName, dir.name));
         }
     });
 };
