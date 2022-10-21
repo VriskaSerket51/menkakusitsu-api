@@ -4,6 +4,7 @@ import config from "../config";
 import { HttpException, ResponseException } from "../exceptions";
 import { defaultErrorHandler } from "../utils/ErrorHandler";
 import { v4 as uuid } from "uuid";
+import { logger } from "../utils/Logger";
 
 export const createAccessToken = (payload: any) => {
     payload.type = "access";
@@ -43,7 +44,7 @@ export const verifyAccessTokenMiddleware = (
                 if (error instanceof jwt.TokenExpiredError) {
                     throw new ResponseException(-1972, "토큰이 만료됐습니다.");
                 } else {
-                    console.log(error);
+                    logger.error(error);
                     throw new HttpException(500);
                 }
             } else if ((decoded as any).type !== "access") {
@@ -89,6 +90,7 @@ export const verifyRefreshTokenMiddleware = (
                 if (error.inner instanceof jwt.TokenExpiredError) {
                     throw new ResponseException(-1972, "토큰이 만료됐습니다.");
                 } else {
+                    logger.error(error);
                     throw new HttpException(500);
                 }
             } else if ((decoded as any).type !== "refresh") {
