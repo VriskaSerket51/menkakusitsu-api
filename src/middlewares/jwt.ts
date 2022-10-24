@@ -40,15 +40,16 @@ export const verifyAccessTokenMiddleware = (
         }
         const jwtToken = bearer.split("Bearer ")[1];
         verifyAccessToken(jwtToken, (error, decoded) => {
-            if (error) {
-                if (error instanceof jwt.TokenExpiredError) {
-                    throw new ResponseException(-1972, "토큰이 만료됐습니다.");
-                } else {
-                    logger.error(error);
-                    throw new HttpException(500);
-                }
-            } else if ((decoded as any).type !== "access") {
+            if (error?.message === "jwt expired") {
+                throw new ResponseException(-1972, "토큰이 만료됐습니다.");
+            } else if (
+                error?.message === "invalid token" ||
+                (decoded as any).type !== "access"
+            ) {
                 throw new ResponseException(-1973, "토큰이 유효하지 않습니다.");
+            } else if (error) {
+                logger.error(error);
+                throw new HttpException(500);
             } else {
                 next();
             }
@@ -86,15 +87,16 @@ export const verifyRefreshTokenMiddleware = (
         }
         const jwtToken = bearer.split("Bearer ")[1];
         verifyAccessToken(jwtToken, (error, decoded) => {
-            if (error) {
-                if (error.inner instanceof jwt.TokenExpiredError) {
-                    throw new ResponseException(-1972, "토큰이 만료됐습니다.");
-                } else {
-                    logger.error(error);
-                    throw new HttpException(500);
-                }
-            } else if ((decoded as any).type !== "refresh") {
+            if (error?.message === "jwt expired") {
+                throw new ResponseException(-1972, "토큰이 만료됐습니다.");
+            } else if (
+                error?.message === "invalid token" ||
+                (decoded as any).type !== "refresh"
+            ) {
                 throw new ResponseException(-1973, "토큰이 유효하지 않습니다.");
+            } else if (error) {
+                logger.error(error);
+                throw new HttpException(500);
             } else {
                 next();
             }
