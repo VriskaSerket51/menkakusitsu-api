@@ -15,7 +15,7 @@ import fs from "fs";
 import path from "path";
 
 class Specialroom extends V1 {
-    static _lastApplyId: number = -1;
+    static _lastApplyId: number[] = [-1, -1];
     static _specialroomInfo: SpecialroomInfo[][] = [[], []];
 
     constructor() {
@@ -91,26 +91,26 @@ class Specialroom extends V1 {
         ];
     }
 
-    static async updateApplyId() {
+    static async updateApplyId(isAuthed: boolean) {
         const selectQuery = await query(
             "SELECT MAX(apply_ID) AS max_id FROM specialroom_apply",
             []
         );
         if (selectQuery && selectQuery[0]) {
             const maxId = selectQuery[0].max_id;
-            if (maxId !== Specialroom._lastApplyId) {
-                Specialroom._lastApplyId = maxId;
+            if (maxId !== Specialroom._lastApplyId[Number(isAuthed)]) {
+                Specialroom._lastApplyId[Number(isAuthed)] = maxId;
                 return true;
             }
         } else {
-            Specialroom._lastApplyId = -1;
+            Specialroom._lastApplyId[Number(isAuthed)] = -1;
             return true;
         }
         return false;
     }
 
-    static resetApplyId() {
-        Specialroom._lastApplyId = -1;
+    static resetApplyId(isAuthed: boolean) {
+        Specialroom._lastApplyId[Number(isAuthed)] = -1;
     }
 
     static async getSpecialroomInfo(when: number, applicantUid: number) {
@@ -150,7 +150,7 @@ class Specialroom extends V1 {
     }
 
     static async getInformation(isAuthed: boolean) {
-        if (!(await Specialroom.updateApplyId())) {
+        if (!(await Specialroom.updateApplyId(isAuthed))) {
             return Specialroom._specialroomInfo[Number(isAuthed)];
         }
         const selectInformationQuery = await query(
@@ -443,7 +443,8 @@ class Specialroom extends V1 {
                     [specialroomInfo.state, specialroomInfo.applyId]
                 );
             }
-            Specialroom.resetApplyId();
+            Specialroom.resetApplyId(true);
+            Specialroom.resetApplyId(false);
             const putInfoResponse: v1.PutInfoResponse = {
                 status: 0,
                 message: "",
