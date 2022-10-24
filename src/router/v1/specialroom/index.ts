@@ -277,17 +277,17 @@ class Specialroom extends V1 {
                     [applyId, applicant.uid]
                 );
             });
-            const specialroomInfo = await Specialroom.getSpecialroomInfo(
+            /*const specialroomInfo = await Specialroom.getSpecialroomInfo(
                 postApplyRequest.when,
                 payload.uid
             );
             if (!specialroomInfo) {
                 throw new HttpException(500);
-            }
+            }*/
             const postApplyResponse: v1.PostApplyResponse = {
                 status: 0,
                 message: "",
-                specialroomInfo: specialroomInfo,
+                // specialroomInfo: specialroomInfo,
             };
             res.status(200).json(postApplyResponse);
         } catch (error) {
@@ -318,7 +318,7 @@ class Specialroom extends V1 {
             const deleteApplyResponse: v1.DeleteApplyResponse = {
                 status: 0,
                 message: "",
-                specialroomInfo: specialroomInfo,
+                // specialroomInfo: specialroomInfo,
             };
             res.status(200).json(deleteApplyResponse);
         } catch (error) {
