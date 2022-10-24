@@ -16,7 +16,7 @@ import path from "path";
 
 class Specialroom extends V1 {
     static _lastApplyId: number = -1;
-    static _specialroomInfo: SpecialroomInfo[] = [];
+    static _specialroomInfo: SpecialroomInfo[][] = [[], []];
 
     constructor() {
         super();
@@ -151,7 +151,7 @@ class Specialroom extends V1 {
 
     static async getInformation(isAuthed: boolean) {
         if (!(await Specialroom.updateApplyId())) {
-            return Specialroom._specialroomInfo;
+            return Specialroom._specialroomInfo[Number(isAuthed)];
         }
         const selectInformationQuery = await query(
             "SELECT * FROM (SELECT apply_ID, GROUP_CONCAT(name) AS applicants FROM (SELECT specialroom_apply_student.apply_ID, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.student_UID = user.UID) AS A GROUP BY A.apply_ID) AS B, specialroom_apply WHERE B.apply_ID = specialroom_apply.apply_ID",
@@ -199,7 +199,7 @@ class Specialroom extends V1 {
                 when: selectInformation.when,
             });
         }
-        Specialroom._specialroomInfo = result;
+        Specialroom._specialroomInfo[Number(isAuthed)] = result;
         return result;
     }
 
