@@ -1,4 +1,4 @@
-import { StudentInfo, TeacherInfo } from "@common-jshs/menkakusitsu-lib/v1";
+import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
 import fs from "fs";
 import path from "path";
 import { query } from "../mysql";
@@ -25,9 +25,17 @@ export const getJwtPayload = (jwt: string) => {
     return JSON.parse(Buffer.from(jwt.split(".")[1], "base64").toString());
 };
 
+export const getUserInfo = async () => {
+    const userInfo: v1.StudentInfo[] = (await query(
+        "SELECT UID as uid, name FROM user",
+        []
+    )) as any;
+    return userInfo;
+};
+
 export const getStudentInfo = async (
     uid: number
-): Promise<StudentInfo | null> => {
+): Promise<v1.StudentInfo | null> => {
     const getStudentInfoQuery = await query(
         "SELECT student_ID, name FROM user WHERE UID=?",
         [uid]
@@ -44,7 +52,7 @@ export const getStudentInfo = async (
 
 export const getTeacherInfo = async (
     uid: number
-): Promise<TeacherInfo | null> => {
+): Promise<v1.TeacherInfo | null> => {
     const getTeacherInfoQuery = await query(
         "SELECT student_ID, name FROM user WHERE UID=? AND teacher_flag=1",
         [uid]

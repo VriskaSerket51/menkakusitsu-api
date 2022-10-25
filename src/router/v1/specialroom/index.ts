@@ -9,14 +9,13 @@ import {
     getJwtPayload,
     getStudentInfo,
     getTeacherInfo,
+    getUserInfo,
 } from "../../../utils/Utility";
 import { SpecialroomInfo } from "@common-jshs/menkakusitsu-lib/v1";
 import fs from "fs";
 import path from "path";
 
 class Specialroom extends V1 {
-    static information: SpecialroomInfo[] = [];
-
     constructor() {
         super();
         this.setPath("/specialroom");
@@ -91,72 +90,48 @@ class Specialroom extends V1 {
     }
 
     static async getInformation(isAuthed: boolean) {
-        await Specialroom.updateInformation(false);
-        if (!isAuthed) {
-            const result: SpecialroomInfo[] = [];
-            for (const information of Specialroom.information) {
-                result.push({
-                    applyId: information.applyId,
-                    state: information.state,
-                    master: {
-                        uid: information.master.uid,
-                        name: escapeUserName(information.master.name),
-                        value: "",
-                    },
-                    teacher: {
-                        uid: information.teacher.uid,
-                        name: escapeUserName(information.teacher.name),
-                        value: "",
-                    },
-                    applicants: information.applicants
-                        .split(",")
-                        .map((name) => escapeUserName(name))
-                        .join(","),
-                    location: information.location,
-                    purpose: information.purpose,
-                    when: information.when,
-                });
-            }
-            return result;
-        }
-        return Specialroom.information;
-    }
-
-    static async updateInformation(force: boolean) {
-        if (!force) {
-            const selectQuery = await query(
-                "SELECT MAX(apply_ID) AS max_id FROM specialroom_apply",
-                []
-            );
-            if (selectQuery && selectQuery[0]) {
-                const maxId = selectQuery[0].max_id;
-                if (
-                    Specialroom.information.length > 0 &&
-                    maxId <=
-                        Specialroom.information[
-                            Specialroom.information.length - 1
-                        ].applyId
-                ) {
-                    return;
-                }
-            }
-        }
         const selectInformationQuery = await query(
             "SELECT * FROM (SELECT apply_ID, GROUP_CONCAT(name) AS applicants FROM (SELECT specialroom_apply_student.apply_ID, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.student_UID = user.UID) AS A GROUP BY A.apply_ID) AS B, specialroom_apply WHERE B.apply_ID = specialroom_apply.apply_ID",
             []
         );
         const information: SpecialroomInfo[] = [];
+
+        const userInfo = await getUserInfo();
+        const findUser = (uid: number) => {
+            for (const info of userInfo) {
+                if (info.uid === uid) {
+                    return info;
+                }
+            }
+            return null;
+        };
+
         for (const selectInformation of selectInformationQuery as any[]) {
-            const master = await getStudentInfo(selectInformation.master_UID);
+            const master = findUser(selectInformation.master_UID);
             if (!master) {
                 throw new HttpException(500);
             }
-            const teacher = await getTeacherInfo(selectInformation.teacher_UID);
+            master.value = "";
+
+            const teacher = findUser(selectInformation.teacher_UID);
             if (!teacher) {
                 throw new HttpException(500);
             }
+            teacher.value = "";
+
+            if (!isAuthed) {
+                master.name = escapeUserName(master.name);
+                teacher.name = escapeUserName(teacher.name);
+                selectInformation.applicants = (
+                    selectInformation.applicants as string
+                )
+                    .split(",")
+                    .map((name) => escapeUserName(name))
+                    .join(",");
+            }
             selectInformation.master = master;
             selectInformation.teacher = teacher;
+
             information.push({
                 applyId: selectInformation.apply_ID,
                 state: selectInformation.approved_flag,
@@ -168,7 +143,7 @@ class Specialroom extends V1 {
                 when: selectInformation.when,
             });
         }
-        Specialroom.information = information;
+        return information;
     }
 
     static async getSpecialroomInfo(when: number, applicantUid: number) {
@@ -447,7 +422,6 @@ class Specialroom extends V1 {
                     [specialroomInfo.state, specialroomInfo.applyId]
                 );
             }
-            await Specialroom.updateInformation(true);
             const putInfoResponse: v1.PutInfoResponse = {
                 status: 0,
                 message: "",
