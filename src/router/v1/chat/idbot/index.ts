@@ -4,7 +4,7 @@ import { HttpException } from "../../../../exceptions";
 import { defaultErrorHandler } from "../../../../utils/ErrorHandler";
 import Chat from "..";
 import path from "path";
-import { spawn } from "child_process";
+import fetch from "node-fetch";
 
 class Idbot extends Chat {
     constructor() {
@@ -36,22 +36,16 @@ class Idbot extends Chat {
                 "idbot",
                 "idbot.py"
             );
-            const process = spawn("python", [
-                idbotPath,
-                getIdbotChatRequest.chatInput,
-            ]);
-            process.stdout.on("data", (chunk: any, error: any) => {
-                if (error) {
-                    throw new HttpException(500);
-                }
-                const chatOutput = chunk.toString("utf8");
-                const getIdbotChatResponse: v1.GetIdbotChatResponse = {
-                    status: 0,
-                    message: "",
-                    chatOutput: chatOutput,
-                };
-                res.status(200).json(getIdbotChatResponse);
-            });
+            const resp = await fetch(
+                `http://127.0.0.1:3001/idbot/message?chatInput=${getIdbotChatRequest.chatInput}`
+            );
+            const chatOutput = ((await resp.json()) as any).chatOutput;
+            const getIdbotChatResponse: v1.GetIdbotChatResponse = {
+                status: 0,
+                message: "",
+                chatOutput: chatOutput,
+            };
+            res.status(200).json(getIdbotChatResponse);
         } catch (error) {
             defaultErrorHandler(res, error);
         }
