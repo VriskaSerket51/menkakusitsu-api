@@ -23,4 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
+#Idbot
+src/idbot/*
+
 package-lock.json
