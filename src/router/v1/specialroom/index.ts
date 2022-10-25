@@ -15,8 +15,7 @@ import fs from "fs";
 import path from "path";
 
 class Specialroom extends V1 {
-    static _lastApplyId: number[] = [-1, -1];
-    static _specialroomInfo: SpecialroomInfo[][] = [[], []];
+    static information: SpecialroomInfo[] = [];
 
     constructor() {
         super();
@@ -91,26 +90,82 @@ class Specialroom extends V1 {
         ];
     }
 
-    static async updateApplyId(isAuthed: boolean) {
-        const selectQuery = await query(
-            "SELECT MAX(apply_ID) AS max_id FROM specialroom_apply",
-            []
-        );
-        if (selectQuery && selectQuery[0]) {
-            const maxId = selectQuery[0].max_id;
-            if (maxId !== Specialroom._lastApplyId[Number(isAuthed)]) {
-                Specialroom._lastApplyId[Number(isAuthed)] = maxId;
-                return true;
+    static getInformation(isAuthed: boolean) {
+        if (!isAuthed) {
+            const result: SpecialroomInfo[] = [];
+            for (const information of Specialroom.information) {
+                result.push({
+                    applyId: information.applyId,
+                    state: information.state,
+                    master: {
+                        uid: information.master.uid,
+                        name: escapeUserName(information.master.name),
+                        value: "",
+                    },
+                    teacher: {
+                        uid: information.teacher.uid,
+                        name: escapeUserName(information.teacher.name),
+                        value: "",
+                    },
+                    applicants: information.applicants
+                        .split(",")
+                        .map((name) => escapeUserName(name))
+                        .join(","),
+                    location: information.location,
+                    purpose: information.purpose,
+                    when: information.when,
+                });
             }
-        } else {
-            Specialroom._lastApplyId[Number(isAuthed)] = -1;
-            return true;
+            return result;
         }
-        return false;
+        return Specialroom.information;
     }
 
-    static resetApplyId(isAuthed: boolean) {
-        Specialroom._lastApplyId[Number(isAuthed)] = -1;
+    static async updateInformation(force: boolean) {
+        if (!force) {
+            const selectQuery = await query(
+                "SELECT MAX(apply_ID) AS max_id FROM specialroom_apply",
+                []
+            );
+            if (selectQuery && selectQuery[0]) {
+                const maxId = selectQuery[0].max_id;
+                if (
+                    maxId <=
+                    Specialroom.information[Specialroom.information.length - 1]
+                        .applyId
+                ) {
+                    return;
+                }
+            }
+        }
+        const selectInformationQuery = await query(
+            "SELECT * FROM (SELECT apply_ID, GROUP_CONCAT(name) AS applicants FROM (SELECT specialroom_apply_student.apply_ID, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.student_UID = user.UID) AS A GROUP BY A.apply_ID) AS B, specialroom_apply WHERE B.apply_ID = specialroom_apply.apply_ID",
+            []
+        );
+        const information: SpecialroomInfo[] = [];
+        for (const selectInformation of selectInformationQuery as any[]) {
+            const master = await getStudentInfo(selectInformation.master_UID);
+            if (!master) {
+                throw new HttpException(500);
+            }
+            const teacher = await getTeacherInfo(selectInformation.teacher_UID);
+            if (!teacher) {
+                throw new HttpException(500);
+            }
+            selectInformation.master = master;
+            selectInformation.teacher = teacher;
+            information.push({
+                applyId: selectInformation.apply_ID,
+                state: selectInformation.approved_flag,
+                master: selectInformation.master,
+                teacher: selectInformation.teacher,
+                applicants: selectInformation.applicants,
+                location: selectInformation.location,
+                purpose: selectInformation.purpose,
+                when: selectInformation.when,
+            });
+        }
+        Specialroom.information = information;
     }
 
     static async getSpecialroomInfo(when: number, applicantUid: number) {
@@ -147,60 +202,6 @@ class Specialroom extends V1 {
             purpose: getApplyQuery[0].purpose,
             when: getApplyQuery[0].when,
         };
-    }
-
-    static async getInformation(isAuthed: boolean) {
-        if (!(await Specialroom.updateApplyId(isAuthed))) {
-            return Specialroom._specialroomInfo[Number(isAuthed)];
-        }
-        const selectInformationQuery = await query(
-            "SELECT * FROM (SELECT apply_ID, GROUP_CONCAT(name) AS applicants FROM (SELECT specialroom_apply_student.apply_ID, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.student_UID = user.UID) AS A GROUP BY A.apply_ID) AS B, specialroom_apply WHERE B.apply_ID = specialroom_apply.apply_ID",
-            []
-        );
-        const result: SpecialroomInfo[] = [];
-        for (const selectInformation of selectInformationQuery as any[]) {
-            const master = await getStudentInfo(selectInformation.master_UID);
-            if (!master) {
-                throw new HttpException(500);
-            }
-            const teacher = await getTeacherInfo(selectInformation.teacher_UID);
-            if (!teacher) {
-                throw new HttpException(500);
-            }
-            if (!isAuthed) {
-                selectInformation.applicants = (
-                    selectInformation.applicants as string
-                )
-                    .split(",")
-                    .map((name) => escapeUserName(name))
-                    .join(",");
-                selectInformation.master = {
-                    uid: master.uid,
-                    name: escapeUserName(master.name),
-                    value: "",
-                };
-                selectInformation.teacher = {
-                    uid: teacher.uid,
-                    name: escapeUserName(teacher.name),
-                    value: "",
-                };
-            } else {
-                selectInformation.master = master;
-                selectInformation.teacher = teacher;
-            }
-            result.push({
-                applyId: selectInformation.apply_ID,
-                state: selectInformation.approved_flag,
-                master: selectInformation.master,
-                teacher: selectInformation.teacher,
-                applicants: selectInformation.applicants,
-                location: selectInformation.location,
-                purpose: selectInformation.purpose,
-                when: selectInformation.when,
-            });
-        }
-        Specialroom._specialroomInfo[Number(isAuthed)] = result;
-        return result;
     }
 
     static async onGetApply(req: Request, res: Response) {
@@ -415,7 +416,7 @@ class Specialroom extends V1 {
             const isAuthed =
                 Boolean(req.headers.authorization) &&
                 req.headers.authorization!.startsWith("Bearer ");
-            const information = await Specialroom.getInformation(isAuthed);
+            const information = Specialroom.getInformation(isAuthed);
             const getInfoResponse: v1.GetInfoResponse = {
                 status: 0,
                 message: "",
@@ -443,8 +444,7 @@ class Specialroom extends V1 {
                     [specialroomInfo.state, specialroomInfo.applyId]
                 );
             }
-            Specialroom.resetApplyId(true);
-            Specialroom.resetApplyId(false);
+            await Specialroom.updateInformation(true);
             const putInfoResponse: v1.PutInfoResponse = {
                 status: 0,
                 message: "",
