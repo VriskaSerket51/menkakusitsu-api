@@ -2,6 +2,7 @@
     "name": "menkakusitsu-back",
     "version": "1.0.0",
     "description": "Back end server of menkakusitsu",
+    "type": "module",
     "main": "index.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
