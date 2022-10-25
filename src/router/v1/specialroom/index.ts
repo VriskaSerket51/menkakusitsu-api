@@ -90,7 +90,8 @@ class Specialroom extends V1 {
         ];
     }
 
-    static getInformation(isAuthed: boolean) {
+    static async getInformation(isAuthed: boolean) {
+        await Specialroom.updateInformation(false);
         if (!isAuthed) {
             const result: SpecialroomInfo[] = [];
             for (const information of Specialroom.information) {
@@ -130,9 +131,11 @@ class Specialroom extends V1 {
             if (selectQuery && selectQuery[0]) {
                 const maxId = selectQuery[0].max_id;
                 if (
+                    Specialroom.information.length > 0 &&
                     maxId <=
-                    Specialroom.information[Specialroom.information.length - 1]
-                        .applyId
+                        Specialroom.information[
+                            Specialroom.information.length - 1
+                        ].applyId
                 ) {
                     return;
                 }
@@ -416,7 +419,7 @@ class Specialroom extends V1 {
             const isAuthed =
                 Boolean(req.headers.authorization) &&
                 req.headers.authorization!.startsWith("Bearer ");
-            const information = Specialroom.getInformation(isAuthed);
+            const information = await Specialroom.getInformation(isAuthed);
             const getInfoResponse: v1.GetInfoResponse = {
                 status: 0,
                 message: "",
