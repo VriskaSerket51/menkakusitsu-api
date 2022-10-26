@@ -24,7 +24,7 @@ class Meal extends V1 {
         this.models = [
             {
                 method: "get",
-                path: "/:when",
+                path: "/now",
                 // authType: "access",
                 controller: Meal.onGetMeal,
             },
