@@ -34,48 +34,37 @@ class Meal extends V1 {
     static async onGetMeal(req: Request, res: Response) {
         try {
             const getMealRequest: v1.GetMealRequest = req.params as any;
-            if (!getMealRequest.when) {
-                throw new HttpException(400);
-            }
+            // if (!getMealRequest.when) {
+                // throw new HttpException(400);
+            // }
 
             const today = dayjs(getMealRequest.when);
             const tomorrow = today.add(1, "day");
 
-            const parseHtml = async (resp: FetchResponse) => {
-                const data = await resp.text();
-                const html = parse(data);
-                const dd = html
-                    .querySelector(".ulType_food")!
-                    .querySelectorAll("li")[1]
-                    .querySelector("dd")!;
-                const meals: string[] = dd.innerHTML.split("<br>");
-                const result: v1.MealInfo = {
-                    meals: meals,
-                };
-                return result;
-            };
+            const todayMeal = await query(
+                "SELECT lunch, dinner FROM meal WHERE `when`=?",
+                [today.format("YYYY-MM-DD")]
+            );
+            if (!today || todayMeal.length == 0) {
+                throw new HttpException(500);
+            }
+            const tomorrowMeal = await query(
+                "SELECT breakfast FROM meal WHERE `when`=?",
+                [tomorrow.format("YYYY-MM-DD")]
+            );
+            if (!tomorrowMeal || tomorrowMeal.length == 0) {
+                throw new HttpException(500);
+            }
 
-            const breakfast = await parseHtml(
-                await fetch(
-                    `http://jeju-s.jje.hs.kr/jeju-s/food/${tomorrow.year()}/${
-                        tomorrow.month() + 1
-                    }/${tomorrow.date()}/breakfast`
-                )
-            );
-            const lunch = await parseHtml(
-                await fetch(
-                    `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${
-                        today.month() + 1
-                    }/${today.date()}/lunch`
-                )
-            );
-            const dinner = await parseHtml(
-                await fetch(
-                    `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${
-                        today.month() + 1
-                    }/${today.date()}/dinner`
-                )
-            );
+            const breakfast: v1.MealInfo = {
+                meals: (tomorrowMeal[0].breakfast as string).split(","),
+            };
+            const lunch = await {
+                meals: (todayMeal[0].lunch as string).split(","),
+            };
+            const dinner = await {
+                meals: (todayMeal[0].dinner as string).split(","),
+            };
 
             const getMealResponse: v1.GetMealResponse = {
                 status: 0,
