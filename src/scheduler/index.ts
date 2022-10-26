@@ -79,5 +79,6 @@ export const initializeScheduler = () => {
             }
             schedule.job();
         });
+        schedule.job();
     });
 };
