@@ -57,10 +57,10 @@ const schedules: Schedule[] = [
             await execute(
                 "INSERT INTO meal(`when`, breakfast, lunch, dinner) VALUES(?, NULL, ?, ?), (?, ?, NULL, NULL)",
                 [
-                    today.format(),
+                    today.format("YYYY-MM-DD"),
                     lunch.join(","),
                     dinner.join(","),
-                    tomorrow.format(),
+                    tomorrow.format("YYYY-MM-DD"),
                     breakfast.join(","),
                 ]
             );
