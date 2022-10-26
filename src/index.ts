@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import App from "./app";
 import config from "./config";
 import { initializeFirebase } from "./firebase";
-import { initSchedule as initializeScheduler } from "./scheduler";
+import { initializeScheduler } from "./scheduler";
 import { logger } from "./utils/Logger";
 
 dotenv.config();

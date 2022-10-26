@@ -68,7 +68,7 @@ const schedules: Schedule[] = [
     },
 ];
 
-export const initSchedule = () => {
+export const initializeScheduler = () => {
     schedules.forEach((schedule) => {
         scheduler.scheduleJob(schedule.cron, (fireDate) => {
             logger.info(
