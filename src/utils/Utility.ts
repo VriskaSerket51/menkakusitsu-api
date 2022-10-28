@@ -26,7 +26,7 @@ export const getJwtPayload = (jwt: string) => {
 };
 
 export const getUserInfo = async () => {
-    const userInfo: v1.StudentInfo[] = (await query(
+    const userInfo: v1.UserInfo[] = (await query(
         "SELECT UID as uid, name FROM user",
         []
     )) as any;
@@ -35,7 +35,7 @@ export const getUserInfo = async () => {
 
 export const getStudentInfo = async (
     uid: number
-): Promise<v1.StudentInfo | null> => {
+): Promise<v1.UserInfo | null> => {
     const getStudentInfoQuery = await query(
         "SELECT student_ID, name FROM user WHERE UID=?",
         [uid]
@@ -52,7 +52,7 @@ export const getStudentInfo = async (
 
 export const getTeacherInfo = async (
     uid: number
-): Promise<v1.TeacherInfo | null> => {
+): Promise<v1.UserInfo | null> => {
     const getTeacherInfoQuery = await query(
         "SELECT student_ID, name FROM user WHERE UID=? AND teacher_flag=1",
         [uid]
