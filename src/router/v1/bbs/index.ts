@@ -241,6 +241,10 @@ class Bbs extends V1 {
                 "UPDATE bbs_post SET deletedDate=NOW() WHERE ownerUid=? AND id=?",
                 [payload.uid, request.id]
             );
+            await execute(
+                "UPDATE bbs_comment SET deletedDate=NOW() WHERE ownerUid=? AND postId=?",
+                [payload.uid, request.id]
+            );
             const response: v1.DeleteBbsPostResponse = {
                 status: 0,
                 message: "",
@@ -316,6 +320,16 @@ class Bbs extends V1 {
             if (request.postId === undefined || !request.content) {
                 throw new HttpException(400);
             }
+            const getbbsPostQuery = await query(
+                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
+                [request.postId]
+            );
+            if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
+                throw new ResponseException(
+                    -1,
+                    "삭제됐거나 존재하지 않는 게시글입니다."
+                );
+            }
             const payload = getJwtPayload(req.headers.authorization!);
             await execute(
                 "INSERT INTO bbs_comment(ownerUid, postId, content, createdDate) VALUE(?, ?, ?, NOW())",
@@ -333,7 +347,7 @@ class Bbs extends V1 {
     }
     static async onDeleteBbsComment(req: Request, res: Response) {
         try {
-            const request: v1.DeleteBbsPostRequest = req.body;
+            const request: v1.DeleteBbsCommentRequest = req.body;
             if (request.id === undefined) {
                 throw new HttpException(400);
             }
@@ -355,7 +369,7 @@ class Bbs extends V1 {
                 "UPDATE bbs_comment SET deletedDate=NOW() WHERE ownerUid=? AND id=?",
                 [payload.uid, request.id]
             );
-            const response: v1.DeleteBbsPostResponse = {
+            const response: v1.DeleteBbsCommentResponse = {
                 status: 0,
                 message: "",
                 // post: post,
