@@ -269,7 +269,7 @@ class Bbs extends V1 {
             const commentCount: number = getPostsCountQuery[0].cnt;
             const offset = (request.commentPage - 1) * request.commentListSize;
             const getCommentListQuery = await query(
-                "SELECT * FROM bbs_comment WHERE postId=? WHERE deletedDate IS NULL ORDER BY id DESC LIMIT ?, ?",
+                "SELECT * FROM bbs_comment WHERE postId=? AND deletedDate IS NULL ORDER BY id DESC LIMIT ?, ?",
                 [request.postId, offset, Number(request.commentListSize)]
             );
 
