@@ -591,7 +591,7 @@ class Specialroom extends V1 {
         try {
             const getStudentInfoRequest: v1.GetStudentInfoRequest =
                 req.query as any;
-            const studentInfo: v1.StudentInfo[] = (await query(
+            const studentInfo: v1.UserInfo[] = (await query(
                 "SELECT UID as uid, name, CONCAT(student_ID, ' ', name) AS value FROM user WHERE teacher_flag=0",
                 []
             )) as any;
@@ -610,7 +610,7 @@ class Specialroom extends V1 {
         try {
             const getTeacherInfoRequest: v1.GetTeacherInfoRequest =
                 req.query as any;
-            const teacherInfo: v1.TeacherInfo[] = (await query(
+            const teacherInfo: v1.UserInfo[] = (await query(
                 "SELECT UID as uid, name, CONCAT(name, ' 선생님') AS value FROM user WHERE teacher_flag=1",
                 []
             )) as any;
