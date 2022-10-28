@@ -38,7 +38,7 @@ class Bbs extends V1 {
                 method: "post",
                 path: "/post",
                 authType: "access",
-                controller: Bbs.onGetBbsPost,
+                controller: Bbs.onPostBbsPost,
             },
             {
                 method: "delete",
@@ -77,14 +77,14 @@ class Bbs extends V1 {
                 throw new HttpException(400);
             }
             const getPostsCountQuery = await query(
-                "SELECT COUNT(*) as cnt FROM bbs_post",
+                "SELECT COUNT(*) as cnt FROM bbs_post WHERE deletedDate IS NULL",
                 []
             );
             const postsCount: number = getPostsCountQuery[0].cnt;
             const offset = (request.postPage - 1) * request.postListSize;
             const getPostListQuery = await query(
-                "SELECT * FROM bbs_post ORDER BY id DESC LIMIT ?, ?",
-                [offset, request.postListSize]
+                "SELECT * FROM bbs_post WHERE deletedDate IS NULL ORDER BY id DESC LIMIT ?, ?",
+                [offset, Number(request.postListSize)]
             );
 
             const userInfo = await getUserInfo();
@@ -95,6 +95,19 @@ class Bbs extends V1 {
                     }
                 }
                 return null;
+            };
+
+            const getCommentCountQuery = await query(
+                "SELECT postId, COUNT(id) as cnt FROM bbs_comment WHERE deletedDate IS NULL group by postId",
+                []
+            );
+            const getCommentCount = (postId: number) => {
+                for (const commentCountQuery of getCommentCountQuery) {
+                    if (commentCountQuery.postId == postId) {
+                        return Number(commentCountQuery.cnt);
+                    }
+                }
+                return 0;
             };
 
             const posts: v1.BbsPost[] = [];
@@ -110,6 +123,7 @@ class Bbs extends V1 {
                     title: postData.title,
                     content: "",
                     postType: postData.type,
+                    commentCount: getCommentCount(postData.id),
                     createdDate: postData.createdDate,
                 });
             }
@@ -133,7 +147,7 @@ class Bbs extends V1 {
                 throw new HttpException(400);
             }
             const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate=NULL",
+                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
                 [request.id]
             );
             if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
@@ -147,12 +161,27 @@ class Bbs extends V1 {
             if (!owner) {
                 throw new HttpException(500);
             }
+
+            const getCommentCountQuery = await query(
+                "SELECT postId, COUNT(id) as cnt FROM bbs_comment WHERE deletedDate IS NULL group by postId",
+                []
+            );
+            const getCommentCount = (postId: number) => {
+                for (const commentCountQuery of getCommentCountQuery) {
+                    if (commentCountQuery.postId == postId) {
+                        return Number(commentCountQuery.cnt);
+                    }
+                }
+                return 0;
+            };
+
             const post: v1.BbsPost = {
                 id: postData.id,
                 owner: owner,
                 title: postData.title,
                 content: postData.content,
                 postType: postData.type,
+                commentCount: getCommentCount(postData.id),
                 createdDate: postData.createdDate,
             };
             const response: v1.GetBbsPostResponse = {
@@ -196,7 +225,7 @@ class Bbs extends V1 {
             }
             const payload = getJwtPayload(req.headers.authorization!);
             const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate=NULL",
+                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
                 [request.id]
             );
             if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
@@ -234,14 +263,14 @@ class Bbs extends V1 {
                 throw new HttpException(400);
             }
             const getPostsCountQuery = await query(
-                "SELECT COUNT(*) as cnt FROM bbs_comment WHERE postId=?",
+                "SELECT COUNT(*) as cnt FROM bbs_comment WHERE postId=? AND deletedDate IS NULL",
                 [request.postId]
             );
             const commentCount: number = getPostsCountQuery[0].cnt;
             const offset = (request.commentPage - 1) * request.commentListSize;
             const getCommentListQuery = await query(
-                "SELECT * FROM bbs_post WHERE postId=? ORDER BY id DESC LIMIT ?, ?",
-                [request.postId, offset, request.commentListSize]
+                "SELECT * FROM bbs_comment WHERE postId=? WHERE deletedDate IS NULL ORDER BY id DESC LIMIT ?, ?",
+                [request.postId, offset, Number(request.commentListSize)]
             );
 
             const userInfo = await getUserInfo();
@@ -310,7 +339,7 @@ class Bbs extends V1 {
             }
             const payload = getJwtPayload(req.headers.authorization!);
             const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate=NULL",
+                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
                 [request.id]
             );
             if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
