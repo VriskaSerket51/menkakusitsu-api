@@ -5,17 +5,10 @@ import { execute, query } from "../../../mysql";
 import { ResponseException, HttpException } from "../../../exceptions";
 import { defaultErrorHandler } from "../../../utils/ErrorHandler";
 import {
-    escapeUserName,
     getJwtPayload,
     getStudentInfo,
-    getTeacherInfo,
     getUserInfo,
 } from "../../../utils/Utility";
-import fs from "fs";
-import path from "path";
-import fetch, { Response as FetchResponse } from "node-fetch";
-import dayjs from "dayjs";
-import { parse } from "node-html-parser";
 
 class Bbs extends V1 {
     constructor() {
@@ -230,7 +223,7 @@ class Bbs extends V1 {
                     "삭제됐거나 존재하지 않는 게시글입니다."
                 );
             }
-            if (getbbsPostQuery[0].ownerUid !== payload.uid) {
+            if (getbbsPostQuery[0].ownerUid !== payload.uid && !payload.isDev) {
                 throw new HttpException(403);
             }
             await execute(
@@ -358,7 +351,7 @@ class Bbs extends V1 {
                     "삭제됐거나 존재하지 않는 게시글입니다."
                 );
             }
-            if (getbbsPostQuery[0].ownerUid !== payload.uid) {
+            if (getbbsPostQuery[0].ownerUid !== payload.uid && !payload.isDev) {
                 throw new HttpException(403);
             }
             await execute(
