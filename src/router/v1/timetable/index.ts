@@ -2,15 +2,8 @@ import { Request, Response } from "express";
 import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
 import V1 from "..";
 import { execute, query } from "../../../mysql";
-import { ResponseException, HttpException } from "../../../exceptions";
+import { HttpException } from "../../../exceptions";
 import { defaultErrorHandler } from "../../../utils/ErrorHandler";
-import {
-    escapeUserName,
-    getJwtPayload,
-    getStudentInfo,
-    getTeacherInfo,
-    getUserInfo,
-} from "../../../utils/Utility";
 import fs from "fs";
 import path from "path";
 
