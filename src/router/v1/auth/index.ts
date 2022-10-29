@@ -52,6 +52,7 @@ class Auth extends V1 {
                     uid: userInfo.uid,
                     id: userInfo.id,
                     isTeacher: userInfo.teacher_flag === 1,
+                    isDev: userInfo.isDev === 1,
                 });
                 await execute("UPDATE refresh_token SET token=? WHERE UID=?", [
                     refreshToken,
@@ -64,6 +65,7 @@ class Auth extends V1 {
                         uid: userInfo.uid,
                         id: userInfo.id,
                         isTeacher: userInfo.teacher_flag === 1,
+                        isDev: userInfo.isDev === 1,
                     }),
                     refreshToken: refreshToken,
                 };
