@@ -1,6 +1,7 @@
 import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
 import fs from "fs";
 import path from "path";
+import { sendPush } from "../firebase";
 import { query } from "../mysql";
 
 export const readAllFiles = (
@@ -71,4 +72,21 @@ export const escapeUserName = (name: string): string => {
     const splited = name.split("");
     splited[1] = "*";
     return splited.join("");
+};
+
+export const sendPushToUser = async (
+    targetUid: number,
+    title: string,
+    body: string,
+    link?: string
+) => {
+    const selectTokenQuery = await query(
+        "SELECT token FROM push_token WHERE UID=?",
+        [targetUid]
+    );
+    for (const pushToken of selectTokenQuery) {
+        if (pushToken.token) {
+            sendPush(pushToken.token, title, body, link);
+        }
+    }
 };
