@@ -5,7 +5,7 @@ import { defaultErrorHandler } from "../../../utils/ErrorHandler";
 import { HttpException } from "../../../exceptions";
 import { execute, query } from "../../../mysql";
 import { sendPush } from "../../../firebase";
-import { getJwtPayload } from "../../../utils/Utility";
+import { getJwtPayload, sendPushToUser } from "../../../utils/Utility";
 
 class User extends V1 {
     constructor() {
@@ -36,23 +36,18 @@ class User extends V1 {
     static async onPostPush(req: Request, res: Response) {
         try {
             const postPushRequest: v1.PostPushRequest = req.body;
-            if (!postPushRequest.notification || postPushRequest.targetUid === undefined) {
+            if (
+                !postPushRequest.notification ||
+                postPushRequest.targetUid === undefined
+            ) {
                 throw new HttpException(400);
             }
-            const selectTokenQuery = await query(
-                "SELECT token FROM push_token WHERE UID=?",
-                [postPushRequest.targetUid]
+            sendPushToUser(
+                postPushRequest.targetUid,
+                postPushRequest.notification.title,
+                postPushRequest.notification.body,
+                postPushRequest.notification.link
             );
-            for (const pushToken of selectTokenQuery) {
-                if (pushToken.token) {
-                    sendPush(
-                        pushToken.token,
-                        postPushRequest.notification.title,
-                        postPushRequest.notification.body,
-                        postPushRequest.notification.link
-                    );
-                }
-            }
             const postPushResponse: v1.PostPushResponse = {
                 status: 0,
                 message: "",
