@@ -8,7 +8,9 @@ import {
     getJwtPayload,
     getStudentInfo,
     getUserInfo,
+    sendPushToUser,
 } from "../../../utils/Utility";
+import config from "../../../config";
 
 class Bbs extends V1 {
     constructor() {
@@ -322,6 +324,12 @@ class Bbs extends V1 {
             await execute(
                 "INSERT INTO bbs_comment(ownerUid, postId, content, createdDate) VALUE(?, ?, ?, NOW())",
                 [payload.uid, request.postId, request.content]
+            );
+            sendPushToUser(
+                getbbsPostQuery[0].ownerUid,
+                `댓글이 달렸습니다!`,
+                request.content,
+                `${config.webPrefix}/bbs/post/${request.postId}`
             );
             const response: v1.PostBbsCommentResponse = {
                 status: 0,
