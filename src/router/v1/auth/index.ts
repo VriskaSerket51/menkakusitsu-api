@@ -39,7 +39,7 @@ class Auth extends V1 {
                 throw new HttpException(400);
             }
             const loginQuery = await query(
-                "SELECT uid, id, password, teacher_flag FROM user WHERE id=?",
+                "SELECT uid, id, password, teacher_flag, isDev FROM user WHERE id=?",
                 [postLoginRequest.id]
             );
 
