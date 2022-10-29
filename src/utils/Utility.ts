@@ -27,7 +27,7 @@ export const getJwtPayload = (jwt: string) => {
 
 export const getUserInfo = async () => {
     const userInfo: v1.UserInfo[] = (await query(
-        "SELECT UID as uid, name FROM user WHERE isDev=0",
+        "SELECT UID as uid, name FROM user",
         []
     )) as any;
     return userInfo;
