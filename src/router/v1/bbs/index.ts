@@ -226,13 +226,12 @@ class Bbs extends V1 {
             if (getbbsPostQuery[0].ownerUid !== payload.uid && !payload.isDev) {
                 throw new HttpException(403);
             }
-            await execute(
-                "UPDATE bbs_post SET deletedDate=NOW() WHERE id=?",
-                [payload.uid, request.id]
-            );
+            await execute("UPDATE bbs_post SET deletedDate=NOW() WHERE id=?", [
+                request.id,
+            ]);
             await execute(
                 "UPDATE bbs_comment SET deletedDate=NOW() WHERE postId=?",
-                [payload.uid, request.id]
+                [request.id]
             );
             const response: v1.DeleteBbsPostResponse = {
                 status: 0,
@@ -356,7 +355,7 @@ class Bbs extends V1 {
             }
             await execute(
                 "UPDATE bbs_comment SET deletedDate=NOW() WHERE id=?",
-                [payload.uid, request.id]
+                [request.id]
             );
             const response: v1.DeleteBbsCommentResponse = {
                 status: 0,
