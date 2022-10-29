@@ -227,7 +227,7 @@ class Bbs extends V1 {
                 throw new HttpException(403);
             }
             await execute(
-                "UPDATE bbs_post SET deletedDate=NOW() WHERE AND id=?",
+                "UPDATE bbs_post SET deletedDate=NOW() WHERE id=?",
                 [payload.uid, request.id]
             );
             await execute(
@@ -355,7 +355,7 @@ class Bbs extends V1 {
                 throw new HttpException(403);
             }
             await execute(
-                "UPDATE bbs_comment SET deletedDate=NOW() WHERE AND id=?",
+                "UPDATE bbs_comment SET deletedDate=NOW() WHERE id=?",
                 [payload.uid, request.id]
             );
             const response: v1.DeleteBbsCommentResponse = {
