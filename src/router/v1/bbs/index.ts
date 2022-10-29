@@ -163,17 +163,13 @@ class Bbs extends V1 {
             }
 
             const getCommentCountQuery = await query(
-                "SELECT postId, COUNT(id) as cnt FROM bbs_comment WHERE deletedDate IS NULL group by postId",
-                []
+                "SELECT COUNT(*) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND postId=?",
+                [postData.id]
             );
-            const getCommentCount = (postId: number) => {
-                for (const commentCountQuery of getCommentCountQuery) {
-                    if (commentCountQuery.postId == postId) {
-                        return Number(commentCountQuery.cnt);
-                    }
-                }
-                return 0;
-            };
+
+            if (!getCommentCountQuery || getCommentCountQuery.length === 0) {
+                throw new HttpException(500);
+            }
 
             const post: v1.BbsPost = {
                 id: postData.id,
@@ -181,7 +177,7 @@ class Bbs extends V1 {
                 title: postData.title,
                 content: postData.content,
                 postType: postData.type,
-                commentCount: getCommentCount(postData.id),
+                commentCount: getCommentCountQuery[0].cnt,
                 createdDate: postData.createdDate,
             };
             const response: v1.GetBbsPostResponse = {
