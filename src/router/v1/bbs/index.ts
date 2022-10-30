@@ -78,7 +78,7 @@ class Bbs extends V1 {
             const postsCount: number = getPostsCountQuery[0].cnt;
             const offset = (request.postPage - 1) * request.postListSize;
             const getPostListQuery = await query(
-                "SELECT * FROM bbs_post WHERE deletedDate IS NULL ORDER BY id DESC LIMIT ?, ?",
+                "SELECT * FROM bbs_post WHERE deletedDate IS NULL ORDER BY `type` ASC, id DESC LIMIT ?, ?",
                 [offset, Number(request.postListSize)]
             );
 
