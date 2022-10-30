@@ -341,6 +341,7 @@ class Bbs extends V1 {
             defaultErrorHandler(res, error);
         }
     }
+
     static async onDeleteBbsComment(req: Request, res: Response) {
         try {
             const request: v1.DeleteBbsCommentRequest = req.body;
@@ -349,7 +350,7 @@ class Bbs extends V1 {
             }
             const payload = getJwtPayload(req.headers.authorization!);
             const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
+                "SELECT * FROM bbs_comment WHERE id=? AND deletedDate IS NULL",
                 [request.id]
             );
             if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
