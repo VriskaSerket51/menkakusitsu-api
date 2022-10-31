@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
 import V1 from "..";
 import { defaultErrorHandler } from "../../../utils/ErrorHandler";
-import { HttpException } from "../../../exceptions";
+import { HttpException, ResponseException } from "../../../exceptions";
 import { execute, query } from "../../../mysql";
 import { sendPush } from "../../../firebase";
 import { getJwtPayload, sendPushToUser } from "../../../utils/Utility";
@@ -29,6 +29,24 @@ class User extends V1 {
                 path: "/push",
                 authType: "access",
                 controller: User.onDeletePush,
+            },
+            {
+                method: "get",
+                path: "/me",
+                authType: "access",
+                controller: User.onGetMyPrivateInfo,
+            },
+            {
+                method: "put",
+                path: "/me/email",
+                authType: "access",
+                controller: User.onPutEmail,
+            },
+            {
+                method: "put",
+                path: "/me/password",
+                authType: "access",
+                controller: User.onPutPassword,
             },
         ];
     }
@@ -112,6 +130,97 @@ class User extends V1 {
                 message: "",
             };
             res.status(200).json(deletePushResponse);
+        } catch (error) {
+            defaultErrorHandler(res, error);
+        }
+    }
+
+    static async onGetMyPrivateInfo(req: Request, res: Response) {
+        try {
+            const request: v1.GetMyPrivateInfoRequest = req.query as any;
+            const payload = getJwtPayload(req.headers.authorization!);
+            const getUserInfoQuery = await query(
+                "SELECT * FROM user WHERE UID=?",
+                [payload.uid]
+            );
+            if (!getUserInfoQuery || getUserInfoQuery.length === 0) {
+                throw new HttpException(500);
+            }
+            const userInfo = getUserInfoQuery[0];
+            const response: v1.GetMyPrivateInfoResponse = {
+                status: 0,
+                message: "",
+                private: {
+                    email: userInfo.email,
+                },
+            };
+            res.status(200).json(response);
+        } catch (error) {
+            defaultErrorHandler(res, error);
+        }
+    }
+
+    static async onPutEmail(req: Request, res: Response) {
+        try {
+            const request: v1.PutEmailRequest = req.body;
+            const payload = getJwtPayload(req.headers.authorization!);
+            const getUserInfoQuery = await query(
+                "SELECT * FROM user WHERE UID=?",
+                [payload.uid]
+            );
+            if (!getUserInfoQuery || getUserInfoQuery.length === 0) {
+                throw new HttpException(500);
+            }
+            const userInfo = getUserInfoQuery[0];
+            if (request.oldEmail != userInfo.email) {
+                throw new ResponseException(
+                    -1,
+                    "이전 이메일을 알맞게 입력하지 않았습니다."
+                );
+            }
+            await execute("UPDATE user SET email=? WHERE UID=?", [
+                request.newEmail,
+                payload.uid,
+            ]);
+            const response: v1.PutEmailResponse = {
+                status: 0,
+                message: "",
+                newEmail: request.newEmail,
+            };
+            res.status(200).json(response);
+        } catch (error) {
+            defaultErrorHandler(res, error);
+        }
+    }
+
+    static async onPutPassword(req: Request, res: Response) {
+        try {
+            const request: v1.PutPasswordRequest = req.body;
+            const payload = getJwtPayload(req.headers.authorization!);
+            const getUserInfoQuery = await query(
+                "SELECT * FROM user WHERE UID=?",
+                [payload.uid]
+            );
+            if (!getUserInfoQuery || getUserInfoQuery.length === 0) {
+                throw new HttpException(500);
+            }
+            const userInfo = getUserInfoQuery[0];
+            if (request.oldPassword != userInfo.password) {
+                throw new ResponseException(
+                    -1,
+                    "이전 비밀번호를 알맞게 입력하지 않았습니다."
+                );
+            }
+            await execute("UPDATE user SET password=? WHERE UID=?", [
+                request.newPassword,
+                payload.uid,
+            ]);
+            const response: v1.PutEmailResponse = {
+                status: 0,
+                message: "",
+                newEmail: request.newPassword,
+            };
+            res.status(200).json(response);
         } catch (error) {
             defaultErrorHandler(res, error);
         }
