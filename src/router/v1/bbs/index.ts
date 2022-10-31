@@ -204,7 +204,7 @@ class Bbs extends V1 {
         try {
             // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
             const request: v1.PostBbsPostRequest = req.body;
-            if (!request.title || !request.content) {
+            if (!request.title || !request.content || !request.header) {
                 throw new HttpException(400);
             }
             if (request.title.length > 20) {
@@ -232,9 +232,14 @@ class Bbs extends V1 {
     static async onPutBbsPost(req: Request, res: Response) {
         try {
             // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
-            const postId = req.query.postId;
+            const postId = req.params.postId;
             const request: v1.PostBbsPostRequest = req.body;
-            if (postId === undefined || !request.title || !request.content) {
+            if (
+                postId === undefined ||
+                !request.title ||
+                !request.content ||
+                !request.header
+            ) {
                 throw new HttpException(400);
             }
             if (request.title.length > 20) {
