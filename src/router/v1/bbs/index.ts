@@ -208,15 +208,15 @@ class Bbs extends V1 {
                 throw new HttpException(400);
             }
             if (request.title.length > 20) {
-                request.title.substring(0, 20);
+                request.title.substring(0, 30);
             }
             if (request.content.length > 500) {
                 request.content.substring(0, 500);
             }
             const payload = getJwtPayload(req.headers.authorization!);
             await execute(
-                "INSERT INTO bbs_post(ownerUid, title, content, createdDate) VALUE(?, ?, ?, NOW())",
-                [payload.uid, request.title, request.content]
+                "INSERT INTO bbs_post(ownerUid, title, content, header, createdDate) VALUE(?, ?, ?, ?, NOW())",
+                [payload.uid, request.title, request.content, request.header]
             );
             const response: v1.PostBbsPostResponse = {
                 status: 0,
@@ -232,10 +232,10 @@ class Bbs extends V1 {
     static async onPutBbsPost(req: Request, res: Response) {
         try {
             // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
-            const postId = req.params.postId;
-            const request: v1.PostBbsPostRequest = req.body;
+            const request: v1.PutBbsPostRequest = req.body;
+            request.postId = Number(req.params.postId);
             if (
-                postId === undefined ||
+                request.postId === undefined ||
                 !request.title ||
                 !request.content ||
                 !request.header
@@ -243,17 +243,27 @@ class Bbs extends V1 {
                 throw new HttpException(400);
             }
             if (request.title.length > 20) {
-                request.title.substring(0, 20);
+                request.title.substring(0, 30);
             }
             if (request.content.length > 500) {
                 request.content.substring(0, 500);
             }
+            const getbbsPostQuery = await query(
+                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
+                [request.postId]
+            );
+            if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
+                throw new ResponseException(
+                    -1,
+                    "삭제됐거나 존재하지 않는 게시글입니다."
+                );
+            }
             const payload = getJwtPayload(req.headers.authorization!);
             await execute(
-                "INSERT INTO bbs_post(ownerUid, title, content, createdDate) VALUE(?, ?, ?, NOW())",
-                [payload.uid, request.title, request.content]
+                "UPDATE bbs_post SET title=?, content=?, header=? WHERE id=?",
+                [request.title, request.content, request.header, request.postId]
             );
-            const response: v1.PostBbsPostResponse = {
+            const response: v1.PutBbsPostResponse = {
                 status: 0,
                 message: "",
                 // post: post,
@@ -305,17 +315,25 @@ class Bbs extends V1 {
     static async onGetBbsPostHeaders(req: Request, res: Response) {
         try {
             const request: v1.GetBbsPostHeaderRequest = req.query as any;
+            const headers = ["[버그 제보]", "[기능 추가]"];
+            const payload = getJwtPayload(req.headers.authorization!);
+            if (payload.isDev) {
+                headers.push(
+                    "[공지 사항]",
+                    "[수정 예정]",
+                    "[수정 불가]",
+                    "[수정 계획 없음]",
+                    "[수정 완료]",
+                    "[추가 예정]",
+                    "[추가 불가]",
+                    "[추가 계획 없음]",
+                    "[추가 완료]"
+                );
+            }
             const response: v1.GetBbsPostHeaderResponse = {
                 status: 0,
                 message: "",
-                headers: [
-                    "[버그 제보]",
-                    "[기능 추가]",
-                    "[수정 예정]",
-                    "[수정 불가]",
-                    "[추가 예정]",
-                    "[추가 불가]",
-                ],
+                headers: headers,
             };
             res.status(200).json(response);
         } catch (error) {
