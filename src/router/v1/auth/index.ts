@@ -113,6 +113,7 @@ class Auth extends V1 {
                 uid: payload.uid,
                 id: payload.id,
                 isTeacher: payload.isTeacher,
+                isDev: payload.isDev,
             });
             await execute("UPDATE refresh_token SET token=? WHERE UID=?", [
                 refreshToken,
@@ -125,6 +126,7 @@ class Auth extends V1 {
                     uid: payload.uid,
                     id: payload.id,
                     isTeacher: payload.isTeacher,
+                    isDev: payload.isDev,
                 }),
                 refreshToken: refreshToken,
             };
