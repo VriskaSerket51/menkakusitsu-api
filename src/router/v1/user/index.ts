@@ -178,6 +178,16 @@ class User extends V1 {
                     "이전 이메일을 알맞게 입력하지 않았습니다."
                 );
             }
+            const getEmailCntQuery = await query(
+                "SELECT COUNT(*) as cnt FROM user WHERE email=?",
+                [request.newEmail]
+            );
+            if (Number(getEmailCntQuery[0].cnt!) > 0) {
+                throw new ResponseException(
+                    -2,
+                    "다른 사람이 사용 중인 이메일입니다."
+                );
+            }
             await execute("UPDATE user SET email=? WHERE UID=?", [
                 request.newEmail,
                 payload.uid,
@@ -211,10 +221,10 @@ class User extends V1 {
                     "이전 비밀번호를 알맞게 입력하지 않았습니다."
                 );
             }
-            await execute("UPDATE user SET password=? WHERE UID=?", [
-                request.newPassword,
-                payload.uid,
-            ]);
+            await execute(
+                "UPDATE user SET password=?, needChangePw=0 WHERE UID=?",
+                [request.newPassword, payload.uid]
+            );
             const response: v1.PutEmailResponse = {
                 status: 0,
                 message: "",
