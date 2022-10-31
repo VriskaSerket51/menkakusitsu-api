@@ -188,10 +188,16 @@ class Bbs extends V1 {
 
     static async onPostBbsPost(req: Request, res: Response) {
         try {
-            throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
+            // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
             const request: v1.PostBbsPostRequest = req.body;
             if (!request.title || !request.content) {
                 throw new HttpException(400);
+            }
+            if (request.title.length > 20) {
+                request.title.substring(0, 20);
+            }
+            if (request.content.length > 500) {
+                request.content.substring(0, 500);
             }
             const payload = getJwtPayload(req.headers.authorization!);
             await execute(
@@ -310,6 +316,9 @@ class Bbs extends V1 {
             const request: v1.PostBbsCommentRequest = req.body;
             if (request.postId === undefined || !request.content) {
                 throw new HttpException(400);
+            }
+            if (request.content.length > 300) {
+                request.content.substring(0, 300);
             }
             const getbbsPostQuery = await query(
                 "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
