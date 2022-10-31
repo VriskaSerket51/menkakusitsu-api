@@ -39,7 +39,7 @@ class Auth extends V1 {
                 throw new HttpException(400);
             }
             const loginQuery = await query(
-                "SELECT uid, id, password, teacher_flag, isDev FROM user WHERE id=?",
+                "SELECT UID as uid, ID as id, password, email, needChangePw, teacher_flag as isTeacher, isDev FROM user WHERE id=?",
                 [postLoginRequest.id]
             );
 
@@ -51,13 +51,20 @@ class Auth extends V1 {
                 const refreshToken = createRefreshoken({
                     uid: userInfo.uid,
                     id: userInfo.id,
-                    isTeacher: userInfo.teacher_flag === 1,
+                    isTeacher: userInfo.isTeacher === 1,
                     isDev: userInfo.isDev === 1,
                 });
                 await execute("UPDATE refresh_token SET token=? WHERE UID=?", [
                     refreshToken,
                     userInfo.uid,
                 ]);
+                const callbacks: string[] = [];
+                if (userInfo.needChangePw) {
+                    callbacks.push("needChangePw");
+                }
+                if (!userInfo.email) {
+                    callbacks.push("needChangeEmail");
+                }
                 const postLoginResponse: v1.PostLoginResponse = {
                     status: 0,
                     message: "",
@@ -68,6 +75,7 @@ class Auth extends V1 {
                         isDev: userInfo.isDev === 1,
                     }),
                     refreshToken: refreshToken,
+                    callbacks: callbacks,
                 };
                 res.status(200).json(postLoginResponse);
             } else {
