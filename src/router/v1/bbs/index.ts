@@ -43,6 +43,12 @@ class Bbs extends V1 {
             },
             {
                 method: "get",
+                path: "/post/headers",
+                authType: "access",
+                controller: Bbs.onGetBbsPostHeaders,
+            },
+            {
+                method: "get",
                 path: "/comment/list",
                 authType: "access",
                 controller: Bbs.onGetBbsCommentList,
@@ -246,6 +252,27 @@ class Bbs extends V1 {
                 status: 0,
                 message: "",
                 // post: post,
+            };
+            res.status(200).json(response);
+        } catch (error) {
+            defaultErrorHandler(res, error);
+        }
+    }
+
+    static async onGetBbsPostHeaders(req: Request, res: Response) {
+        try {
+            const request: v1.GetBbsPostHeaderRequest = req.query as any;
+            const response: v1.GetBbsPostHeaderResponse = {
+                status: 0,
+                message: "",
+                headers: [
+                    "[버그 제보]",
+                    "[기능 추가]",
+                    "[수정 예정]",
+                    "[수정 불가]",
+                    "[추가 예정]",
+                    "[추가 불가]",
+                ],
             };
             res.status(200).json(response);
         } catch (error) {
