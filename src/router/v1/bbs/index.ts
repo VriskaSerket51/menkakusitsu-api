@@ -90,7 +90,7 @@ class Bbs extends V1 {
             const postsCount: number = getPostsCountQuery[0].cnt;
             const offset = (request.postPage - 1) * request.postListSize;
             const getPostListQuery = await query(
-                "SELECT * FROM bbs_post WHERE deletedDate IS NULL AND type=0 ORDER BY `type` ASC, id DESC LIMIT ?, ?",
+                "SELECT * FROM bbs_post WHERE deletedDate IS NULL ORDER BY `type` ASC, id DESC LIMIT ?, ?",
                 [offset, Number(request.postListSize)]
             );
 
@@ -169,7 +169,17 @@ class Bbs extends V1 {
             if (!owner) {
                 throw new HttpException(500);
             }
-
+            const payload = getJwtPayload(req.headers.authorization!);
+            if (
+                !postData.isPublic &&
+                owner.uid != payload.uid &&
+                !payload.isDev
+            ) {
+                throw new ResponseException(
+                    -2,
+                    "관리자나 작성자 본인만 확인할 수 있습니다."
+                );
+            }
             const getCommentCountQuery = await query(
                 "SELECT COUNT(*) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND postId=?",
                 [postData.id]
