@@ -19,79 +19,97 @@ class Bbs extends V1 {
         this.models = [
             {
                 method: "get",
-                path: "/post/list",
+                path: "/:board/list",
                 authType: "access",
                 controller: Bbs.onGetBbsPostList,
             },
             {
                 method: "get",
-                path: "/post",
+                path: "/:board/:postId(\\d+)",
                 authType: "access",
                 controller: Bbs.onGetBbsPost,
             },
             {
                 method: "post",
-                path: "/post",
+                path: "/:board",
                 authType: "access",
                 controller: Bbs.onPostBbsPost,
             },
             {
                 method: "put",
-                path: "/post/:postId",
+                path: "/:board/:postId(\\d+)",
                 authType: "access",
                 controller: Bbs.onPutBbsPost,
             },
             {
                 method: "delete",
-                path: "/post",
+                path: "/:board/:postId(\\d+)",
                 authType: "access",
                 controller: Bbs.onDeleteBbsPost,
             },
             {
                 method: "get",
-                path: "/post/headers",
+                path: "/:board/headers",
                 authType: "access",
                 controller: Bbs.onGetBbsPostHeaders,
             },
             {
                 method: "get",
-                path: "/comment/list",
+                path: "/:board/:postId(\\d+)/list",
                 authType: "access",
                 controller: Bbs.onGetBbsCommentList,
             },
             {
                 method: "post",
-                path: "/comment",
+                path: "/:board/:postId(\\d+)",
                 authType: "access",
                 controller: Bbs.onPostBbsComment,
             },
             {
                 method: "delete",
-                path: "/comment",
+                path: "/:board/:postId(\\d+)/:commentId(\\d+)",
                 authType: "access",
                 controller: Bbs.onDeleteBbsComment,
             },
         ];
     }
 
+    static async getBbsPost(board: string, postId: number) {
+        const getbbsPostQuery = await query(
+            "SELECT * FROM bbs_post WHERE deletedDate IS NULL AND board=? AND id=?",
+            [board, postId]
+        );
+        if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
+            throw new ResponseException(
+                -1,
+                "삭제됐거나 존재하지 않는 게시글입니다."
+            );
+        }
+        return getbbsPostQuery;
+    }
+
     static async onGetBbsPostList(req: Request, res: Response) {
         try {
-            const request: v1.GetBbsPostListRequest = req.query as any;
+            const request: v1.GetBbsPostListRequest = Object.assign(
+                req.query as any,
+                req.params
+            );
             if (
+                !request.board ||
                 request.postListSize === undefined ||
                 request.postPage === undefined
             ) {
                 throw new HttpException(400);
             }
             const getPostsCountQuery = await query(
-                "SELECT COUNT(*) as cnt FROM bbs_post WHERE deletedDate IS NULL",
-                []
+                "SELECT COUNT(*) as cnt FROM bbs_post WHERE deletedDate IS NULL AND board=? ",
+                [request.board]
             );
             const postsCount: number = getPostsCountQuery[0].cnt;
             const offset = (request.postPage - 1) * request.postListSize;
             const getPostListQuery = await query(
-                "SELECT * FROM bbs_post WHERE deletedDate IS NULL ORDER BY `type` ASC, id DESC LIMIT ?, ?",
-                [offset, Number(request.postListSize)]
+                "SELECT * FROM bbs_post WHERE deletedDate IS NULL AND board=? ORDER BY `type` ASC, id DESC LIMIT ?, ?",
+                [request.board, offset, Number(request.postListSize)]
             );
 
             const userInfo = await getUserInfo();
@@ -105,8 +123,8 @@ class Bbs extends V1 {
             };
 
             const getCommentCountQuery = await query(
-                "SELECT postId, COUNT(id) as cnt FROM bbs_comment WHERE deletedDate IS NULL group by postId",
-                []
+                "SELECT postId, COUNT(id) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND board=? group by postId",
+                [request.board]
             );
             const getCommentCount = (postId: number) => {
                 for (const commentCountQuery of getCommentCountQuery) {
@@ -130,6 +148,7 @@ class Bbs extends V1 {
                     title: postData.title,
                     content: "",
                     header: postData.header,
+                    board: postData.board,
                     postType: postData.type,
                     commentCount: getCommentCount(postData.id),
                     createdDate: postData.createdDate,
@@ -150,20 +169,17 @@ class Bbs extends V1 {
 
     static async onGetBbsPost(req: Request, res: Response) {
         try {
-            const request: v1.GetBbsPostRequest = req.query as any;
-            if (request.id === undefined) {
+            const request: v1.GetBbsPostRequest = Object.assign(
+                req.query as any,
+                req.params
+            );
+            if (!request.board || request.postId === undefined) {
                 throw new HttpException(400);
             }
-            const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
-                [request.id]
+            const getbbsPostQuery = await Bbs.getBbsPost(
+                request.board,
+                request.postId
             );
-            if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
-                throw new ResponseException(
-                    -1,
-                    "삭제됐거나 존재하지 않는 게시글입니다."
-                );
-            }
             const postData = getbbsPostQuery[0];
             const owner = await getStudentInfo(postData.ownerUid);
             if (!owner) {
@@ -181,8 +197,8 @@ class Bbs extends V1 {
                 );
             }
             const getCommentCountQuery = await query(
-                "SELECT COUNT(*) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND postId=?",
-                [postData.id]
+                "SELECT COUNT(*) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND board=? AND postId=?",
+                [postData.board, postData.id]
             );
 
             if (!getCommentCountQuery || getCommentCountQuery.length === 0) {
@@ -195,6 +211,7 @@ class Bbs extends V1 {
                 title: postData.title,
                 content: postData.content,
                 header: postData.header,
+                board: postData.board,
                 postType: postData.type,
                 commentCount: getCommentCountQuery[0].cnt,
                 createdDate: postData.createdDate,
@@ -213,8 +230,16 @@ class Bbs extends V1 {
     static async onPostBbsPost(req: Request, res: Response) {
         try {
             // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
-            const request: v1.PostBbsPostRequest = req.body;
-            if (!request.title || !request.content || !request.header) {
+            const request: v1.PostBbsPostRequest = Object.assign(
+                req.body,
+                req.params
+            );
+            if (
+                !request.title ||
+                !request.content ||
+                !request.header ||
+                !request.board
+            ) {
                 throw new HttpException(400);
             }
             if (request.title.length > 20) {
@@ -225,8 +250,14 @@ class Bbs extends V1 {
             }
             const payload = getJwtPayload(req.headers.authorization!);
             await execute(
-                "INSERT INTO bbs_post(ownerUid, title, content, header, createdDate) VALUE(?, ?, ?, ?, NOW())",
-                [payload.uid, request.title, request.content, request.header]
+                "INSERT INTO bbs_post(ownerUid, title, content, header, board, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
+                [
+                    payload.uid,
+                    request.title,
+                    request.content,
+                    request.header,
+                    request.board,
+                ]
             );
             const response: v1.PostBbsPostResponse = {
                 status: 0,
@@ -242,10 +273,13 @@ class Bbs extends V1 {
     static async onPutBbsPost(req: Request, res: Response) {
         try {
             // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
-            const request: v1.PutBbsPostRequest = req.body;
-            request.postId = Number(req.params.postId);
+            const request: v1.PutBbsPostRequest = Object.assign(
+                req.body,
+                req.params
+            );
             if (
                 request.postId === undefined ||
+                !request.board ||
                 !request.title ||
                 !request.content ||
                 !request.header
@@ -258,20 +292,23 @@ class Bbs extends V1 {
             if (request.content.length > 500) {
                 request.content.substring(0, 500);
             }
-            const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
-                [request.postId]
+            const getbbsPostQuery = await Bbs.getBbsPost(
+                request.board,
+                request.postId
             );
-            if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
-                throw new ResponseException(
-                    -1,
-                    "삭제됐거나 존재하지 않는 게시글입니다."
-                );
-            }
             const payload = getJwtPayload(req.headers.authorization!);
+            if (payload.uid != getbbsPostQuery[0].ownerUid && !payload.isDev) {
+                throw new HttpException(403);
+            }
             await execute(
-                "UPDATE bbs_post SET title=?, content=?, header=? WHERE id=?",
-                [request.title, request.content, request.header, request.postId]
+                "UPDATE bbs_post SET title=?, content=?, header=? WHERE board=? AND id=?",
+                [
+                    request.title,
+                    request.content,
+                    request.header,
+                    request.board,
+                    request.postId,
+                ]
             );
             const response: v1.PutBbsPostResponse = {
                 status: 0,
@@ -286,30 +323,28 @@ class Bbs extends V1 {
 
     static async onDeleteBbsPost(req: Request, res: Response) {
         try {
-            const request: v1.DeleteBbsPostRequest = req.body;
-            if (request.id === undefined) {
+            const request: v1.DeleteBbsPostRequest = Object.assign(
+                req.body,
+                req.params
+            );
+            if (!request.board || request.postI === undefined) {
                 throw new HttpException(400);
             }
             const payload = getJwtPayload(req.headers.authorization!);
-            const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
-                [request.id]
+            const getbbsPostQuery = await Bbs.getBbsPost(
+                request.board,
+                request.postI
             );
-            if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
-                throw new ResponseException(
-                    -1,
-                    "삭제됐거나 존재하지 않는 게시글입니다."
-                );
-            }
             if (getbbsPostQuery[0].ownerUid !== payload.uid && !payload.isDev) {
                 throw new HttpException(403);
             }
-            await execute("UPDATE bbs_post SET deletedDate=NOW() WHERE id=?", [
-                request.id,
-            ]);
             await execute(
-                "UPDATE bbs_comment SET deletedDate=NOW() WHERE postId=?",
-                [request.id]
+                "UPDATE bbs_post SET deletedDate=NOW() WHERE board=? AND id=?",
+                [request.board, request.postI]
+            );
+            await execute(
+                "UPDATE bbs_comment SET deletedDate=NOW() WHERE board=? AND postId=?",
+                [request.board, request.postI]
             );
             const response: v1.DeleteBbsPostResponse = {
                 status: 0,
@@ -324,7 +359,10 @@ class Bbs extends V1 {
 
     static async onGetBbsPostHeaders(req: Request, res: Response) {
         try {
-            const request: v1.GetBbsPostHeaderRequest = req.query as any;
+            const request: v1.GetBbsPostHeaderRequest = Object.assign(
+                req.query as any,
+                req.params
+            );
             const headers = ["[버그 제보]", "[기능 추가]"];
             const payload = getJwtPayload(req.headers.authorization!);
             if (payload.isDev) {
@@ -353,23 +391,32 @@ class Bbs extends V1 {
 
     static async onGetBbsCommentList(req: Request, res: Response) {
         try {
-            const request: v1.GetBbsCommentListRequest = req.query as any;
+            const request: v1.GetBbsCommentListRequest = Object.assign(
+                req.query as any,
+                req.params
+            );
             if (
                 request.postId === undefined ||
+                !request.board ||
                 request.commentListSize === undefined ||
                 request.commentPage === undefined
             ) {
                 throw new HttpException(400);
             }
             const getPostsCountQuery = await query(
-                "SELECT COUNT(*) as cnt FROM bbs_comment WHERE postId=? AND deletedDate IS NULL",
-                [request.postId]
+                "SELECT COUNT(*) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND board=? AND postId=?",
+                [request.board, request.postId]
             );
             const commentCount: number = getPostsCountQuery[0].cnt;
             const offset = (request.commentPage - 1) * request.commentListSize;
             const getCommentListQuery = await query(
-                "SELECT * FROM bbs_comment WHERE postId=? AND deletedDate IS NULL ORDER BY id DESC LIMIT ?, ?",
-                [request.postId, offset, Number(request.commentListSize)]
+                "SELECT * FROM bbs_comment WHERE deletedDate IS NULL AND board=? AND postId=? ORDER BY id DESC LIMIT ?, ?",
+                [
+                    request.board,
+                    request.postId,
+                    offset,
+                    Number(request.commentListSize),
+                ]
             );
 
             const userInfo = await getUserInfo();
@@ -411,23 +458,20 @@ class Bbs extends V1 {
 
     static async onPostBbsComment(req: Request, res: Response) {
         try {
-            const request: v1.PostBbsCommentRequest = req.body;
+            const request: v1.PostBbsCommentRequest = Object.assign(
+                req.body,
+                req.params
+            );
             if (request.postId === undefined || !request.content) {
                 throw new HttpException(400);
             }
             if (request.content.length > 300) {
                 request.content.substring(0, 300);
             }
-            const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_post WHERE id=? AND deletedDate IS NULL",
-                [request.postId]
+            const getbbsPostQuery = await Bbs.getBbsPost(
+                request.board,
+                request.postId
             );
-            if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
-                throw new ResponseException(
-                    -1,
-                    "삭제됐거나 존재하지 않는 게시글입니다."
-                );
-            }
             const payload = getJwtPayload(req.headers.authorization!);
             await execute(
                 "INSERT INTO bbs_comment(ownerUid, postId, content, createdDate) VALUE(?, ?, ?, NOW())",
@@ -452,27 +496,24 @@ class Bbs extends V1 {
 
     static async onDeleteBbsComment(req: Request, res: Response) {
         try {
-            const request: v1.DeleteBbsCommentRequest = req.body;
-            if (request.id === undefined) {
+            const request: v1.DeleteBbsCommentRequest = Object.assign(
+                req.body,
+                req.params
+            );
+            if (!request.board || request.postId === undefined) {
                 throw new HttpException(400);
             }
             const payload = getJwtPayload(req.headers.authorization!);
-            const getbbsPostQuery = await query(
-                "SELECT * FROM bbs_comment WHERE id=? AND deletedDate IS NULL",
-                [request.id]
+            const getbbsPostQuery = await Bbs.getBbsPost(
+                request.board,
+                request.postId
             );
-            if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
-                throw new ResponseException(
-                    -1,
-                    "삭제됐거나 존재하지 않는 게시글입니다."
-                );
-            }
             if (getbbsPostQuery[0].ownerUid !== payload.uid && !payload.isDev) {
                 throw new HttpException(403);
             }
             await execute(
-                "UPDATE bbs_comment SET deletedDate=NOW() WHERE id=?",
-                [request.id]
+                "UPDATE bbs_comment SET deletedDate=NOW() WHERE board=? AND postId=? AND id=?",
+                [request.board, request.postId, request.commentId]
             );
             const response: v1.DeleteBbsCommentResponse = {
                 status: 0,
