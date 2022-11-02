@@ -327,24 +327,24 @@ class Bbs extends V1 {
                 req.body,
                 req.params
             );
-            if (!request.board || request.postI === undefined) {
+            if (!request.board || request.postId === undefined) {
                 throw new HttpException(400);
             }
             const payload = getJwtPayload(req.headers.authorization!);
             const getbbsPostQuery = await Bbs.getBbsPost(
                 request.board,
-                request.postI
+                request.postId
             );
             if (getbbsPostQuery[0].ownerUid !== payload.uid && !payload.isDev) {
                 throw new HttpException(403);
             }
             await execute(
                 "UPDATE bbs_post SET deletedDate=NOW() WHERE board=? AND id=?",
-                [request.board, request.postI]
+                [request.board, request.postId]
             );
             await execute(
                 "UPDATE bbs_comment SET deletedDate=NOW() WHERE board=? AND postId=?",
-                [request.board, request.postI]
+                [request.board, request.postId]
             );
             const response: v1.DeleteBbsPostResponse = {
                 status: 0,
