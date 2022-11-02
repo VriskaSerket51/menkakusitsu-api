@@ -6,6 +6,7 @@ import { HttpException, ResponseException } from "../../../exceptions";
 import { execute, query } from "../../../mysql";
 import { sendPush } from "../../../firebase";
 import {
+    aes256Decrypt,
     aes256Encrypt,
     getJwtPayload,
     sendPushToUser,
@@ -155,7 +156,7 @@ class User extends V1 {
                 status: 0,
                 message: "",
                 private: {
-                    email: userInfo.email,
+                    email: aes256Decrypt(userInfo.email),
                 },
             };
             res.status(200).json(response);
