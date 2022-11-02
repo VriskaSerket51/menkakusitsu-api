@@ -18,6 +18,7 @@ export default {
     socketPort: process.env.SOCKET_PORT!,
     jwtSecret: process.env.JWT_SECRET!,
     aesKey: process.env.AES_KEY!,
+    aesIv: process.env.AES_IV!,
     db: {
         host: process.env.DB_HOST!,
         port: parseInt(process.env.DB_PORT!),
