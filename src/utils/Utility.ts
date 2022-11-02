@@ -3,6 +3,16 @@ import fs from "fs";
 import path from "path";
 import { sendPush } from "../firebase";
 import { query } from "../mysql";
+import cryptoJs from "crypto-js";
+import config from "../config";
+
+export const aes256Encrypt = (data: string, key: string = config.aesKey) => {
+    return cryptoJs.AES.encrypt(data, key).toString();
+};
+
+export const aes256Decrypt = (data: string, key: string = config.aesKey) => {
+    return cryptoJs.AES.decrypt(data, key).toString(cryptoJs.enc.Utf8);
+};
 
 export const readAllFiles = (
     dirName: string,
