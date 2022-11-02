@@ -5,13 +5,22 @@ import { execute, query } from "../../../mysql";
 import { ResponseException, HttpException } from "../../../exceptions";
 import { defaultErrorHandler } from "../../../utils/ErrorHandler";
 import { createAccessToken, createRefreshoken } from "../../../middlewares/jwt";
-import { getJwtPayload, parseBearer } from "../../../utils/Utility";
+import {
+    aes256Encrypt,
+    getJwtPayload,
+    parseBearer,
+} from "../../../utils/Utility";
 
 class Auth extends V1 {
     constructor() {
         super();
         this.setPath("/auth");
         this.models = [
+            {
+                method: "post",
+                path: "/register",
+                controller: Auth.onPostRegister,
+            },
             {
                 method: "post",
                 path: "/login",
@@ -29,7 +38,29 @@ class Auth extends V1 {
                 authType: "access",
                 controller: Auth.onDeleteLogout,
             },
+            {
+                method: "put",
+                path: "/reset/password",
+                controller: Auth.onPutForgotPassword,
+            },
         ];
+    }
+
+    static async onPostRegister(req: Request, res: Response) {
+        try {
+            const request: v1.PostRegisterRequest = req.body;
+            if (
+                !request.id ||
+                !request.name ||
+                !request.email ||
+                !request.password
+            ) {
+                throw new HttpException(400);
+            }
+            throw new HttpException(403);
+        } catch (error) {
+            defaultErrorHandler(res, error);
+        }
     }
 
     static async onPostLogin(req: Request, res: Response) {
@@ -40,14 +71,16 @@ class Auth extends V1 {
             }
             const loginQuery = await query(
                 "SELECT UID as uid, ID as id, password, email, needChangePw, teacher_flag as isTeacher, isDev FROM user WHERE id=?",
-                [postLoginRequest.id]
+                [aes256Encrypt(postLoginRequest.id)]
             );
 
             if (!loginQuery || loginQuery.length === 0) {
                 throw new ResponseException(-1, "아이디가 존재하지 않습니다.");
             }
             const userInfo = loginQuery[0];
-            if (userInfo.password === postLoginRequest.password) {
+            if (
+                userInfo.password === aes256Encrypt(postLoginRequest.password)
+            ) {
                 const refreshToken = createRefreshoken({
                     uid: userInfo.uid,
                     id: userInfo.id,
@@ -156,6 +189,45 @@ class Auth extends V1 {
                 message: "",
             };
             res.status(200).json(deleteLogoutResponse);
+        } catch (error) {
+            defaultErrorHandler(res, error);
+        }
+    }
+
+    static async onPutForgotPassword(req: Request, res: Response) {
+        try {
+            const request: v1.PutForgotPasswordRequest = req.body;
+            if (!request.id || !request.email) {
+                throw new HttpException(400);
+            }
+            const userInfoQuery = await query("SELECT * FROM user WHERE ID=?", [
+                aes256Encrypt(request.id),
+            ]);
+            if (!userInfoQuery || userInfoQuery.length === 0) {
+                throw new ResponseException(-1, "존재하지 않는 사용자입니다.");
+            }
+            const userInfo = userInfoQuery[0];
+
+            if (!userInfo.email) {
+                throw new ResponseException(
+                    -2,
+                    "복구 이메일을 등록하시지 않으셔서 비밀번호 초기화가 불가능합니다.\n관리자에게 직접 문의해주십시오."
+                );
+            }
+            if (!aes256Encrypt(request.email) != userInfo.email) {
+                throw new ResponseException(
+                    -3,
+                    "이메일을 잘못 입력하셨습니다."
+                );
+            }
+
+            
+
+            const response: v1.PutForgotPasswordResponse = {
+                status: 0,
+                message: "",
+            };
+            res.status(200).json(response);
         } catch (error) {
             defaultErrorHandler(res, error);
         }
