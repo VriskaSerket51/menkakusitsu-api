@@ -6,6 +6,7 @@ import { ResponseException, HttpException } from "../../../exceptions";
 import { defaultErrorHandler } from "../../../utils/ErrorHandler";
 import { createAccessToken, createRefreshoken } from "../../../middlewares/jwt";
 import {
+    aes256Decrypt,
     aes256Encrypt,
     getJwtPayload,
     parseBearer,
@@ -83,7 +84,7 @@ class Auth extends V1 {
             ) {
                 const refreshToken = createRefreshoken({
                     uid: userInfo.uid,
-                    id: userInfo.id,
+                    id: aes256Decrypt(userInfo.id),
                     isTeacher: userInfo.isTeacher === 1,
                     isDev: userInfo.isDev === 1,
                 });
@@ -103,7 +104,7 @@ class Auth extends V1 {
                     message: "",
                     accessToken: createAccessToken({
                         uid: userInfo.uid,
-                        id: userInfo.id,
+                        id: aes256Decrypt(userInfo.id),
                         isTeacher: userInfo.teacher_flag === 1,
                         isDev: userInfo.isDev === 1,
                     }),
@@ -220,8 +221,6 @@ class Auth extends V1 {
                     "이메일을 잘못 입력하셨습니다."
                 );
             }
-
-            
 
             const response: v1.PutForgotPasswordResponse = {
                 status: 0,
