@@ -5,7 +5,11 @@ import { defaultErrorHandler } from "../../../utils/ErrorHandler";
 import { HttpException, ResponseException } from "../../../exceptions";
 import { execute, query } from "../../../mysql";
 import { sendPush } from "../../../firebase";
-import { getJwtPayload, sendPushToUser } from "../../../utils/Utility";
+import {
+    aes256Encrypt,
+    getJwtPayload,
+    sendPushToUser,
+} from "../../../utils/Utility";
 
 class User extends V1 {
     constructor() {
@@ -171,6 +175,10 @@ class User extends V1 {
             if (!getUserInfoQuery || getUserInfoQuery.length === 0) {
                 throw new HttpException(500);
             }
+
+            request.oldEmail = aes256Encrypt(request.oldEmail);
+            request.newEmail = aes256Encrypt(request.newEmail);
+
             const userInfo = getUserInfoQuery[0];
             if (request.oldEmail != userInfo.email) {
                 throw new ResponseException(
@@ -214,6 +222,10 @@ class User extends V1 {
             if (!getUserInfoQuery || getUserInfoQuery.length === 0) {
                 throw new HttpException(500);
             }
+
+            request.oldPassword = aes256Encrypt(request.oldPassword);
+            request.newPassword = aes256Encrypt(request.newPassword);
+
             const userInfo = getUserInfoQuery[0];
             if (request.oldPassword != userInfo.password) {
                 throw new ResponseException(
