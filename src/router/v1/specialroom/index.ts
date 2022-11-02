@@ -64,6 +64,12 @@ class Specialroom extends V1 {
             },
             {
                 method: "get",
+                path: "/info/manager/:when",
+                authType: "access",
+                controller: Specialroom.onGetManagerInfo,
+            },
+            {
+                method: "get",
                 path: "/info/location",
                 authType: "access",
                 controller: Specialroom.onGetLocationInfo,
@@ -428,6 +434,34 @@ class Specialroom extends V1 {
                 information: await Specialroom.getInformation(true),
             };
             res.status(200).json(putInfoResponse);
+        } catch (error) {
+            defaultErrorHandler(res, error);
+        }
+    }
+
+    static async onGetManagerInfo(req: Request, res: Response) {
+        try {
+            const request: v1.GetManagerRequest = req.params as any;
+            const getManagerQuery = await query(
+                "SELECT * FROM specialroom_manager WHERE `when`=?",
+                [request.when]
+            );
+            if (!getManagerQuery || getManagerQuery.length === 0) {
+                throw new ResponseException(
+                    -1,
+                    "해당 날짜에 등록된 사감 선생님이 없습니다."
+                );
+            }
+            const manager = await getTeacherInfo(getManagerQuery[0].teacherUid);
+            if (!manager) {
+                throw new HttpException(500);
+            }
+            const response: v1.GetManagerResponse = {
+                status: 0,
+                message: "",
+                manager: manager,
+            };
+            res.status(200).json(response);
         } catch (error) {
             defaultErrorHandler(res, error);
         }
