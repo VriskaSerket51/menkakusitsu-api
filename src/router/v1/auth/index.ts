@@ -72,7 +72,7 @@ class Auth extends V1 {
             }
             const loginQuery = await query(
                 "SELECT UID as uid, ID as id, password, email, needChangePw, teacher_flag as isTeacher, isDev FROM user WHERE ID=?",
-                [aes256Encrypt(postLoginRequest.id)]
+                [/*aes256Encrypt*/ postLoginRequest.id]
             );
 
             if (!loginQuery || loginQuery.length === 0) {
@@ -80,11 +80,12 @@ class Auth extends V1 {
             }
             const userInfo = loginQuery[0];
             if (
-                userInfo.password === aes256Encrypt(postLoginRequest.password)
+                userInfo.password ===
+                /*aes256Encrypt*/ postLoginRequest.password
             ) {
                 const refreshToken = createRefreshoken({
                     uid: userInfo.uid,
-                    id: aes256Decrypt(userInfo.id),
+                    id: /*aes256Decrypt*/ userInfo.id,
                     isTeacher: userInfo.isTeacher === 1,
                     isDev: userInfo.isDev === 1,
                 });
@@ -104,7 +105,7 @@ class Auth extends V1 {
                     message: "",
                     accessToken: createAccessToken({
                         uid: userInfo.uid,
-                        id: aes256Decrypt(userInfo.id),
+                        id: /*aes256Decrypt*/ userInfo.id,
                         isTeacher: userInfo.teacher_flag === 1,
                         isDev: userInfo.isDev === 1,
                     }),
@@ -201,8 +202,11 @@ class Auth extends V1 {
             if (!request.id || !request.email) {
                 throw new HttpException(400);
             }
+            request.id = aes256Encrypt(request.id);
+            request.email = aes256Encrypt(request.email);
+
             const userInfoQuery = await query("SELECT * FROM user WHERE ID=?", [
-                aes256Encrypt(request.id),
+                request.id,
             ]);
             if (!userInfoQuery || userInfoQuery.length === 0) {
                 throw new ResponseException(-1, "존재하지 않는 사용자입니다.");
@@ -215,7 +219,7 @@ class Auth extends V1 {
                     "복구 이메일을 등록하시지 않으셔서 비밀번호 초기화가 불가능합니다.\n관리자에게 직접 문의해주십시오."
                 );
             }
-            if (!aes256Encrypt(request.email) != userInfo.email) {
+            if (request.email != userInfo.email) {
                 throw new ResponseException(
                     -3,
                     "이메일을 잘못 입력하셨습니다."
