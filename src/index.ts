@@ -31,9 +31,9 @@ function runExpressApp() {
 async function testFunction() {
     const q = await query("SELECT * FROM user", []);
     for (const userInfo of q) {
-        if (userInfo.ID) {
-            await execute("UPDATE user SET ID=? WHERE UID=?", [
-                aes256Encrypt(userInfo.ID),
+        if (userInfo.email) {
+            await execute("UPDATE user SET email=? WHERE UID=?", [
+                aes256Decrypt(userInfo.email),
                 Number(userInfo.UID),
             ]);
         }

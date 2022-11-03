@@ -156,7 +156,7 @@ class User extends V1 {
                 status: 0,
                 message: "",
                 private: {
-                    email: aes256Decrypt(userInfo.email),
+                    email: /*aes256Decrypt*/ userInfo.email,
                 },
             };
             res.status(200).json(response);
@@ -177,8 +177,8 @@ class User extends V1 {
                 throw new HttpException(500);
             }
 
-            request.oldEmail = aes256Encrypt(request.oldEmail);
-            request.newEmail = aes256Encrypt(request.newEmail);
+            // request.oldEmail = aes256Encrypt(request.oldEmail);
+            // request.newEmail = aes256Encrypt(request.newEmail);
 
             const userInfo = getUserInfoQuery[0];
             if (request.oldEmail != userInfo.email) {
@@ -224,8 +224,8 @@ class User extends V1 {
                 throw new HttpException(500);
             }
 
-            request.oldPassword = aes256Encrypt(request.oldPassword);
-            request.newPassword = aes256Encrypt(request.newPassword);
+            // request.oldPassword = aes256Encrypt(request.oldPassword);
+            // request.newPassword = aes256Encrypt(request.newPassword);
 
             const userInfo = getUserInfoQuery[0];
             if (request.oldPassword != userInfo.password) {
