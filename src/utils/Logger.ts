@@ -1,5 +1,6 @@
 import winston from "winston";
 import winstonDaily from "winston-daily-rotate-file";
+import { execute } from "../mysql";
 
 const logDir = "logs";
 const { combine, timestamp, printf } = winston.format;
@@ -38,6 +39,20 @@ export const logger = winston.createLogger({
         }),
     ],
 });
+
+export const logToDb = async (
+    type: number,
+    summary: string,
+    content: string
+) => {
+    const result = await execute(
+        "INSERT INTO log(`type`, `summary`, `content`, `createdDate`) VALUE(?, ?, ?, NOW())",
+        [type, summary, content]
+    );
+    if (summary) {
+        logger.info(`[${result.insertId}]: ${summary}`);
+    }
+};
 
 if (process.env.NODE_ENV !== "production") {
     logger.add(
