@@ -29,7 +29,42 @@ function runExpressApp() {
 }
 
 async function testFunction() {
-    const q = await query("SELECT * FROM user", []);
+    /*const e = [
+        {
+            when: "2022-11-22",
+            teacherName: "김석종",
+        },
+        {
+            when: "2022-11-23",
+            teacherName: "고경석",
+        },
+        {
+            when: "2022-11-24",
+            teacherName: "김민철",
+        },
+        {
+            when: "2022-11-28",
+            teacherName: "김명욱",
+        },
+        {
+            when: "2022-11-29",
+            teacherName: "김정민",
+        },
+        {
+            when: "2022-11-30",
+            teacherName: "김태경",
+        },
+    ];
+    e.forEach(async (e, idx) => {
+        const q = await query("SELECT UID as uid FROM user WHERE ID=?", [
+            e.teacherName,
+        ]);
+        await execute(
+            "INSERT INTO specialroom_manager(`when`, `teacherUid`) VALUE(?, ?)",
+            [e.when, q[0].uid]
+        );
+    });*/
+    /*const q = await query("SELECT * FROM user", []);
     for (const userInfo of q) {
         if (userInfo.email) {
             await execute("UPDATE user SET email=? WHERE UID=?", [
@@ -37,6 +72,6 @@ async function testFunction() {
                 Number(userInfo.UID),
             ]);
         }
-    }
-    throw new Error();
+    }*/
+    // throw new Error();
 }
