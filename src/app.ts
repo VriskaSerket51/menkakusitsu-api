@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { defaultRouter } from "./router";
-import { createAccessToken, verifyAccessToken } from "./middlewares/jwt";
+import fileUpload from "express-fileupload";
+import path from "path";
 
 class App {
     expressApp: express.Application;
@@ -26,6 +27,13 @@ class App {
         this.expressApp.use(helmet());
         this.expressApp.use(cors());
         this.expressApp.use(express.json());
+        this.expressApp.use(
+            fileUpload({
+                limits: { fileSize: 50 * 1024 * 1024 },
+                useTempFiles: true,
+                tempFileDir: path.join(__dirname, "..", "tmp"),
+            })
+        );
     }
 
     initRouters() {
