@@ -1,3 +1,4 @@
+import { SHA512 } from "crypto-js";
 import dotenv from "dotenv";
 import App from "./app";
 import config from "./config";
