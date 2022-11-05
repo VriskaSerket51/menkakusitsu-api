@@ -17,6 +17,7 @@ export default {
     port: process.env.PORT!,
     socketPort: process.env.SOCKET_PORT!,
     jwtSecret: process.env.JWT_SECRET!,
+    authKey: process.env.AUTH_KEY!,
     aesKey: process.env.AES_KEY!,
     aesIv: process.env.AES_IV!,
     db: {
