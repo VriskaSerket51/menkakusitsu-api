@@ -4,7 +4,9 @@ import { logger } from "../utils/Logger";
 import fetch, { Response as FetchResponse } from "node-fetch";
 import dayjs from "dayjs";
 import { parse } from "node-html-parser";
-
+import fs from "fs";
+import path from "path";
+import { readAllFiles } from "../utils/Utility";
 interface Schedule {
     name: string;
     cron: string;
@@ -66,13 +68,24 @@ const schedules: Schedule[] = [
             );
         },
     },
+    {
+        name: "flushTempFolder",
+        cron: "00 30 04 * * *",
+        job: async () => {
+            const tempFiles: string[] = [];
+            readAllFiles(path.join(__dirname, "..", "..", "tmp"), tempFiles);
+            for (const tempFile of tempFiles) {
+                fs.unlinkSync(tempFile);
+            }
+        },
+    },
 ];
 
 export const initializeScheduler = () => {
     schedules.forEach((schedule) => {
         scheduler.scheduleJob(schedule.cron, (fireDate) => {
             const now = new Date();
-            if (fireDate.setHours(0,0,0,0) !== now.setHours(0,0,0,0)) {
+            if (fireDate.setHours(0, 0, 0, 0) !== now.setHours(0, 0, 0, 0)) {
                 logger.info(
                     `${schedule.name} was supposed to run at ${fireDate}, but actually ran at ${now}`
                 );

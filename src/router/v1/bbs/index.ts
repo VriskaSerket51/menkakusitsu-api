@@ -205,6 +205,11 @@ class Bbs extends V1 {
                 throw new HttpException(500);
             }
 
+            const getAttachmentsQuery = await query(
+                "SELECT * FROM bbs_file WHERE postId=?",
+                request.postId
+            );
+
             const post: v1.BbsPost = {
                 id: postData.id,
                 owner: owner,
@@ -216,10 +221,29 @@ class Bbs extends V1 {
                 commentCount: getCommentCountQuery[0].cnt,
                 createdDate: postData.createdDate,
             };
+
+            const attactments: v1.FileInfo[] = [];
+
+            if (getAttachmentsQuery && getAttachmentsQuery.length > 0) {
+                for (const attachment of getAttachmentsQuery) {
+                    attactments.push({
+                        fileName: attachment.fileName,
+                        downloadLink: attachment.downloadLink,
+                        isImage: attachment.isImage == 1,
+                        owne: {
+                            uid: payload.uid,
+                            name: "",
+                            value: "",
+                        },
+                    });
+                }
+            }
+
             const response: v1.GetBbsPostResponse = {
                 status: 0,
                 message: "",
                 post: post,
+                attachments: attactments,
             };
             res.status(200).json(response);
         } catch (error) {
@@ -249,7 +273,7 @@ class Bbs extends V1 {
                 request.content.substring(0, 500);
             }
             const payload = getJwtPayload(req.headers.authorization!);
-            await execute(
+            const result = await execute(
                 "INSERT INTO bbs_post(ownerUid, title, content, header, board, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
                 [
                     payload.uid,
@@ -262,7 +286,7 @@ class Bbs extends V1 {
             const response: v1.PostBbsPostResponse = {
                 status: 0,
                 message: "",
-                // post: post,
+                postId: result.insertId,
             };
             res.status(200).json(response);
         } catch (error) {
@@ -349,7 +373,6 @@ class Bbs extends V1 {
             const response: v1.DeleteBbsPostResponse = {
                 status: 0,
                 message: "",
-                // post: post,
             };
             res.status(200).json(response);
         } catch (error) {
@@ -363,20 +386,25 @@ class Bbs extends V1 {
                 req.query as any,
                 req.params
             );
-            const headers = ["[버그 제보]", "[기능 추가]"];
+            const headers = [];
             const payload = getJwtPayload(req.headers.authorization!);
-            if (payload.isDev) {
-                headers.push(
-                    "[공지 사항]",
-                    "[수정 예정]",
-                    "[수정 불가]",
-                    "[수정 계획 없음]",
-                    "[수정 완료]",
-                    "[추가 예정]",
-                    "[추가 불가]",
-                    "[추가 계획 없음]",
-                    "[추가 완료]"
-                );
+            switch (request.board) {
+                case "feedback":
+                    headers.push("[버그 제보]", "[기능 추가]");
+                    if (payload.isDev) {
+                        headers.push(
+                            "[공지 사항]",
+                            "[수정 예정]",
+                            "[수정 불가]",
+                            "[수정 계획 없음]",
+                            "[수정 완료]",
+                            "[추가 예정]",
+                            "[추가 불가]",
+                            "[추가 계획 없음]",
+                            "[추가 완료]"
+                        );
+                    }
+                    break;
             }
             const response: v1.GetBbsPostHeaderResponse = {
                 status: 0,
@@ -473,7 +501,7 @@ class Bbs extends V1 {
                 request.postId
             );
             const payload = getJwtPayload(req.headers.authorization!);
-            await execute(
+            const result = await execute(
                 "INSERT INTO bbs_comment(ownerUid, postId, content, createdDate) VALUE(?, ?, ?, NOW())",
                 [payload.uid, request.postId, request.content]
             );
@@ -486,7 +514,7 @@ class Bbs extends V1 {
             const response: v1.PostBbsCommentResponse = {
                 status: 0,
                 message: "",
-                // post: post,
+                commentId: result.insertId,
             };
             res.status(200).json(response);
         } catch (error) {
@@ -518,7 +546,6 @@ class Bbs extends V1 {
             const response: v1.DeleteBbsCommentResponse = {
                 status: 0,
                 message: "",
-                // post: post,
             };
             res.status(200).json(response);
         } catch (error) {
