@@ -13,6 +13,7 @@ class App {
         this.initMiddlewares();
         this.initRouters();
         this.initSocket();
+        this.initLateMiddlewares();
     }
 
     run(
@@ -41,6 +42,12 @@ class App {
     }
 
     initSocket() {}
+
+    initLateMiddlewares() {
+        this.expressApp.use((req, res, next) => {
+            res.sendStatus(404);
+        });
+    }
 }
 
 export default App;
