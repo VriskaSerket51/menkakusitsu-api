@@ -345,7 +345,7 @@ class Specialroom extends V1 {
                 for (let i = 0; i < rows.length; i++) {
                     const columns = rows[i].split(",");
                     for (let j = 0; j < columns.length; j++) {
-                        if (columns[j] == "data") {
+                        if (columns[j].trim() == "data") {
                             const upperColums = rows[i - 1].split(",");
                             const studentName = upperColums[j];
                             const data = getSpecialroom(studentName);
