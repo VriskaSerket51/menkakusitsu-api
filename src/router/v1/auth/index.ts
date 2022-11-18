@@ -106,7 +106,7 @@ class Auth extends V1 {
                     accessToken: createAccessToken({
                         uid: userInfo.uid,
                         id: /*aes256Decrypt*/ userInfo.id,
-                        isTeacher: userInfo.teacher_flag == 1,
+                        isTeacher: userInfo.isTeacher == 1,
                         isDev: userInfo.isDev == 1,
                     }),
                     refreshToken: refreshToken,
