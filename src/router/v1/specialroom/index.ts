@@ -578,32 +578,44 @@ class Specialroom extends V1 {
                 req.query as any;
             const purposeInfo: v1.PurposeInfo[] = [
                 {
-                    id: 0,
+                    id: 100,
                     value: "R&E",
                 },
                 {
-                    id: 1,
+                    id: 101,
                     value: "과제 연구",
                 },
                 {
-                    id: 2,
+                    id: 102,
                     value: "개인 연구",
                 },
                 {
-                    id: 3,
-                    value: "브릿지",
-                },
-                {
-                    id: 4,
+                    id: 103,
                     value: "연구 활동",
                 },
                 {
-                    id: 5,
-                    value: "그룹 스터디",
+                    id: 200,
+                    value: "브릿지 수업",
                 },
                 {
-                    id: 6,
+                    id: 201,
+                    value: "심층 면접",
+                },
+                {
+                    id: 300,
                     value: "자기소개서 작성",
+                },
+                {
+                    id: 400,
+                    value: "자연탐사",
+                },
+                {
+                    id: 401,
+                    value: "무한상상 STEAM",
+                },
+                {
+                    id: 500,
+                    value: "그룹 스터디",
                 },
                 {
                     id: -1,
