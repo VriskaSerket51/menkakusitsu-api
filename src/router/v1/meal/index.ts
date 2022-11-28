@@ -78,44 +78,6 @@ class Meal extends V1 {
             defaultErrorHandler(res, error);
         }
     }
-
-    static async onPutTimetable(req: Request, res: Response) {
-        try {
-            const putTimetableRequest: v1.PutTimetableRequest = req.body;
-            putTimetableRequest.when = req.params.when;
-            if (
-                !putTimetableRequest.when ||
-                !putTimetableRequest.timetableInfo
-            ) {
-                throw new HttpException(400);
-            }
-
-            for (const timetableCell of putTimetableRequest.timetableInfo) {
-                if (!timetableCell.key) {
-                    continue;
-                }
-                await execute(
-                    "UPDATE timetable SET `value`=? WHERE `when`=? AND `key`=?",
-                    [
-                        timetableCell.value,
-                        putTimetableRequest.when,
-                        timetableCell.key,
-                    ]
-                );
-            }
-
-            const putTimetableResponse: v1.PutTimetableResponse = {
-                status: 0,
-                message: "",
-                timetable: {
-                    timetableInfo: [],
-                },
-            };
-            res.status(200).json(putTimetableResponse);
-        } catch (error) {
-            defaultErrorHandler(res, error);
-        }
-    }
 }
 
 export default Meal;
