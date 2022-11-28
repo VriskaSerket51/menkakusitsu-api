@@ -449,7 +449,7 @@ class Specialroom extends V1 {
             if (!getManagerQuery || getManagerQuery.length === 0) {
                 throw new ResponseException(
                     -1,
-                    "해당 날짜에 등록된 사감 선생님이 없습니다."
+                    "해당 날짜에 등록된 생활 지도 선생님이 없습니다."
                 );
             }
             const manager = await getTeacherInfo(getManagerQuery[0].teacherUid);
