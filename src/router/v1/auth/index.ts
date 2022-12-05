@@ -94,12 +94,12 @@ class Auth extends V1 {
                     userInfo.uid,
                 ]);
                 const callbacks: string[] = [];
-                if (userInfo.needChangePw) {
-                    callbacks.push("needChangePw");
-                }
-                if (!userInfo.email) {
-                    callbacks.push("needChangeEmail");
-                }
+                // if (userInfo.needChangePw) {
+                //     callbacks.push("needChangePw");
+                // }
+                // if (!userInfo.email) {
+                //     callbacks.push("needChangeEmail");
+                // }
                 const postLoginResponse: v1.PostLoginResponse = {
                     status: 0,
                     message: "",
