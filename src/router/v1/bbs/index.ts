@@ -151,6 +151,7 @@ class Bbs extends V1 {
                     board: postData.board,
                     postType: postData.type,
                     commentCount: getCommentCount(postData.id),
+                    isPublic: postData.isPublic,
                     createdDate: postData.createdDate,
                 });
             }
@@ -219,6 +220,7 @@ class Bbs extends V1 {
                 board: postData.board,
                 postType: postData.type,
                 commentCount: getCommentCountQuery[0].cnt,
+                isPublic: postData.isPublic,
                 createdDate: postData.createdDate,
             };
 
