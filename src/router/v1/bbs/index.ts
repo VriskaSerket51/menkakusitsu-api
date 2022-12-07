@@ -274,13 +274,14 @@ class Bbs extends V1 {
             }
             const payload = getJwtPayload(req.headers.authorization!);
             const result = await execute(
-                "INSERT INTO bbs_post(ownerUid, title, content, header, board, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
+                "INSERT INTO bbs_post(ownerUid, title, content, header, board, isPublic, createdDate) VALUE(?, ?, ?, ?, ?, ?, NOW())",
                 [
                     payload.uid,
                     request.title,
                     request.content,
                     request.header,
                     request.board,
+                    request.isPublic,
                 ]
             );
             const response: v1.PostBbsPostResponse = {
@@ -306,7 +307,8 @@ class Bbs extends V1 {
                 !request.board ||
                 !request.title ||
                 !request.content ||
-                !request.header
+                !request.header ||
+                request.isPublic === undefined
             ) {
                 throw new HttpException(400);
             }
@@ -325,11 +327,12 @@ class Bbs extends V1 {
                 throw new HttpException(403);
             }
             await execute(
-                "UPDATE bbs_post SET title=?, content=?, header=? WHERE board=? AND id=?",
+                "UPDATE bbs_post SET title=?, content=?, header=?, isPublic=? WHERE board=? AND id=?",
                 [
                     request.title,
                     request.content,
                     request.header,
+                    request.isPublic,
                     request.board,
                     request.postId,
                 ]
