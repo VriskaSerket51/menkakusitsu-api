@@ -33,7 +33,7 @@
         "ts-node": "^10.9.1"
     },
     "dependencies": {
-        "@common-jshs/menkakusitsu-lib": "^1.4.2",
+        "@common-jshs/menkakusitsu-lib": "^1.4.3",
         "cors": "^2.8.5",
         "cross-env": "^7.0.3",
         "crypto-js": "^4.1.1",
