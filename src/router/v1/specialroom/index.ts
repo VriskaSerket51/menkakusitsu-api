@@ -350,7 +350,7 @@ class Specialroom extends V1 {
                             const studentName = upperColums[j];
                             const data = getSpecialroom(studentName);
                             if (!data) {
-                                columns[j] = "  ";
+                                columns[j] = "　";
                             } else if (data["approved_flag"]) {
                                 columns[j] = data["apply_ID"];
                             } else {
