@@ -79,6 +79,44 @@ const schedules: Schedule[] = [
             }
         },
     },
+    {
+        name: "flushSpecialroom",
+        cron: "00 00 00 * * *",
+        job: async () => {
+            try {
+                const now = dayjs().format("YYYY-MM-DD");
+                const getSpecialroomsQuery = await query(
+                    "SELECT * FROM (SELECT apply_ID, GROUP_CONCAT(name) FROM (SELECT specialroom_apply_student.apply_ID, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.student_UID = user.UID) AS A GROUP BY A.apply_ID) AS B, specialroom_apply WHERE B.apply_ID = specialroom_apply.apply_ID",
+                    []
+                );
+                for (const specialroom of getSpecialroomsQuery) {
+                    await query(
+                        "INSERT INTO specialroom_cache (apply_ID, teacher_UID, location, purpose, students, created_date) VALUES (?, ?, ?, ?, ?, ?)",
+                        [
+                            specialroom.apply_ID,
+                            specialroom.teacher_UID,
+                            specialroom.location,
+                            specialroom.purpose,
+                            specialroom.students,
+                            now,
+                        ]
+                    );
+                }
+                await query("UPDATE today SET now_date=?", [now]);
+                await query("DELETE FROM specialroom_apply", []);
+                await query(
+                    "ALTER TABLE specialroom_apply AUTO_INCREMENT = 1",
+                    []
+                );
+                await query(
+                    "ALTER TABLE specialroom_apply_student AUTO_INCREMENT = 1",
+                    []
+                );
+            } catch (err) {
+                logger.error(err);
+            }
+        },
+    },
 ];
 
 export const initializeScheduler = () => {
