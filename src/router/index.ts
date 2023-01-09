@@ -3,7 +3,7 @@ import {
     verifyAccessTokenMiddleware,
     verifyRefreshTokenMiddleware,
 } from "../middlewares/jwt";
-import { readAllFiles } from "../utils/Utility";
+import { readAllFiles } from "../utils";
 import { RouterBase } from "./RouterBase";
 
 const authMiddleware = (authType?: "access" | "refresh" | "optional") => {
