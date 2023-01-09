@@ -1,12 +1,18 @@
-import { Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
+    Exception,
     HttpException,
     MySqlException,
     ResponseException,
 } from "../exceptions";
-import { logger } from "./Logger";
+import { logger } from "../utils/Logger";
 
-export const defaultErrorHandler = (res: Response, error: any) => {
+const errorHandler = (
+    error: Exception,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     if (error instanceof ResponseException) {
         res.status(200).json({
             status: error.status,
@@ -23,3 +29,5 @@ export const defaultErrorHandler = (res: Response, error: any) => {
     }
     logger.error(error);
 };
+
+export default errorHandler;
