@@ -6,7 +6,7 @@ import { initializeFirebase } from "./firebase";
 import { execute, query } from "./mysql";
 import { initializeScheduler } from "./scheduler";
 import { logger } from "./utils/Logger";
-import { aes256Decrypt, aes256Encrypt } from "./utils/Utility";
+import { aes256Decrypt, aes256Encrypt } from "./utils";
 
 dotenv.config();
 const port = parseInt(config.port);
@@ -97,7 +97,7 @@ async function testFunction() {
         },
     ];
     e.forEach(async (e, idx) => {
-        const q = await query("SELECT UID as uid FROM user WHERE ID=?", [
+        const q = await query("SELECT uid FROM user WHERE id=?", [
             e.teacherName,
         ]);
         await execute(
@@ -108,9 +108,9 @@ async function testFunction() {
     // const q = await query("SELECT * FROM user", []);
     // for (const userInfo of q) {
     //     if (userInfo.email) {
-    //         await execute("UPDATE user SET email=? WHERE UID=?", [
+    //         await execute("UPDATE user SET email=? WHERE uid=?", [
     //             aes256Decrypt(userInfo.email),
-    //             Number(userInfo.UID),
+    //             Number(userInfo.uid),
     //         ]);
     //     }
     // }

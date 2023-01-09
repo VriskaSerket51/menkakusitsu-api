@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { parse } from "node-html-parser";
 import fs from "fs";
 import path from "path";
-import { readAllFiles } from "../utils/Utility";
+import { readAllFiles } from "../utils";
 interface Schedule {
     name: string;
     cron: string;
@@ -86,15 +86,15 @@ const schedules: Schedule[] = [
             try {
                 const now = dayjs().format("YYYY-MM-DD");
                 const getSpecialroomsQuery = await query(
-                    "SELECT * FROM (SELECT apply_ID, GROUP_CONCAT(name) FROM (SELECT specialroom_apply_student.apply_ID, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.student_UID = user.UID) AS A GROUP BY A.apply_ID) AS B, specialroom_apply WHERE B.apply_ID = specialroom_apply.apply_ID",
+                    "SELECT * FROM (SELECT applyId, GROUP_CONCAT(name) FROM (SELECT specialroom_apply_student.applyId, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.studentUid = user.uid) AS A GROUP BY A.applyId) AS B, specialroom_apply WHERE B.applyId = specialroom_apply.applyId",
                     []
                 );
                 for (const specialroom of getSpecialroomsQuery) {
                     await query(
-                        "INSERT INTO specialroom_cache (apply_ID, teacher_UID, location, purpose, students, created_date) VALUES (?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO specialroom_cache (applyId, teacherUid, location, purpose, students, createdDate) VALUES (?, ?, ?, ?, ?, ?)",
                         [
-                            specialroom.apply_ID,
-                            specialroom.teacher_UID,
+                            specialroom.applyId,
+                            specialroom.teacherUid,
                             specialroom.location,
                             specialroom.purpose,
                             specialroom.students,
