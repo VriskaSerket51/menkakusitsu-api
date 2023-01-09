@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { Response, Request, NextFunction } from "express";
 import config from "../config";
 import { HttpException, ResponseException } from "../exceptions";
-import { defaultErrorHandler } from "../utils/ErrorHandler";
 import { v4 as uuid } from "uuid";
 import { logger } from "../utils/Logger";
 
@@ -28,35 +27,31 @@ export const verifyAccessTokenMiddleware = (
     next: NextFunction,
     isRequired: boolean = true
 ) => {
-    try {
-        const bearer = req.headers.authorization;
-        if (!bearer || !bearer.startsWith("Bearer ")) {
-            if (isRequired) {
-                throw new HttpException(401);
-            } else {
-                next();
-                return;
-            }
+    const bearer = req.headers.authorization;
+    if (!bearer || !bearer.startsWith("Bearer ")) {
+        if (isRequired) {
+            throw new HttpException(401);
+        } else {
+            next();
+            return;
         }
-        const jwtToken = bearer.split("Bearer ")[1];
-        verifyAccessToken(jwtToken, (error, decoded) => {
-            if (error?.message === "jwt expired") {
-                throw new ResponseException(-1972, "토큰이 만료됐습니다.");
-            } else if (
-                error?.message === "invalid token" ||
-                (decoded as any).type !== "access"
-            ) {
-                throw new ResponseException(-1973, "토큰이 유효하지 않습니다.");
-            } else if (error) {
-                logger.error(error);
-                throw new HttpException(500);
-            } else {
-                next();
-            }
-        });
-    } catch (error) {
-        defaultErrorHandler(res, error);
     }
+    const jwtToken = bearer.split("Bearer ")[1];
+    verifyAccessToken(jwtToken, (error, decoded) => {
+        if (error?.message === "jwt expired") {
+            throw new ResponseException(-1972, "토큰이 만료됐습니다.");
+        } else if (
+            error?.message === "invalid token" ||
+            (decoded as any).type !== "access"
+        ) {
+            throw new ResponseException(-1973, "토큰이 유효하지 않습니다.");
+        } else if (error) {
+            logger.error(error);
+            throw new HttpException(500);
+        } else {
+            next();
+        }
+    });
 };
 
 export const createRefreshoken = (payload: any) => {
@@ -80,28 +75,24 @@ export const verifyRefreshTokenMiddleware = (
     res: Response,
     next: NextFunction
 ) => {
-    try {
-        const bearer = req.headers.authorization;
-        if (!bearer || !bearer.startsWith("Bearer ")) {
-            throw new HttpException(401);
-        }
-        const jwtToken = bearer.split("Bearer ")[1];
-        verifyAccessToken(jwtToken, (error, decoded) => {
-            if (error?.message === "jwt expired") {
-                throw new ResponseException(-1972, "토큰이 만료됐습니다.");
-            } else if (
-                error?.message === "invalid token" ||
-                (decoded as any).type !== "refresh"
-            ) {
-                throw new ResponseException(-1973, "토큰이 유효하지 않습니다.");
-            } else if (error) {
-                logger.error(error);
-                throw new HttpException(500);
-            } else {
-                next();
-            }
-        });
-    } catch (error) {
-        defaultErrorHandler(res, error);
+    const bearer = req.headers.authorization;
+    if (!bearer || !bearer.startsWith("Bearer ")) {
+        throw new HttpException(401);
     }
+    const jwtToken = bearer.split("Bearer ")[1];
+    verifyAccessToken(jwtToken, (error, decoded) => {
+        if (error?.message === "jwt expired") {
+            throw new ResponseException(-1972, "토큰이 만료됐습니다.");
+        } else if (
+            error?.message === "invalid token" ||
+            (decoded as any).type !== "refresh"
+        ) {
+            throw new ResponseException(-1973, "토큰이 유효하지 않습니다.");
+        } else if (error) {
+            logger.error(error);
+            throw new HttpException(500);
+        } else {
+            next();
+        }
+    });
 };
