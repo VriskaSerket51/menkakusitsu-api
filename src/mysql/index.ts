@@ -15,7 +15,7 @@ export const connection = async () => {
 export const query = async (sql: string, values: any) => {
     const conn = await connection();
     try {
-        const [rows, fields] = await conn.execute<mysql.RowDataPacket[]>(
+        const [rows, fields] = await conn.query<mysql.RowDataPacket[]>(
             sql,
             values
         );
