@@ -46,10 +46,10 @@ class Meal extends V1 {
         const breakfast: v1.MealInfo = {
             meals: (tomorrowMeal[0].breakfast as string).split(","),
         };
-        const lunch = await {
+        const lunch: v1.MealInfo = {
             meals: (todayMeal[0].lunch as string).split(","),
         };
-        const dinner = await {
+        const dinner: v1.MealInfo = {
             meals: (todayMeal[0].dinner as string).split(","),
         };
 
