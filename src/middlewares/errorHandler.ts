@@ -27,6 +27,7 @@ const errorHandler = (
         res.sendStatus(500);
         return;
     } else {
+        res.sendStatus(500);
         throw error;
     }
 };
