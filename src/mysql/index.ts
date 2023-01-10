@@ -8,27 +8,21 @@ export const connection = async () => {
         return await mysql.createConnection(config.db);
     } catch (error) {
         logger.error(error);
-        throw new MySqlException((error as mysql.QueryError).code);
+        throw new MySqlException(error);
     }
 };
 
-export const query = async (
-    sql: string,
-    values: any,
-    asArray: boolean = false
-) => {
+export const query = async (sql: string, values: any) => {
     const conn = await connection();
     try {
-        const [rows, fields] = await conn.query({
-            sql: sql,
-            values: values,
-            rowsAsArray: asArray,
-        });
-        const result = rows as mysql.RowDataPacket[];
-        return result;
+        const [rows, fields] = await conn.execute<mysql.RowDataPacket[]>(
+            sql,
+            values
+        );
+        return rows;
     } catch (error) {
         logger.error(error);
-        throw new MySqlException((error as mysql.QueryError).code);
+        throw new MySqlException(error);
     } finally {
         await conn.end();
     }
@@ -37,12 +31,11 @@ export const query = async (
 export const execute = async (sql: string, values: any) => {
     const conn = await connection();
     try {
-        const [rows, fields] = await conn.execute(sql, values);
-        const result = rows as mysql.OkPacket;
-        return result;
+        const [rows, fields] = await conn.execute<mysql.OkPacket>(sql, values);
+        return rows;
     } catch (error) {
         logger.error(error);
-        throw new MySqlException((error as mysql.QueryError).code);
+        throw new MySqlException(error);
     } finally {
         await conn.end();
     }
