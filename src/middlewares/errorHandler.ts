@@ -23,11 +23,12 @@ const errorHandler = (
         res.sendStatus(error.status);
         return;
     } else if (error instanceof MySqlException) {
+        console.log(error);
         res.sendStatus(500);
+        return;
     } else {
         throw error;
     }
-    logger.error(error);
 };
 
 export default errorHandler;
