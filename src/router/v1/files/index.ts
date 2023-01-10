@@ -10,6 +10,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { execute } from "../../../mysql";
 import { getJwtPayload } from "../../../utils";
+import { logger } from "../../../utils/Logger";
 
 class Files extends V1 {
     constructor() {
@@ -48,9 +49,6 @@ class Files extends V1 {
             const newPath = path.join(fileDir, newFileName);
             fs.renameSync(filePath, newPath);
 
-            const stats = fs.statSync(newPath);
-            const fileSize = stats.size;
-
             const formData = new FormData();
             formData.append("data", fs.createReadStream(newPath));
 
@@ -60,20 +58,24 @@ class Files extends V1 {
                     Authorization: `Bearer ${config.authKey}`,
                 } as any,
                 body: formData as any,
-            });
-
-            if (postId) {
-                execute(
-                    "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, isImage, createdDate) VALUE(?, ?, ?, ?, NOW())",
-                    [
-                        Number(postId),
-                        Number(payload.uid),
-                        file.name,
-                        `https://files.이디저디.com/${newFileName}`,
-                        file.mimetype.startsWith("image"),
-                    ]
-                );
-            }
+            })
+                .then((response) => {
+                    if (postId) {
+                        execute(
+                            "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, isImage, createdDate) VALUE(?, ?, ?, ?, NOW())",
+                            [
+                                Number(postId),
+                                Number(payload.uid),
+                                file.name,
+                                `https://files.이디저디.com/${newFileName}`,
+                                file.mimetype.startsWith("image"),
+                            ]
+                        );
+                    }
+                })
+                .catch((reason) => {
+                    logger.error(reason);
+                });
         };
         if (Array.isArray(data)) {
             for (const file of data) {
