@@ -6,6 +6,7 @@ import { defaultRouter } from "./router";
 import fileUpload from "express-fileupload";
 import path from "path";
 import { errorHandler } from "./middlewares";
+import { HttpException } from "./exceptions";
 
 class App {
     expressApp: express.Application;
@@ -43,6 +44,9 @@ class App {
     }
 
     initErrorHandlers() {
+        this.expressApp.use((req, res) => {
+            throw new HttpException(404);
+        });
         this.expressApp.use(errorHandler);
     }
 }
