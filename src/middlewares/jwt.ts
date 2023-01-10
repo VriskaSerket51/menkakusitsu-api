@@ -14,7 +14,7 @@ export const createAccessToken = (payload: any) => {
     });
 };
 
-export const verifyAccessToken = (
+export const verifyJwt = (
     token: string,
     callback: jwt.VerifyCallback<string | jwt.JwtPayload>
 ) => {
@@ -37,7 +37,7 @@ export const verifyAccessTokenMiddleware = (
         }
     }
     const jwtToken = bearer.split("Bearer ")[1];
-    verifyAccessToken(jwtToken, (error, decoded) => {
+    verifyJwt(jwtToken, (error, decoded) => {
         if (error?.message === "jwt expired") {
             throw new ResponseException(-1972, "토큰이 만료됐습니다.");
         } else if (
@@ -63,13 +63,6 @@ export const createRefreshoken = (payload: any) => {
     });
 };
 
-export const verifyRefreshToken = (
-    token: string,
-    callback: jwt.VerifyCallback<string | jwt.JwtPayload>
-) => {
-    jwt.verify(token, config.jwtSecret, callback);
-};
-
 export const verifyRefreshTokenMiddleware = (
     req: Request,
     res: Response,
@@ -80,7 +73,7 @@ export const verifyRefreshTokenMiddleware = (
         throw new HttpException(401);
     }
     const jwtToken = bearer.split("Bearer ")[1];
-    verifyAccessToken(jwtToken, (error, decoded) => {
+    verifyJwt(jwtToken, (error, decoded) => {
         if (error?.message === "jwt expired") {
             throw new ResponseException(-1972, "토큰이 만료됐습니다.");
         } else if (
