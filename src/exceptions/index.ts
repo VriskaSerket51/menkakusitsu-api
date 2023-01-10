@@ -8,8 +8,11 @@ export class Exception extends Error {
 }
 
 export class MySqlException extends Exception {
-    constructor(error: string) {
-        super(error);
+    public error: any;
+
+    constructor(error: any) {
+        super("My SQL Error");
+        this.error = error;
     }
 }
 
