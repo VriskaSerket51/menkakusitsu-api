@@ -99,23 +99,15 @@ export const getInformation = async (isAuthed: boolean) => {
     const information: v1.SpecialroomInfo[] = [];
 
     const userInfo = await getUserInfo();
-    const findUser = (uid: number) => {
-        for (const info of userInfo) {
-            if (info.uid === uid) {
-                return info;
-            }
-        }
-        return null;
-    };
 
     for (const selectInformation of selectInformationQuery as any[]) {
-        const master = findUser(selectInformation.masterUid);
+        const master = findUserByUid(userInfo, selectInformation.masterUid);
         if (!master) {
             throw new HttpException(500);
         }
         master.value = "";
 
-        const teacher = findUser(selectInformation.teacherUid);
+        const teacher = findUserByUid(userInfo, selectInformation.teacherUid);
         if (!teacher) {
             throw new HttpException(500);
         }
