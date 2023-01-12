@@ -115,9 +115,6 @@ class Bbs extends V1 {
 
         for (const postData of getPostListQuery) {
             const owner = findUserByUid(userInfo, postData.ownerUid);
-            if (!owner) {
-                throw new HttpException(500);
-            }
             posts.push({
                 id: postData.id,
                 owner: owner,
@@ -149,9 +146,6 @@ class Bbs extends V1 {
         const getbbsPostQuery = await getBbsPost(request.board, request.postId);
         const postData = getbbsPostQuery[0];
         const owner = await getStudentInfo(postData.ownerUid);
-        if (!owner) {
-            throw new HttpException(500);
-        }
         const payload = getJwtPayload(req.headers.authorization!);
         if (!postData.isPublic && owner.uid != payload.uid && !payload.isDev) {
             throw new ResponseException(
@@ -379,9 +373,6 @@ class Bbs extends V1 {
 
         for (const commentData of getCommentListQuery) {
             const owner = findUserByUid(userInfo, commentData.ownerUid);
-            if (!owner) {
-                throw new HttpException(500);
-            }
             comments.push({
                 id: commentData.id,
                 owner: owner,
