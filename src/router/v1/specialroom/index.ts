@@ -222,8 +222,7 @@ class Specialroom extends V1 {
     }
 
     async onGetAttendanceList(req: Request, res: Response) {
-        const request: v1.GetAttendanceListRequest =
-            req.query as any;
+        const request: v1.GetAttendanceListRequest = req.query as any;
         if (request.when === undefined) {
             throw new HttpException(400);
         }
@@ -341,9 +340,6 @@ class Specialroom extends V1 {
             );
         }
         const manager = await getTeacherInfo(getManagerQuery[0].teacherUid);
-        if (!manager) {
-            throw new HttpException(500);
-        }
         const response: v1.GetManagerResponse = {
             status: 0,
             message: "",
@@ -353,8 +349,7 @@ class Specialroom extends V1 {
     }
 
     async onGetLocationInfo(req: Request, res: Response) {
-        const request: v1.GetLocationInfoRequest =
-            req.query as any;
+        const request: v1.GetLocationInfoRequest = req.query as any;
         const locationInfo: v1.LocationInfo[] = [
             {
                 id: 0,
@@ -454,8 +449,7 @@ class Specialroom extends V1 {
     }
 
     async onGetPurposeInfo(req: Request, res: Response) {
-        const request: v1.GetPurposeInfoRequest =
-            req.query as any;
+        const request: v1.GetPurposeInfoRequest = req.query as any;
         const purposeInfo: v1.PurposeInfo[] = [
             {
                 id: 100,
