@@ -3,6 +3,7 @@ import { escapeUserName } from ".";
 import { HttpException, ResponseException } from "../exceptions";
 import { sendPush } from "../firebase";
 import { query } from "../mysql";
+import { DeletedUser } from "./Constant";
 
 export const getUserInfo = async () => {
     const userInfo: v1.UserInfo[] = (await query(
@@ -18,22 +19,16 @@ export const findUserByUid = (userInfo: v1.UserInfo[], uid: number) => {
             return info;
         }
     }
-    return {
-        uid: -1,
-        value: "(알 수 없음)",
-        name: "(알 수 없음)",
-    };
+    return DeletedUser;
 };
 
-export const getStudentInfo = async (
-    uid: number
-): Promise<v1.UserInfo | null> => {
+export const getStudentInfo = async (uid: number): Promise<v1.UserInfo> => {
     const getStudentInfoQuery = await query(
         "SELECT sid, name FROM user WHERE uid=?",
         [uid]
     );
     if (!getStudentInfoQuery || getStudentInfoQuery.length === 0) {
-        return null;
+        return DeletedUser;
     }
     return {
         uid: uid,
@@ -42,15 +37,13 @@ export const getStudentInfo = async (
     };
 };
 
-export const getTeacherInfo = async (
-    uid: number
-): Promise<v1.UserInfo | null> => {
+export const getTeacherInfo = async (uid: number): Promise<v1.UserInfo> => {
     const getTeacherInfoQuery = await query(
         "SELECT sid, name FROM user WHERE uid=? AND isTeacher=1",
         [uid]
     );
     if (!getTeacherInfoQuery || getTeacherInfoQuery.length === 0) {
-        return null;
+        return DeletedUser;
     }
     return {
         uid: uid,
@@ -67,7 +60,7 @@ export const getBbsPost = async (board: string, postId: number) => {
     if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
         throw new ResponseException(
             -1,
-            "삭제됐거나 존재하지 않는 게시글입니다."
+            "삭제됐거나 존재하지 않는 피드백입니다."
         );
     }
     return getbbsPostQuery;
@@ -85,7 +78,7 @@ export const getBbsComment = async (
     if (!getbbsPostQuery || getbbsPostQuery.length === 0) {
         throw new ResponseException(
             -1,
-            "이미 삭제됐거나 존재하지 않는 댓글입니다."
+            "이미 삭제됐거나 존재하지 않는 의견입니다."
         );
     }
     return getbbsPostQuery;
@@ -102,15 +95,9 @@ export const getInformation = async (isAuthed: boolean) => {
 
     for (const selectInformation of selectInformationQuery as any[]) {
         const master = findUserByUid(userInfo, selectInformation.masterUid);
-        if (!master) {
-            throw new HttpException(500);
-        }
         master.value = "";
 
         const teacher = findUserByUid(userInfo, selectInformation.teacherUid);
-        if (!teacher) {
-            throw new HttpException(500);
-        }
         teacher.value = "";
 
         if (!isAuthed) {
@@ -161,13 +148,7 @@ export const getSpecialroomInfo = async (
             continue;
         }
         const master = await getStudentInfo(getApplyQuery[0].masterUid);
-        if (!master) {
-            throw new HttpException(500);
-        }
         const teacher = await getTeacherInfo(getApplyQuery[0].teacherUid);
-        if (!teacher) {
-            throw new HttpException(500);
-        }
         return {
             applyId: applyId,
             state: getApplyQuery[0].isApproved,
