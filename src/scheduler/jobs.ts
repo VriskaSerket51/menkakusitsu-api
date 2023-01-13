@@ -20,9 +20,8 @@ const mealUpdate = async () => {
             .querySelector(".ulType_food")!
             .querySelectorAll("li")[1]
             .querySelector("dd")!;
-        const meals: string[] = dd.innerHTML
-            .split("<br>")
-            // .map((meal) => meal.split(" ")[0]);
+        const meals: string[] = dd.innerHTML.split("<br>");
+        // .map((meal) => meal.split(" ")[0]);
         return meals;
     };
 
@@ -88,7 +87,6 @@ const flushSpecialroom = async () => {
                 ]
             );
         }
-        await query("UPDATE today SET now_date=?", [now]);
         await query("DELETE FROM specialroom_apply", []);
         await query("ALTER TABLE specialroom_apply AUTO_INCREMENT = 1", []);
         await query(
