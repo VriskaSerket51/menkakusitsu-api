@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import cryptoJs from "crypto-js";
 import config from "../config";
+import { TokenPayload } from "@common-jshs/menkakusitsu-lib";
 
 export const aes256Encrypt = (
     data: string,
@@ -45,8 +46,11 @@ export const parseBearer = (bearer: string) => {
     return getJwtPayload(bearer.split("Bearer ")[1]);
 };
 
-export const getJwtPayload = (jwt: string) => {
-    return JSON.parse(Buffer.from(jwt.split(".")[1], "base64").toString());
+export const getJwtPayload = (jwt: string): TokenPayload => {
+    return Object.assign(
+        new TokenPayload(),
+        JSON.parse(Buffer.from(jwt.split(".")[1], "base64").toString())
+    );
 };
 
 export const escapeUserName = (name: string): string => {

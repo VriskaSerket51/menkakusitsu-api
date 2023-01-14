@@ -1,11 +1,11 @@
-import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
+import { v1 } from "@common-jshs/menkakusitsu-lib";
 import { escapeUserName } from ".";
 import { HttpException, ResponseException } from "../exceptions";
 import { sendPush } from "../firebase";
 import { query } from "../mysql";
 import { DeletedUser } from "./Constant";
 
-export const getUserInfo = async () => {
+export const getUserInfoList = async () => {
     const userInfo: v1.UserInfo[] = (await query(
         "SELECT uid, name FROM user",
         []
@@ -22,9 +22,24 @@ export const findUserByUid = (userInfo: v1.UserInfo[], uid: number) => {
     return DeletedUser;
 };
 
-export const getStudentInfo = async (uid: number): Promise<v1.UserInfo> => {
+export const getUserInfo = async (uid: number): Promise<v1.UserInfo> => {
     const getStudentInfoQuery = await query(
         "SELECT sid, name FROM user WHERE uid=?",
+        [uid]
+    );
+    if (!getStudentInfoQuery || getStudentInfoQuery.length === 0) {
+        return DeletedUser;
+    }
+    return {
+        uid: uid,
+        name: getStudentInfoQuery[0].name,
+        value: getStudentInfoQuery[0].name,
+    };
+};
+
+export const getStudentInfo = async (uid: number): Promise<v1.UserInfo> => {
+    const getStudentInfoQuery = await query(
+        "SELECT sid, name FROM user WHERE uid=? AND permission=1",
         [uid]
     );
     if (!getStudentInfoQuery || getStudentInfoQuery.length === 0) {
@@ -39,7 +54,7 @@ export const getStudentInfo = async (uid: number): Promise<v1.UserInfo> => {
 
 export const getTeacherInfo = async (uid: number): Promise<v1.UserInfo> => {
     const getTeacherInfoQuery = await query(
-        "SELECT sid, name FROM user WHERE uid=? AND isTeacher=1",
+        "SELECT sid, name FROM user WHERE uid=? AND permission=2",
         [uid]
     );
     if (!getTeacherInfoQuery || getTeacherInfoQuery.length === 0) {
@@ -91,7 +106,7 @@ export const getInformation = async (isAuthed: boolean) => {
     );
     const information: v1.SpecialroomInfo[] = [];
 
-    const userInfo = await getUserInfo();
+    const userInfo = await getUserInfoList();
 
     for (const selectInformation of selectInformationQuery as any[]) {
         const master = findUserByUid(userInfo, selectInformation.masterUid);
