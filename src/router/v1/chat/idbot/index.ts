@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
+import { v1 } from "@common-jshs/menkakusitsu-lib";
 import { HttpException } from "../../../../exceptions";
 import Chat from "..";
 import fetch from "node-fetch";

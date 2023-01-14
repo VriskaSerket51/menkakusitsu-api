@@ -1,18 +1,19 @@
 import { Request, Response } from "express";
-import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
+import { v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
 import { execute, query } from "../../../mysql";
 import { ResponseException, HttpException } from "../../../exceptions";
 import { getJwtPayload } from "../../../utils";
 import config from "../../../config";
 import {
-    getStudentInfo,
-    getUserInfo,
+    getUserInfoList,
     sendPushToUser,
     getBbsPost,
     getBbsComment,
     findUserByUid,
+    getUserInfo,
 } from "../../../utils/Api";
+import { Permission } from "@common-jshs/menkakusitsu-lib";
 
 class Bbs extends V1 {
     constructor() {
@@ -96,7 +97,7 @@ class Bbs extends V1 {
             [request.board, offset, Number(request.postListSize)]
         );
 
-        const userInfo = await getUserInfo();
+        const userInfo = await getUserInfoList();
 
         const getCommentCountQuery = await query(
             "SELECT postId, COUNT(id) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND board=? group by postId",
@@ -145,9 +146,13 @@ class Bbs extends V1 {
         }
         const getbbsPostQuery = await getBbsPost(request.board, request.postId);
         const postData = getbbsPostQuery[0];
-        const owner = await getStudentInfo(postData.ownerUid);
+        const owner = await getUserInfo(postData.ownerUid);
         const payload = getJwtPayload(req.headers.authorization!);
-        if (!postData.isPublic && owner.uid != payload.uid && !payload.isDev) {
+        if (
+            !postData.isPublic &&
+            owner.uid != payload.uid &&
+            !payload.hasPermission(Permission.Dev)
+        ) {
             throw new ResponseException(
                 -2,
                 "관리자나 작성자 본인만 확인할 수 있습니다."
@@ -264,7 +269,10 @@ class Bbs extends V1 {
         }
         const getbbsPostQuery = await getBbsPost(request.board, request.postId);
         const payload = getJwtPayload(req.headers.authorization!);
-        if (payload.uid != getbbsPostQuery[0].ownerUid && !payload.isDev) {
+        if (
+            payload.uid != getbbsPostQuery[0].ownerUid &&
+            !payload.hasPermission(Permission.Dev)
+        ) {
             throw new HttpException(403);
         }
         await execute(
@@ -293,7 +301,10 @@ class Bbs extends V1 {
         }
         const payload = getJwtPayload(req.headers.authorization!);
         const getbbsPostQuery = await getBbsPost(request.board, request.postId);
-        if (getbbsPostQuery[0].ownerUid !== payload.uid && !payload.isDev) {
+        if (
+            getbbsPostQuery[0].ownerUid !== payload.uid &&
+            !payload.hasPermission(Permission.Dev)
+        ) {
             throw new HttpException(403);
         }
         await execute(
@@ -318,7 +329,7 @@ class Bbs extends V1 {
         switch (request.board) {
             case "feedback":
                 headers.push("[버그 제보]", "[기능 추가]");
-                if (payload.isDev) {
+                if (payload.hasPermission(Permission.Dev)) {
                     headers.push(
                         "[공지 사항]",
                         "[수정 예정]",
@@ -367,7 +378,7 @@ class Bbs extends V1 {
             ]
         );
 
-        const userInfo = await getUserInfo();
+        const userInfo = await getUserInfoList();
 
         const comments: v1.BbsComment[] = [];
 
@@ -429,7 +440,10 @@ class Bbs extends V1 {
             request.postId,
             request.commentId
         );
-        if (getbbsCommentQuery[0].ownerUid !== payload.uid && !payload.isDev) {
+        if (
+            getbbsCommentQuery[0].ownerUid !== payload.uid &&
+            !payload.hasPermission(Permission.Dev)
+        ) {
             throw new HttpException(403);
         }
         await execute(
