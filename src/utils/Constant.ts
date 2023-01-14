@@ -1,4 +1,4 @@
-import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
+import { v1 } from "@common-jshs/menkakusitsu-lib";
 
 export const DeletedUser: v1.UserInfo = {
     uid: -1,

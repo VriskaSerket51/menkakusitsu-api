@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
+import { v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
 import { execute, query } from "../../../mysql";
 import { ResponseException, HttpException } from "../../../exceptions";
@@ -11,6 +11,7 @@ import {
 } from "../../../utils/Api";
 import fs from "fs";
 import path from "path";
+import { Permission } from "@common-jshs/menkakusitsu-lib";
 
 class Specialroom extends V1 {
     constructor() {
@@ -140,7 +141,7 @@ class Specialroom extends V1 {
             }
         }
         const payload = getJwtPayload(req.headers.authorization!);
-        // if (payload.isTeacher) {
+        // if (payload.hasPermission(Permission.Teacher)) {
         // postApplyRequest.purpose += "(선생님이 신청)";
         // }
         const insertApply = await execute(
@@ -151,7 +152,7 @@ class Specialroom extends V1 {
                 request.location,
                 request.purpose,
                 request.when,
-                payload.isTeacher,
+                payload.hasPermission(Permission.Teacher),
             ]
         );
         const applyId = insertApply.insertId;
@@ -310,7 +311,7 @@ class Specialroom extends V1 {
             throw new HttpException(400);
         }
         const payload = getJwtPayload(req.headers.authorization!);
-        if (!payload.isTeacher) {
+        if (!payload.hasPermission(Permission.Teacher)) {
             throw new HttpException(403);
         }
         for (const specialroomInfo of request.information) {
@@ -507,7 +508,7 @@ class Specialroom extends V1 {
     async onGetStudentInfo(req: Request, res: Response) {
         const request: v1.GetStudentInfoRequest = req.query as any;
         const studentInfo: v1.UserInfo[] = (await query(
-            "SELECT uid, name, CONCAT(sid, ' ', name) AS value FROM user WHERE isTeacher=0",
+            "SELECT uid, name, CONCAT(sid, ' ', name) AS value FROM user WHERE permission=1",
             []
         )) as any;
         const response: v1.GetStudentInfoResponse = {
@@ -521,7 +522,7 @@ class Specialroom extends V1 {
     async onGetTeacherInfo(req: Request, res: Response) {
         const request: v1.GetTeacherInfoRequest = req.query as any;
         const teacherInfo: v1.UserInfo[] = (await query(
-            "SELECT uid, name, CONCAT(name, ' 선생님') AS value FROM user WHERE isTeacher=1",
+            "SELECT uid, name, CONCAT(name, ' 선생님') AS value FROM user WHERE permission=2",
             []
         )) as any;
         const response: v1.GetTeacherInfoResponse = {

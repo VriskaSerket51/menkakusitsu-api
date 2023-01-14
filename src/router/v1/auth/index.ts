@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
+import { v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
 import { execute, query } from "../../../mysql";
 import { ResponseException, HttpException } from "../../../exceptions";
@@ -65,7 +65,7 @@ class Auth extends V1 {
             throw new HttpException(400);
         }
         const loginQuery = await query(
-            "SELECT uid, id, password, email, needChangePw, isTeacher , isDev FROM user WHERE id=?",
+            "SELECT uid, id, password, email, permission FROM user WHERE id=?",
             [/*aes256Encrypt*/ request.id]
         );
 
@@ -77,13 +77,12 @@ class Auth extends V1 {
             const refreshToken = createRefreshoken({
                 uid: userInfo.uid,
                 id: /*aes256Decrypt*/ userInfo.id,
-                isTeacher: userInfo.isTeacher == 1,
-                isDev: userInfo.isDev == 1,
+                permission: userInfo.permission,
             });
-            await execute("UPDATE refresh_token SET token=? WHERE uid=?", [
-                refreshToken,
-                userInfo.uid,
-            ]);
+            await execute(
+                "INSERT INTO refresh_token (uid, token) VALUES (?, ?) ON DUPLICATE KEY UPDATE uid=?, token=?;",
+                [userInfo.uid, refreshToken, userInfo.uid, refreshToken]
+            );
             const callbacks: string[] = [];
             // if (userInfo.needChangePw) {
             //     callbacks.push("needChangePw");
@@ -97,8 +96,7 @@ class Auth extends V1 {
                 accessToken: createAccessToken({
                     uid: userInfo.uid,
                     id: /*aes256Decrypt*/ userInfo.id,
-                    isTeacher: userInfo.isTeacher == 1,
-                    isDev: userInfo.isDev == 1,
+                    permission: userInfo.permission,
                 }),
                 refreshToken: refreshToken,
                 callbacks: callbacks,
@@ -141,21 +139,19 @@ class Auth extends V1 {
         const refreshToken = createRefreshoken({
             uid: payload.uid,
             id: payload.id,
-            isTeacher: payload.isTeacher,
-            isDev: payload.isDev,
+            permission: payload.permission,
         });
-        await execute("UPDATE refresh_token SET token=? WHERE uid=?", [
-            refreshToken,
-            payload.uid,
-        ]);
+        await execute(
+            "INSERT INTO refresh_token (uid, token) VALUES (?, ?) ON DUPLICATE KEY UPDATE uid=?, token=?;",
+            [payload.uid, refreshToken, payload.uid, refreshToken]
+        );
         const response: v1.PostRefreshResponse = {
             status: 0,
             message: "",
             accessToken: createAccessToken({
                 uid: payload.uid,
                 id: payload.id,
-                isTeacher: payload.isTeacher,
-                isDev: payload.isDev,
+                permission: payload.permission,
             }),
             refreshToken: refreshToken,
         };
