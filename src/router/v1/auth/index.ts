@@ -50,6 +50,7 @@ class Auth extends V1 {
         const request: v1.PostRegisterRequest = req.body;
         if (
             !request.id ||
+            request.sid == undefined ||
             !request.name ||
             !request.email ||
             !request.password
