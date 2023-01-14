@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as v1 from "@common-jshs/menkakusitsu-lib/v1";
+import { v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
 import { HttpException, ResponseException } from "../../../exceptions";
 import { execute, query } from "../../../mysql";
@@ -206,7 +206,7 @@ class User extends V1 {
             );
         }
         await execute(
-            "UPDATE user SET password=?, needChangePw=0 WHERE uid=?",
+            "UPDATE user SET password=? WHERE uid=?",
             [request.newPassword, payload.uid]
         );
         const response: v1.PutEmailResponse = {
