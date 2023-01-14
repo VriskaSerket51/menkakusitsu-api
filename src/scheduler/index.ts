@@ -1,6 +1,11 @@
 import scheduler from "node-schedule";
 import { logger } from "../utils/Logger";
-import { flushSpecialroom, flushTempFolder, mealUpdate } from "./jobs";
+import {
+    flushDeletedBbsContent,
+    flushSpecialroom,
+    flushTempFolder,
+    mealUpdate,
+} from "./jobs";
 interface Schedule {
     name: string;
     cron: string;
@@ -22,6 +27,11 @@ const schedules: Schedule[] = [
         name: "flushSpecialroom",
         cron: "00 00 00 * * *",
         job: flushSpecialroom,
+    },
+    {
+        name: "flushDeletedBbsContent",
+        cron: "00 00 00 * * *",
+        job: flushDeletedBbsContent,
     },
 ];
 
