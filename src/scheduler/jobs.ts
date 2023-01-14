@@ -7,7 +7,7 @@ import fs from "fs";
 import path from "path";
 import { readAllFiles } from "../utils";
 
-const mealUpdate = async () => {
+export const mealUpdate = async () => {
     await execute("DELETE FROM meal", []);
 
     const today = dayjs();
@@ -59,7 +59,7 @@ const mealUpdate = async () => {
     );
 };
 
-const flushTempFolder = async () => {
+export const flushTempFolder = async () => {
     const tempFiles: string[] = [];
     readAllFiles(path.join(__dirname, "..", "..", "tmp"), tempFiles);
     for (const tempFile of tempFiles) {
@@ -67,7 +67,7 @@ const flushTempFolder = async () => {
     }
 };
 
-const flushSpecialroom = async () => {
+export const flushSpecialroom = async () => {
     try {
         const now = dayjs().format("YYYY-MM-DD");
         const getSpecialroomsQuery = await query(
@@ -98,4 +98,13 @@ const flushSpecialroom = async () => {
     }
 };
 
-export { mealUpdate, flushTempFolder, flushSpecialroom };
+export const flushDeletedBbsContent = async () => {
+    await execute(
+        "DELETE FROM bbs_post WHERE deletedDate >= NOW() - INTERVAL 3 MONTH",
+        []
+    );
+    await execute(
+        "DELETE FROM bbs_comment WHERE deletedDate >= NOW() - INTERVAL 3 MONTH",
+        []
+    );
+};
