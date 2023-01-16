@@ -23,8 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-#Idbot
-src/idbot/*
+src/files
 
 package-lock.json
 .env.development
