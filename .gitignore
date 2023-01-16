@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-src/files
+src/files/
 
 package-lock.json
 .env.development
