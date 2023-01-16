@@ -27,3 +27,6 @@ dist-ssr
 src/idbot/*
 
 package-lock.json
+.env.development
+.env.production
+.npmrc
