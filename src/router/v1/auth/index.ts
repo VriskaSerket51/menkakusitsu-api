@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { v1 } from "@common-jshs/menkakusitsu-lib";
+import { Permission, v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
 import { execute, query } from "../../../mysql";
 import { ResponseException, HttpException } from "../../../exceptions";
@@ -18,8 +18,14 @@ class Auth extends V1 {
         this.models = [
             {
                 method: "post",
-                path: "/register",
+                path: "/account",
                 controller: this.onPostRegister,
+            },
+            {
+                method: "delete",
+                path: "/account",
+                permission: Permission.Dev,
+                controller: this.onDeleteSecession,
             },
             {
                 method: "post",
@@ -60,13 +66,26 @@ class Auth extends V1 {
         throw new HttpException(403);
     }
 
+    async onDeleteSecession(req: Request, res: Response) {
+        const request: v1.DeleteSecessionRequest = req.body;
+        if (!request.name) {
+            throw new HttpException(400);
+        }
+        await execute("UPDATE user SET state=2 WHERE name=?", [request.name]);
+        const response: v1.DeleteSecessionResponse = {
+            status: 0,
+            message: "",
+        };
+        res.status(200).json(response);
+    }
+
     async onPostLogin(req: Request, res: Response) {
         const request: v1.PostLoginRequest = req.body;
         if (!request.id || !request.password) {
             throw new HttpException(400);
         }
         const loginQuery = await query(
-            "SELECT uid, id, password, email, permission FROM user WHERE id=?",
+            "SELECT uid, id, password, email, permission, state FROM user WHERE id=?",
             [/*aes256Encrypt*/ request.id]
         );
 
@@ -75,6 +94,16 @@ class Auth extends V1 {
         }
         const userInfo = loginQuery[0];
         if (userInfo.password === /*aes256Encrypt*/ request.password) {
+            console.log(userInfo);
+            if (userInfo.state == 0) {
+                throw new ResponseException(-2, "승인 대기 중인 계정입니다.");
+            }
+            if (userInfo.state == 2) {
+                throw new ResponseException(
+                    -3,
+                    "졸업, 휴학, 자퇴 등의 이유로 삭제된 계정입니다."
+                );
+            }
             const refreshToken = createRefreshoken({
                 uid: userInfo.uid,
                 id: /*aes256Decrypt*/ userInfo.id,
