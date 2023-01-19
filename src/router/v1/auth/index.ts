@@ -94,7 +94,6 @@ class Auth extends V1 {
         }
         const userInfo = loginQuery[0];
         if (userInfo.password === /*aes256Encrypt*/ request.password) {
-            console.log(userInfo);
             if (userInfo.state == 0) {
                 throw new ResponseException(-2, "승인 대기 중인 계정입니다.");
             }
