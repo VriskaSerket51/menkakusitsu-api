@@ -1,9 +1,10 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 
 export interface ModelBase {
     method: "get" | "post" | "put" | "patch" | "delete";
     path: string;
     authType?: "access" | "refresh" | "optional";
+    permission?: number;
     controller: (req: Request, res: Response) => any;
 }
 
