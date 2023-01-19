@@ -1,13 +1,13 @@
 import { v1 } from "@common-jshs/menkakusitsu-lib";
 import { escapeUserName } from ".";
-import { HttpException, ResponseException } from "../exceptions";
+import { ResponseException } from "../exceptions";
 import { sendPush } from "../firebase";
 import { query } from "../mysql";
 import { DeletedUser } from "./Constant";
 
 export const getUserInfoList = async () => {
     const userInfo: v1.UserInfo[] = (await query(
-        "SELECT uid, name FROM user",
+        "SELECT uid, name FROM user WHERE state=1",
         []
     )) as any;
     return userInfo;
@@ -24,7 +24,7 @@ export const findUserByUid = (userInfo: v1.UserInfo[], uid: number) => {
 
 export const getUserInfo = async (uid: number): Promise<v1.UserInfo> => {
     const getStudentInfoQuery = await query(
-        "SELECT sid, name FROM user WHERE uid=?",
+        "SELECT sid, name FROM user WHERE state=1 AND uid=?",
         [uid]
     );
     if (!getStudentInfoQuery || getStudentInfoQuery.length === 0) {
@@ -39,7 +39,7 @@ export const getUserInfo = async (uid: number): Promise<v1.UserInfo> => {
 
 export const getStudentInfo = async (uid: number): Promise<v1.UserInfo> => {
     const getStudentInfoQuery = await query(
-        "SELECT sid, name FROM user WHERE uid=? AND permission=1",
+        "SELECT sid, name FROM user WHERE state=1 AND uid=? AND permission=1",
         [uid]
     );
     if (!getStudentInfoQuery || getStudentInfoQuery.length === 0) {
@@ -54,7 +54,7 @@ export const getStudentInfo = async (uid: number): Promise<v1.UserInfo> => {
 
 export const getTeacherInfo = async (uid: number): Promise<v1.UserInfo> => {
     const getTeacherInfoQuery = await query(
-        "SELECT sid, name FROM user WHERE uid=? AND permission=2",
+        "SELECT sid, name FROM user WHERE state=1 AND uid=? AND permission=2",
         [uid]
     );
     if (!getTeacherInfoQuery || getTeacherInfoQuery.length === 0) {
