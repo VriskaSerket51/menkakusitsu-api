@@ -58,6 +58,7 @@ class Specialroom extends V1 {
                 method: "put",
                 path: "/info",
                 authType: "access",
+                permission: Permission.Teacher,
                 controller: this.onPutSpecialroomInfo,
             },
             {
@@ -309,10 +310,6 @@ class Specialroom extends V1 {
         const request: v1.PutInfoRequest = req.body;
         if (!request.information) {
             throw new HttpException(400);
-        }
-        const payload = getJwtPayload(req.headers.authorization!);
-        if (!payload.hasPermission(Permission.Teacher)) {
-            throw new HttpException(403);
         }
         for (const specialroomInfo of request.information) {
             await execute(
