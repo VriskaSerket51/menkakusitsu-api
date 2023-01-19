@@ -4,6 +4,9 @@ import config from "../config";
 import { HttpException, ResponseException } from "../exceptions";
 import { v4 as uuid } from "uuid";
 import { logger } from "../utils/Logger";
+import { ModelBase } from "../router/RouterBase";
+import { getJwtPayload } from "../utils";
+import { Permission } from "@common-jshs/menkakusitsu-lib";
 
 export const createAccessToken = (payload: any) => {
     payload.type = "access";
@@ -88,4 +91,38 @@ export const verifyRefreshTokenMiddleware = (
             next();
         }
     });
+};
+
+export const defaultModelMiddleware = (model: ModelBase) => {
+    const { authType, permission } = model;
+    const middleware: ((
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => any)[] = [];
+    switch (authType) {
+        case "access":
+            middleware.push(verifyAccessTokenMiddleware);
+            break;
+        case "refresh":
+            middleware.push(verifyRefreshTokenMiddleware);
+            break;
+        case "optional":
+            middleware.push((req, res, next) => {
+                verifyAccessTokenMiddleware(req, res, next, false);
+            });
+            break;
+        default:
+            break;
+    }
+    if (permission != undefined) {
+        middleware.push((req, res, next) => {
+            const payload = getJwtPayload(req.headers.authorization!);
+            if (!payload.hasPermission(Permission.Teacher)) {
+                throw new HttpException(403);
+            }
+            next();
+        });
+    }
+    return middleware;
 };
