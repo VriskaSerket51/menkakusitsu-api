@@ -1,34 +1,7 @@
-import { Router, Request, Response, NextFunction } from "express";
-import {
-    verifyAccessTokenMiddleware,
-    verifyRefreshTokenMiddleware,
-} from "../middlewares/jwt";
+import { Router } from "express";
+import { defaultModelMiddleware } from "../middlewares/jwt";
 import { readAllFiles } from "../utils";
 import { RouterBase } from "./RouterBase";
-
-const authMiddleware = (authType?: "access" | "refresh" | "optional") => {
-    const middleware: ((
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) => any)[] = [];
-    switch (authType) {
-        case "access":
-            middleware.push(verifyAccessTokenMiddleware);
-            break;
-        case "refresh":
-            middleware.push(verifyRefreshTokenMiddleware);
-            break;
-        case "optional":
-            middleware.push((req, res, next) => {
-                verifyAccessTokenMiddleware(req, res, next, false);
-            });
-            break;
-        default:
-            break;
-    }
-    return middleware;
-};
 
 const createDefaultRouter = (): Router => {
     const defaultRouter = Router();
@@ -49,7 +22,7 @@ const createDefaultRouter = (): Router => {
         subrouter.models.forEach((model) => {
             router[model.method](
                 model.path,
-                ...authMiddleware(model.authType),
+                ...defaultModelMiddleware(model),
                 model.controller
             );
         });
