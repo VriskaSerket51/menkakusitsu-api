@@ -1,9 +1,59 @@
 import { v1 } from "@common-jshs/menkakusitsu-lib";
+import { UploadedFile } from "express-fileupload";
+import fs from "fs";
+import fetch from "node-fetch";
+import FormData from "form-data";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 import { escapeUserName } from ".";
-import { ResponseException } from "../exceptions";
+import { Exception, ResponseException } from "../exceptions";
 import { sendPush } from "../firebase";
-import { query } from "../mysql";
+import { execute, query } from "../mysql";
 import { DeletedUser } from "./Constant";
+import config from "../config";
+
+export interface FileData {
+    name: string;
+    endpoint: string;
+}
+
+export const handleFiles = async (
+    files: UploadedFile[],
+    uploaderUid: number,
+    postId?: number
+) => {
+    const fileDatas: FileData[] = [];
+    for (const file of files) {
+        const filePath = file.tempFilePath;
+        const fileDir = path.dirname(filePath);
+        const newFileName = `${uuidv4()}${path.extname(file.name)}`;
+        const newPath = path.join(fileDir, newFileName);
+        const fileEndPoint = `https://files.이디저디.com/${newFileName}`;
+        fs.renameSync(filePath, newPath);
+
+        const formData = new FormData();
+        formData.append("data", fs.createReadStream(newPath));
+
+        const response = await fetch(`${config.fileServerUri}/files/upload`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${config.fileServerAuthKey}`,
+            },
+            body: formData as any,
+        });
+        if (!response.ok) {
+            throw new Exception(response.statusText);
+        }
+        if (postId) {
+            await execute(
+                "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
+                [postId, uploaderUid, file.name, fileEndPoint, file.mimetype]
+            );
+        }
+        fileDatas.push({ name: file.name, endpoint: fileEndPoint });
+    }
+    return fileDatas;
+};
 
 export const getUserInfoList = async () => {
     const userInfo: v1.UserInfo[] = (await query(
