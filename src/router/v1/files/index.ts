@@ -10,7 +10,6 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { execute } from "../../../mysql";
 import { getJwtPayload } from "../../../utils";
-import { logger } from "../../../utils/Logger";
 
 class Files extends V1 {
     constructor() {
