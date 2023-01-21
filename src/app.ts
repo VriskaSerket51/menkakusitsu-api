@@ -32,6 +32,8 @@ class App {
         this.expressApp.use(express.json());
         this.expressApp.use(
             fileUpload({
+                defCharset: "utf8",
+                defParamCharset: "utf8",
                 limits: { fileSize: 50 * 1024 * 1024 },
                 useTempFiles: true,
                 tempFileDir: path.join(__dirname, "..", "tmp"),
