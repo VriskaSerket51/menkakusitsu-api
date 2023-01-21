@@ -12,6 +12,7 @@ import {
     getBbsComment,
     findUserByUid,
     getUserInfo,
+    handleFiles,
 } from "../../../utils/Api";
 import { Permission } from "@common-jshs/menkakusitsu-lib";
 
@@ -240,11 +241,17 @@ class Bbs extends V1 {
                 request.isPublic,
             ]
         );
+        const postId = result.insertId;
         const response: v1.PostBbsPostResponse = {
             status: 0,
             message: "",
-            postId: result.insertId,
+            postId: postId,
         };
+        if (req.files && req.files.data) {
+            const data = req.files.data;
+            const files = Array.isArray(data) ? data : [data];
+            await handleFiles(files, payload.uid, postId);
+        }
         res.status(200).json(response);
     }
 
