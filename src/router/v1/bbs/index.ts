@@ -256,7 +256,7 @@ class Bbs extends V1 {
         if (req.files && req.files.data) {
             const data = req.files.data;
             const files = Array.isArray(data) ? data : [data];
-            await handleFiles(files, payload.uid, postId);
+            await handleFiles(files, payload.uid, request.board, postId);
         }
         res.status(200).json(response);
     }
@@ -328,9 +328,10 @@ class Bbs extends V1 {
             "UPDATE bbs_comment SET deletedDate=NOW() WHERE board=? AND postId=?",
             [request.board, request.postId]
         );
-        await execute("UPDATE bbs_file SET deletedDate=NOW() WHERE postId=?", [
-            request.postId,
-        ]);
+        await execute(
+            "UPDATE bbs_file SET deletedDate=NOW() WHERE board=? postId=?",
+            [request.board, request.postId]
+        );
         const response: v1.DeleteBbsPostResponse = {
             status: 0,
             message: "",

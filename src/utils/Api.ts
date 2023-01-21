@@ -20,6 +20,7 @@ export interface FileData {
 export const handleFiles = async (
     files: UploadedFile[],
     uploaderUid: number,
+    board?: string,
     postId?: number
 ) => {
     const fileDatas: FileData[] = [];
@@ -44,10 +45,17 @@ export const handleFiles = async (
         if (!response.ok) {
             throw new Exception(response.statusText);
         }
-        if (postId) {
+        if (postId && board) {
             await execute(
-                "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
-                [postId, uploaderUid, file.name, fileEndPoint, file.mimetype]
+                "INSERT INTO bbs_file(postId, ownerUid, board, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
+                [
+                    postId,
+                    uploaderUid,
+                    board,
+                    file.name,
+                    fileEndPoint,
+                    file.mimetype,
+                ]
             );
         }
         fileDatas.push({ name: file.name, endpoint: fileEndPoint });
