@@ -193,7 +193,9 @@ class Bbs extends V1 {
                 attactments.push({
                     fileName: attachment.fileName,
                     downloadLink: attachment.downloadLink,
-                    isImage: attachment.isImage == 1,
+                    isImage: (attachment.mimeType as string).startsWith(
+                        "image"
+                    ),
                     owne: {
                         uid: payload.uid,
                         name: "",
@@ -214,7 +216,11 @@ class Bbs extends V1 {
 
     async onPostBbsPost(req: Request, res: Response) {
         // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
-        const request: v1.PostBbsPostRequest = req.body;
+        const props = req.body.props;
+        if (!props) {
+            throw new HttpException(400);
+        }
+        const request: v1.PostBbsPostRequest = JSON.parse(props);
         if (
             !request.title ||
             !request.content ||
