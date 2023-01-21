@@ -53,13 +53,16 @@ class Files extends V1 {
             const formData = new FormData();
             formData.append("data", fs.createReadStream(newPath));
 
-            const response = await fetch(config.fileServerUri, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${config.fileServerAuthKey}`,
-                },
-                body: formData as any,
-            });
+            const response = await fetch(
+                `${config.fileServerUri}/files/upload`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${config.fileServerAuthKey}`,
+                    },
+                    body: formData as any,
+                }
+            );
             if (!response.ok) {
                 throw new Exception(response.statusText);
             }
