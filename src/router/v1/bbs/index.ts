@@ -329,7 +329,6 @@ class Bbs extends V1 {
             [request.board, request.postId]
         );
         await execute("UPDATE bbs_file SET deletedDate=NOW() WHERE postId=?", [
-            request.board,
             request.postId,
         ]);
         const response: v1.DeleteBbsPostResponse = {
