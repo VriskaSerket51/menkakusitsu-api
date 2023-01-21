@@ -107,4 +107,8 @@ export const flushDeletedBbsContent = async () => {
         "DELETE FROM bbs_comment WHERE deletedDate >= NOW() - INTERVAL 3 MONTH",
         []
     );
+    await execute(
+        "DELETE FROM bbs_file WHERE deletedDate >= NOW() - INTERVAL 3 MONTH",
+        []
+    );
 };
