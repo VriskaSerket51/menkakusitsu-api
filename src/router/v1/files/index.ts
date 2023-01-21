@@ -42,7 +42,7 @@ class Files extends V1 {
             throw new HttpException(400);
         }
         const payload = getJwtPayload(req.headers.authorization!);
-        const handleFile = (file: UploadedFile) => {
+        const handleFile = async (file: UploadedFile) => {
             const filePath = file.tempFilePath;
             const fileDir = path.dirname(filePath);
             const newFileName = `${uuidv4()}${path.extname(file.name)}`;
@@ -52,37 +52,35 @@ class Files extends V1 {
             const formData = new FormData();
             formData.append("data", fs.createReadStream(newPath));
 
-            fetch("https://files.이디저디.com/files/upload", {
+            const response = await fetch(config.fileServerUri, {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${config.authKey}`,
-                } as any,
+                    Authorization: `Bearer ${config.fileServerAuthKey}`,
+                },
                 body: formData as any,
-            })
-                .then((response) => {
-                    if (postId) {
-                        execute(
-                            "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, isImage, createdDate) VALUE(?, ?, ?, ?, NOW())",
-                            [
-                                Number(postId),
-                                Number(payload.uid),
-                                file.name,
-                                `https://files.이디저디.com/${newFileName}`,
-                                file.mimetype.startsWith("image"),
-                            ]
-                        );
-                    }
-                })
-                .catch((reason) => {
-                    logger.error(reason);
-                });
+            });
+            if (!response.ok) {
+                throw new HttpException(500);
+            }
+            if (postId) {
+                await execute(
+                    "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, NOW())",
+                    [
+                        Number(postId),
+                        Number(payload.uid),
+                        file.name,
+                        `https://files.이디저디.com/${newFileName}`,
+                        file.mimetype,
+                    ]
+                );
+            }
         };
         if (Array.isArray(data)) {
             for (const file of data) {
-                handleFile(file);
+                await handleFile(file);
             }
         } else {
-            handleFile(data);
+            await handleFile(data);
         }
         res.sendStatus(200);
     }
