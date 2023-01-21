@@ -18,6 +18,7 @@ export default {
     socketPort: process.env.SOCKET_PORT!,
     jwtSecret: process.env.JWT_SECRET!,
     fileServerUri: process.env.FILE_SERVER_URI!,
+    fileServerUriInner: process.env.FILE_SERVER_URI_INNER!,
     fileServerAuthKey: process.env.FILE_SERVER_AUTH_KEY!,
     aesKey: process.env.AES_KEY!,
     aesIv: process.env.AES_IV!,

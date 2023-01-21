@@ -35,7 +35,7 @@ export const handleFiles = async (
         const formData = new FormData();
         formData.append("data", fs.createReadStream(newPath));
 
-        const response = await fetch(`${config.fileServerUri}/files/upload`, {
+        const response = await fetch(`${config.fileServerUriInner}/files/upload`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${config.fileServerAuthKey}`,
