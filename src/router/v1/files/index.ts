@@ -68,7 +68,7 @@ class Files extends V1 {
             }
             if (postId) {
                 await execute(
-                    "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, NOW())",
+                    "INSERT INTO bbs_file(postId, ownerUid, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
                     [
                         Number(postId),
                         Number(payload.uid),
