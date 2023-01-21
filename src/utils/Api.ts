@@ -47,7 +47,7 @@ export const handleFiles = async (
         }
         if (postId && board) {
             await execute(
-                "INSERT INTO bbs_file(postId, ownerUid, board, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, ?, NOW())",
+                "INSERT INTO bbs_file(postId, ownerUid, board, fileName, downloadLink, mimeType, createdDate) VALUE(?, ?, ?, ?, ?, ?, NOW())",
                 [
                     postId,
                     uploaderUid,
