@@ -41,11 +41,13 @@ class Files extends V1 {
             throw new HttpException(400);
         }
         const payload = getJwtPayload(req.headers.authorization!);
+        const files: { name: string; endpoint: string }[] = [];
         const handleFile = async (file: UploadedFile) => {
             const filePath = file.tempFilePath;
             const fileDir = path.dirname(filePath);
             const newFileName = `${uuidv4()}${path.extname(file.name)}`;
             const newPath = path.join(fileDir, newFileName);
+            const fileEndPoint = `https://files.이디저디.com/${newFileName}`;
             fs.renameSync(filePath, newPath);
 
             const formData = new FormData();
@@ -68,11 +70,12 @@ class Files extends V1 {
                         Number(postId),
                         Number(payload.uid),
                         file.name,
-                        `https://files.이디저디.com/${newFileName}`,
+                        fileEndPoint,
                         file.mimetype,
                     ]
                 );
             }
+            files.push({ name: file.name, endpoint: fileEndPoint });
         };
         if (Array.isArray(data)) {
             for (const file of data) {
@@ -81,7 +84,7 @@ class Files extends V1 {
         } else {
             await handleFile(data);
         }
-        res.sendStatus(200);
+        res.status(200).json({ status: 0, message: "", files: files });
     }
 }
 
