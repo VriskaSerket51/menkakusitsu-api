@@ -216,7 +216,7 @@ class Bbs extends V1 {
 
     async onPostBbsPost(req: Request, res: Response) {
         // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
-        const props = req.body;
+        const props = req.body.props;
         if (!props) {
             throw new HttpException(400);
         }
