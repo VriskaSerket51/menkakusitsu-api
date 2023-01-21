@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { HttpException } from "../../../exceptions";
+import { Exception, HttpException } from "../../../exceptions";
 import { UploadedFile } from "express-fileupload";
 import V1 from "..";
 import fs from "fs";
@@ -61,7 +61,7 @@ class Files extends V1 {
                 body: formData as any,
             });
             if (!response.ok) {
-                throw new HttpException(500);
+                throw new Exception(response.statusText);
             }
             if (postId) {
                 await execute(
