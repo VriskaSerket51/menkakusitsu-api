@@ -29,7 +29,7 @@ export const handleFiles = async (
         const fileDir = path.dirname(filePath);
         const newFileName = `${uuidv4()}${path.extname(file.name)}`;
         const newPath = path.join(fileDir, newFileName);
-        const fileEndPoint = `https://files.이디저디.com/${newFileName}`;
+        const fileEndPoint = `${config.fileServerUri}/${newFileName}`;
         fs.renameSync(filePath, newPath);
 
         const formData = new FormData();
