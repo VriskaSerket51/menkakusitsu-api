@@ -1,23 +1,43 @@
 import dotenv from "dotenv";
-import App from "./app";
+import {
+    App,
+    initializeConfig,
+    initializeScheduler,
+    logger,
+} from "common-api-ts";
 import config from "./config";
 import { initializeFirebase } from "./firebase";
-import { initializeScheduler } from "./scheduler";
-import { logger } from "./utils/Logger";
+import fileUpload from "express-fileupload";
+import path from "path";
+import { schedules } from "./scheduler";
+import { customRouterMiddleware } from "./middlewares";
 
 dotenv.config();
-const port = parseInt(config.port);
 
+initializeConfig(config);
 initializeFirebase();
-initializeScheduler();
+initializeScheduler(schedules);
 runExpressApp();
 
 function runExpressApp() {
-    const app = new App();
+    const app = new App(
+        path.join(__dirname, "router"),
+        [
+            fileUpload({
+                defCharset: "utf8",
+                defParamCharset: "utf8",
+                limits: { fileSize: 50 * 1024 * 1024 },
+                useTempFiles: true,
+                tempFileDir: path.join(__dirname, "..", "tmp"),
+            }),
+        ],
+        customRouterMiddleware,
+        []
+    );
     app.run(
-        port,
+        config.port,
         () => {
-            logger.info(`Server started with port: ${port}`);
+            console.info(`Server started with port: ${config.port}`);
         },
         (error) => {
             logger.error(error);

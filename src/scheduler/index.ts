@@ -1,18 +1,12 @@
-import scheduler from "node-schedule";
-import { logger } from "../utils/Logger";
+import { Schedule } from "common-api-ts";
 import {
     flushDeletedBbsContent,
     flushSpecialroom,
     flushTempFolder,
     mealUpdate,
 } from "./jobs";
-interface Schedule {
-    name: string;
-    cron: string;
-    job: () => void;
-}
 
-const schedules: Schedule[] = [
+export const schedules: Schedule[] = [
     {
         name: "mealUpdate",
         cron: "00 00 00 * * *",
@@ -34,18 +28,3 @@ const schedules: Schedule[] = [
         job: flushDeletedBbsContent,
     },
 ];
-
-export const initializeScheduler = () => {
-    schedules.forEach((schedule) => {
-        scheduler.scheduleJob(schedule.cron, (fireDate) => {
-            const now = new Date();
-            if (fireDate.setHours(0, 0, 0, 0) !== now.setHours(0, 0, 0, 0)) {
-                logger.info(
-                    `${schedule.name} was supposed to run at ${fireDate}, but actually ran at ${now}`
-                );
-            }
-            schedule.job();
-        });
-        // schedule.job();
-    });
-};

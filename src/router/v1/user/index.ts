@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
-import { HttpException, ResponseException } from "../../../exceptions";
-import { execute, query } from "../../../mysql";
+import { HttpException, ResponseException } from "common-api-ts";
+import { execute, query } from "common-api-ts";
 import { sendPush } from "../../../firebase";
 import {
     aes256Decrypt,

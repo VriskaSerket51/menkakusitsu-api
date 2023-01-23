@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Permission, v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
-import { execute, query } from "../../../mysql";
-import { ResponseException, HttpException } from "../../../exceptions";
-import { createAccessToken, createRefreshoken } from "../../../middlewares/jwt";
+import { execute, query } from "common-api-ts";
+import { ResponseException, HttpException } from "common-api-ts";
+import { createAccessToken, createRefreshoken } from "common-api-ts";
 import {
     aes256Decrypt,
     aes256Encrypt,

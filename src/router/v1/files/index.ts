@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { HttpException } from "../../../exceptions";
+import { HttpException } from "common-api-ts";
 import V1 from "..";
 import { getJwtPayload } from "../../../utils";
 import { handleFiles } from "../../../utils/Api";

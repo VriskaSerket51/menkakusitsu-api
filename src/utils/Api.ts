@@ -6,11 +6,10 @@ import FormData from "form-data";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { escapeUserName } from ".";
-import { Exception, ResponseException } from "../exceptions";
 import { sendPush } from "../firebase";
-import { execute, query } from "../mysql";
 import { DeletedUser } from "./Constant";
 import config from "../config";
+import { Exception, execute, query, ResponseException } from "common-api-ts";
 
 export interface FileData {
     name: string;

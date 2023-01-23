@@ -1,4 +1,4 @@
-import { RouterBase } from "../RouterBase";
+import { RouterBase } from "common-api-ts";
 
 class V1 extends RouterBase {
     constructor() {
