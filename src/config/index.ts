@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export default {
-    port: process.env.PORT!,
+    port: parseInt(process.env.PORT!),
     socketPort: process.env.SOCKET_PORT!,
     jwtSecret: process.env.JWT_SECRET!,
     fileServerUri: process.env.FILE_SERVER_URI!,

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
-import { query } from "../../../mysql";
-import { HttpException } from "../../../exceptions";
+import { query } from "common-api-ts";
+import { HttpException } from "common-api-ts";
 import dayjs from "dayjs";
 
 class Meal extends V1 {

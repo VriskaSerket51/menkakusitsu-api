@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import cryptoJs from "crypto-js";
 import config from "../config";
 import { TokenPayload } from "@common-jshs/menkakusitsu-lib";
@@ -26,20 +24,6 @@ export const aes256Decrypt = (
         padding: cryptoJs.pad.Pkcs7,
         mode: cryptoJs.mode.CBC,
     }).toString(cryptoJs.enc.Utf8);
-};
-
-export const readAllFiles = (
-    dirName: string,
-    fileNames: string[],
-    filter?: (fileName: string) => boolean
-) => {
-    fs.readdirSync(dirName, { withFileTypes: true }).forEach((dir) => {
-        if (dir.isDirectory()) {
-            readAllFiles(path.join(dirName, dir.name), fileNames, filter);
-        } else if (!filter || filter(dir.name)) {
-            fileNames.push(path.join(dirName, dir.name));
-        }
-    });
 };
 
 export const parseBearer = (bearer: string) => {

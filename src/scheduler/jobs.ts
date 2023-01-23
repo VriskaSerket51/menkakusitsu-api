@@ -1,11 +1,9 @@
-import { execute, query } from "../mysql";
-import { logger } from "../utils/Logger";
 import fetch, { Response as FetchResponse } from "node-fetch";
 import dayjs from "dayjs";
 import { parse } from "node-html-parser";
 import fs from "fs";
 import path from "path";
-import { readAllFiles } from "../utils";
+import { execute, logger, query, readAllFiles } from "common-api-ts";
 
 export const mealUpdate = async () => {
     await execute("DELETE FROM meal", []);

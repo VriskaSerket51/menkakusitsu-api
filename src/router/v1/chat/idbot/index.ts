@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { v1 } from "@common-jshs/menkakusitsu-lib";
-import { HttpException } from "../../../../exceptions";
 import Chat from "..";
 import fetch from "node-fetch";
+import { HttpException } from "common-api-ts";
 
 class Idbot extends Chat {
     constructor() {

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
-import { execute, query } from "../../../mysql";
-import { ResponseException, HttpException } from "../../../exceptions";
+import { execute, query } from "common-api-ts";
+import { ResponseException, HttpException } from "common-api-ts";
 import { getJwtPayload } from "../../../utils";
 import {
     getInformation,
