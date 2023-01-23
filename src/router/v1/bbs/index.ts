@@ -193,10 +193,8 @@ class Bbs extends V1 {
                 attactments.push({
                     fileName: attachment.fileName,
                     downloadLink: attachment.downloadLink,
-                    isImage: (attachment.mimeType as string).startsWith(
-                        "image"
-                    ),
-                    owne: {
+                    mimeType: attachment.mimeType,
+                    owner: {
                         uid: payload.uid,
                         name: "",
                         value: "",
