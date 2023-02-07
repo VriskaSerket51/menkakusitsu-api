@@ -1,5 +1,6 @@
 import { Schedule } from "common-api-ts";
 import {
+    flushDeletedAccount,
     flushDeletedBbsContent,
     flushSpecialroom,
     flushTempFolder,
@@ -26,5 +27,10 @@ export const schedules: Schedule[] = [
         name: "flushDeletedBbsContent",
         cron: "00 00 00 * * *",
         job: flushDeletedBbsContent,
+    },
+    {
+        name: "flushDeletedAccount",
+        cron: "00 00 00 * * *",
+        job: flushDeletedAccount,
     },
 ];

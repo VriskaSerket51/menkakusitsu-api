@@ -25,22 +25,19 @@ export const mealUpdate = async () => {
 
     const breakfast = await parseHtml(
         await fetch(
-            `http://jeju-s.jje.hs.kr/jeju-s/food/${tomorrow.year()}/${
-                tomorrow.month() + 1
+            `http://jeju-s.jje.hs.kr/jeju-s/food/${tomorrow.year()}/${tomorrow.month() + 1
             }/${tomorrow.date()}/breakfast`
         )
     );
     const lunch = await parseHtml(
         await fetch(
-            `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${
-                today.month() + 1
+            `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${today.month() + 1
             }/${today.date()}/lunch`
         )
     );
     const dinner = await parseHtml(
         await fetch(
-            `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${
-                today.month() + 1
+            `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${today.month() + 1
             }/${today.date()}/dinner`
         )
     );
@@ -110,3 +107,10 @@ export const flushDeletedBbsContent = async () => {
         []
     );
 };
+
+export const flushDeletedAccount = async () => {
+    await execute(
+        "DELETE FROM user WHERE state=2",
+        []
+    );
+}
