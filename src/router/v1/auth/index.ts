@@ -63,7 +63,22 @@ class Auth extends V1 {
         ) {
             throw new HttpException(400);
         }
-        throw new HttpException(403);
+        const registerQuery = await query(
+            "SELECT uid, id, password, email, permission, state FROM user WHERE id=?",
+            [/*aes256Encrypt*/ request.id]
+        );
+
+        if (registerQuery || registerQuery.length !== 0) {
+            throw new ResponseException(-1, "이미 존재하는 아이디입니다.");
+        }
+        await execute(
+            "INSERT INTO menkakusitsu.user (sid, name, email, id, password, permission, state) VALUES (?, ?, ?, ?, ?, 1, 1)"
+        )[request.sid, request.name, request.email, request.id, request.password];
+        const response: v1.PostRegisterResponse = {
+            status: 0,
+            message: "",
+        };
+        //throw new HttpException(403);
     }
 
     async onDeleteSecession(req: Request, res: Response) {
