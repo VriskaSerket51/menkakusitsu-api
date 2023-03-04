@@ -53,6 +53,7 @@ class Auth extends V1 {
     }
 
     async onPostRegister(req: Request, res: Response) {
+        
         const request: v1.PostRegisterRequest = req.body;
         if (
             !request.id ||
@@ -63,7 +64,30 @@ class Auth extends V1 {
         ) {
             throw new HttpException(400);
         }
-        throw new HttpException(403);
+        console.log("test");
+        const registerSidQuery = await query(
+            "SELECT uid, id, password, email, permission, state FROM user WHERE sid=?",
+            [/*aes256Encrypt*/ request.sid]
+        );
+        const registeridQuery = await query(
+            "SELECT uid, id, password, email, permission, state FROM user WHERE sid=?",
+            [/*aes256Encrypt*/ request.id]
+        );
+        
+        if (registerSidQuery.toString.length !== 0 || registeridQuery.toString.length !== 0) {
+            throw new ResponseException(-1, "이미 존재하는 학번 또는 아이디 입니다.");
+        }
+        
+        await execute(
+            "INSERT INTO menkakusitsu.user (sid, name, email, id, password, permission, state) VALUES (?, ?, ?, ?, ?, 1, 1)",
+            [request.sid, request.name, request.email, request.id, request.password]);
+        const response: v1.PostRegisterResponse = {
+            status: 0,
+            message: "정상적으로 회원가입 되었습니다",
+        };
+        //throw new HttpException(403);
+        
+        
     }
 
     async onDeleteSecession(req: Request, res: Response) {
