@@ -64,7 +64,6 @@ class Auth extends V1 {
         ) {
             throw new HttpException(400);
         }
-        console.log("test");
         const registerSidQuery = await query(
             "SELECT uid, id, password, email, permission, state FROM user WHERE sid=?",
             [/*aes256Encrypt*/ request.sid]
