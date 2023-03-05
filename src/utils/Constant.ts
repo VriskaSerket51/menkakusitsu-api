@@ -5,3 +5,5 @@ export const DeletedUser: v1.UserInfo = {
     value: "(알 수 없음)",
     name: "(알 수 없음)",
 };
+
+export const Master = "선우준";
