@@ -10,6 +10,8 @@ import {
     getJwtPayload,
     parseBearer,
 } from "../../../utils";
+import dayjs from "dayjs";
+import { Master } from "../../../utils/Constant";
 
 class Auth extends V1 {
     constructor() {
@@ -63,7 +65,34 @@ class Auth extends V1 {
         ) {
             throw new HttpException(400);
         }
-        throw new HttpException(403);
+        const day = dayjs();
+        if (day.month() > 3) {
+            throw new ResponseException(-1, "신입생 등록 기간이 아닙니다.");
+        }
+        const cntQuery = await query(
+            "SELECT * FROM (SELECT COUNT(id) as idCnt FROM user WHERE id=?) AS id, (SELECT COUNT(sid) as sidCnt FROM user WHERE sid=?) AS sid, (SELECT COUNT(name) as nameCnt FROM user WHERE name=?) AS name, (SELECT COUNT(email) as emailCnt FROM user WHERE email=?) AS email;",
+            [request.id, request.sid, request.name, request.email]
+        );
+        if (!cntQuery || cntQuery.length == 0) {
+            throw new HttpException(500);
+        }
+        if (cntQuery[0].idCnt > 0) {
+            throw new ResponseException(-2, "이미 사용중인 ID입니다.");
+        }
+        if (cntQuery[0].sidCnt > 0) {
+            throw new ResponseException(
+                -3,
+                "이미 가입된 학번입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요\n2023학년도 사이트 관리자: " +
+                    Master
+            );
+        }
+        if (cntQuery[0].nameCnt > 0) {
+            throw new ResponseException(
+                -3,
+                "이미 가입된 이름입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요\n2023학년도 사이트 관리자: " +
+                    Master
+            );
+        }
     }
 
     async onDeleteSecession(req: Request, res: Response) {
