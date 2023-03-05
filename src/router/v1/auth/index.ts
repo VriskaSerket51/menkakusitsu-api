@@ -55,7 +55,6 @@ class Auth extends V1 {
     }
 
     async onPostRegister(req: Request, res: Response) {
-        
         const request: v1.PostRegisterRequest = req.body;
         if (
             !request.id ||
@@ -83,17 +82,30 @@ class Auth extends V1 {
         if (cntQuery[0].sidCnt > 0) {
             throw new ResponseException(
                 -3,
-                "이미 가입된 학번입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요\n2023학년도 사이트 관리자: " +
-                    Master
+                `이미 가입된 학번입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요\n${day.year()}학년도 사이트 관리자: ${Master}`
             );
         }
         if (cntQuery[0].nameCnt > 0) {
             throw new ResponseException(
                 -3,
-                "이미 가입된 이름입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요\n2023학년도 사이트 관리자: " +
-                    Master
+                `이미 가입된 이름입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요\n${day.year()}학년도 사이트 관리자: ${Master}`
             );
         }
+        await execute(
+            "INSERT INTO menkakusitsu.user (sid, name, email, id, password, state) VALUES (?, ?, ?, ?, ?)",
+            [
+                request.sid,
+                request.name,
+                request.email,
+                request.id,
+                request.password,
+            ]
+        );
+        const response: v1.PostRegisterResponse = {
+            status: 0,
+            message: "",
+        };
+        res.status(200).json(response);
     }
 
     async onDeleteSecession(req: Request, res: Response) {
