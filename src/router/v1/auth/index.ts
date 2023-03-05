@@ -55,6 +55,7 @@ class Auth extends V1 {
     }
 
     async onPostRegister(req: Request, res: Response) {
+        
         const request: v1.PostRegisterRequest = req.body;
         if (
             !request.id ||
