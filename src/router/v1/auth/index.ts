@@ -51,6 +51,11 @@ class Auth extends V1 {
                 path: "/reset/password",
                 controller: this.onPutForgotPassword,
             },
+            {
+                method: "post",
+                path: "/ismaster",
+                controller: this.onGetIsMaster,
+            }
         ];
     }
 
@@ -274,6 +279,14 @@ class Auth extends V1 {
         };
         res.status(200).json(response);
     }
+
+    async onGetIsMaster(req: Request, res: Response) {
+        const request: {name:string} = req.body;
+        const username = request.name;
+        const response: {ismaster: boolean} = {
+            ismaster: username == Master,
+        }
+    }  
 }
 
 export default Auth;
