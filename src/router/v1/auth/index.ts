@@ -97,7 +97,7 @@ class Auth extends V1 {
             );
         }
         await execute(
-            "INSERT INTO menkakusitsu.user (sid, name, email, id, password, state) VALUES (?, ?, ?, ?, ?, 2)",
+            "INSERT INTO menkakusitsu.user (sid, name, email, id, password, state) VALUES (?, ?, ?, ?, ?, 0)",
             [
                 request.sid,
                 request.name,
