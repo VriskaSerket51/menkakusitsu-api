@@ -79,7 +79,7 @@ class Auth extends V1 {
         if (cntQuery[0].idCnt > 0) {
             throw new ResponseException(-2, "이미 사용중인 ID입니다.");
         }
-        if (cntQuery[0].sidCnt > 0) {
+        if (cntQuery[0].sidCnt > 0 && request.sid!==9999) {
             throw new ResponseException(
                 -3,
                 `이미 가입된 학번입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요\n${day.year()}학년도 사이트 관리자: ${Master}`
