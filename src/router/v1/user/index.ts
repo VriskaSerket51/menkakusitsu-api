@@ -9,7 +9,7 @@ import {
     aes256Encrypt,
     getJwtPayload,
 } from "../../../utils";
-import { sendPushToUser } from "../../../utils/Api";
+import { getUsernameFromToken, sendPushToUser } from "../../../utils/Api";
 
 class User extends V1 {
     constructor() {
@@ -51,6 +51,12 @@ class User extends V1 {
                 path: "/me/password",
                 authType: "access",
                 controller: this.onPutPassword,
+            },
+            {
+                method: "post",
+                path: "/getUserNameFromToken",
+                authType: "access",
+                controller: this.onGetUserNameFromToken,
             },
         ];
     }
@@ -216,6 +222,18 @@ class User extends V1 {
         };
         res.status(200).json(response);
     }
+    async onGetUserNameFromToken(req: Request, res: Response) {
+        const request: v1.PostUserNameFromTokenRequest = req.body;
+        const resultName = await getUsernameFromToken(request.token);
+        const response: v1.PostUserNameFromTokenResponse = {
+            status: 0,
+            name: resultName.toString(),
+            message: ""
+        }
+        res.status(200).json(response);
+    }
+    
 }
+
 
 export default User;

@@ -251,3 +251,18 @@ export const sendPushToUser = async (
         }
     }
 };
+
+export const getUsernameFromToken = async(
+    token: string
+) => {
+    const UidResult = await query(
+        "SELECT uid FROM refresh_token WHERE token=?",
+        [token]
+    );
+    const UidFromToken = UidResult[0];
+    const UsernameFromToken = await query(
+        "SELECT name FROM menkakusitsu.user WHERE uid=?",
+        [UidFromToken]
+    );
+    return UsernameFromToken;
+}
