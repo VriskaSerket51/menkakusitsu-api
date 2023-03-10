@@ -198,6 +198,48 @@ export const getInformation = async (isAuthed: boolean) => {
     }
     return information;
 };
+export const getOuterInformation = async (isAuthed: boolean) => {
+    const selectInformationQuery = await query(
+        "SELECT * FROM (SELECT applyId, GROUP_CONCAT(name) AS applicants FROM (SELECT specialroom_apply_student.applyId, user.name FROM specialroom_apply_student, user WHERE specialroom_apply_student.studentUid = user.uid) AS A GROUP BY A.applyId) AS B, specialroom_apply WHERE B.applyId = specialroom_apply.applyId",
+        []
+    );
+    const information: v1.SpecialroomInfo[] = [];
+
+    const userInfo = await getUserInfoList();
+
+    for (const selectInformation of selectInformationQuery as any[]) {
+        const master = findUserByUid(userInfo, selectInformation.masterUid);
+        master.value = "";
+
+        const teacher = findUserByUid(userInfo, selectInformation.teacherUid);
+        teacher.value = "";
+
+        if (!isAuthed) {
+            master.name = escapeUserName(master.name);
+            teacher.name = escapeUserName(teacher.name);
+            selectInformation.applicants = (
+                selectInformation.applicants as string
+            )
+                .split(",")
+                .map((name) => escapeUserName(name))
+                .join(",");
+        }
+        selectInformation.master = master;
+        selectInformation.teacher = teacher;
+
+        information.push({
+            applyId: selectInformation.applyId,
+            state: selectInformation.isApproved,
+            master: selectInformation.master,
+            teacher: selectInformation.teacher,
+            applicants: selectInformation.applicants,
+            location: selectInformation.location,
+            purpose: selectInformation.purpose,
+            when: selectInformation.when,
+        });
+    }
+    return information;
+};
 
 export const getSpecialroomInfo = async (
     when: number,
