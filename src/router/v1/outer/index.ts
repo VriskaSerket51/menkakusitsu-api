@@ -95,19 +95,18 @@ class Outer extends V1 {
     }
 
     async onGetApply(req: Request, res: Response) {
-        const request: v1.GetApplyRequest = req.query as any;
-        if (request.when === undefined) {
-            throw new HttpException(400);
-        }
+        //const request: v1.GetApplyRequest = req.query as any;
+        //if (request.when === undefined) {
+        //   throw new HttpException(400);
+        //}
         const payload = getJwtPayload(req.headers.authorization!);
         const specialroomInfo = await getOuterInfo(
-            request.when,
             payload.uid
         );
         if (!specialroomInfo) {
             throw new ResponseException(
                 1,
-                `${request.when}차 때 신청한 특별실이 없습니다.`
+                `오늘 신청한 외박이 없습니다.`
             );
         }
         const response: v1.GetApplyResponse = {
@@ -119,9 +118,8 @@ class Outer extends V1 {
     }
 
     async onPostApply(req: Request, res: Response) {
-        const request: v1.PostApplyRequest = req.body;
+        const request: v1.PostOuterRequest = req.body;
         if (
-            request.when === undefined ||
             !request.location ||
             !request.purpose ||
             !request.teacherUid ||
@@ -130,14 +128,13 @@ class Outer extends V1 {
             throw new HttpException(400);
         }
         for (const applicant of request.applicants) {
-            const specialroomInfo = await getOuterInfo(
-                request.when,
+            const outerInfo = await getOuterInfo(
                 applicant.uid
             );
-            if (specialroomInfo) {
+            if (outerInfo) {
                 throw new ResponseException(
                     -1,
-                    `${applicant.value} 학생은 ${request.when}차 특별실을 이미 신청했습니다! (중복 신청 방지)`
+                    `${applicant.value} 학생은 외박을 이미 신청했습니다! (중복 신청 방지)`
                 );
             }
         }
@@ -152,7 +149,6 @@ class Outer extends V1 {
                 payload.uid,
                 request.location,
                 request.purpose,
-                request.when,
                 payload.hasPermission(Permission.Teacher),
             ]
         );
@@ -185,13 +181,12 @@ class Outer extends V1 {
         }
         const payload = getJwtPayload(req.headers.authorization!);
         const specialroomInfo = await getOuterInfo(
-            request.when,
             payload.uid
         );
         if (!specialroomInfo) {
             throw new ResponseException(
                 -1,
-                `${request.when}차 때 특별실을 신청하지 않으셨습니다.`
+                `외박을 신청하지 않으셨습니다.`
             );
         }
         await execute("DELETE FROM outer WHERE applyId=?", [
@@ -205,8 +200,8 @@ class Outer extends V1 {
         res.status(200).json(response);
     }
 
-    async onGetAttendanceInfo(req: Request, res: Response) {
-        const request: v1.GetAttendanceInfoRequest = req.query as any;
+    async onGetOuterStudentInfo(req: Request, res: Response) {
+        const request: v1.GetOuterStudentInfoRequest = req.query as any;
         const info = [
             "출석부 학생 배치는 면학실 자리 배치와 같습니다.",
             "출석부 최하단에 일일 특별실 신청 명단이 있습니다.",
@@ -215,7 +210,7 @@ class Outer extends V1 {
             "학생이 특별실을 신청했으나 선생님이 신청을 거부했거나 승인하지 않은 경우, 학생 이름 아래에 '번호(X)'가 적힙니다.",
             "대부분의 경우 1차 면학 출석부를 다운받으시면 됩니다.",
         ];
-        const response: v1.GetAttendanceInfoResponse = {
+        const response: v1.GetOuterStudentInfoResponse = {
             status: 0,
             message: "",
             info: info,
@@ -223,8 +218,8 @@ class Outer extends V1 {
         res.status(200).json(response);
     }
 
-    async onGetAttendanceList(req: Request, res: Response) {
-        const request: v1.GetAttendanceListRequest = req.query as any;
+    async onGetOuterStudentList(req: Request, res: Response) {
+        const request: v1.GetOuterStudentListRequest = req.query as any;
         if (request.when === undefined) {
             throw new HttpException(400);
         }

@@ -279,7 +279,6 @@ export const getSpecialroomInfo = async (
 
 
 export const getOuterInfo = async (
-    when: number,
     applicantUid: number
 ) => {
     const getApplyIdQuery = await query(
@@ -292,8 +291,8 @@ export const getOuterInfo = async (
     for (const getApplyId of getApplyIdQuery) {
         const applyId = getApplyId.applyId;
         const getApplyQuery = await query(
-            "SELECT teacherUid, masterUid, purpose, location, GROUP_CONCAT(name) AS applicants, `when`, isApproved FROM user, outer WHERE user.uid = ANY(SELECT studentUid FROM specialroom_apply_student WHERE applyId=? GROUP BY studentUid) AND outer.applyId=? AND `when`=? GROUP BY teacherUid, masterUid, purpose, location, `when`, isApproved",
-            [applyId, applyId, when]
+            "SELECT teacherUid, masterUid, purpose, location, GROUP_CONCAT(name) AS applicants, `when`, isApproved FROM user, outer WHERE user.uid = ANY(SELECT studentUid FROM specialroom_apply_student WHERE applyId=? GROUP BY studentUid) AND outer.applyId=? AND `when`=0 GROUP BY teacherUid, masterUid, purpose, location, `when`, isApproved",
+            [applyId, applyId]
         );
         if (!getApplyQuery || getApplyQuery.length === 0) {
             continue;
