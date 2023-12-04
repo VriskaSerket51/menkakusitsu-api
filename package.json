@@ -4,7 +4,7 @@
     "description": "Back end server of menkakusitsu",
     "main": "index.ts",
     "scripts": {
-        "test": "cross-env NODE_ENV=development nodemon ./src/test/index.ts",
+        "test": "cross-env NODE_ENV=production nodemon ./src/test/index.ts",
         "build": "tsc --noEmit",
         "start": "cross-env NODE_ENV=production nodemon ./src/index.ts",
         "dev": "cross-env NODE_ENV=development nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/index.ts"
