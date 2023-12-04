@@ -4,6 +4,7 @@ import { parse } from "node-html-parser";
 import fs from "fs";
 import path from "path";
 import { execute, logger, query, readAllFiles } from "common-api-ts";
+import { JSDOM } from "jsdom";
 
 export const mealUpdate = async () => {
     await execute("DELETE FROM meal", []);
@@ -13,8 +14,8 @@ export const mealUpdate = async () => {
 
     const parseHtml = async (resp: FetchResponse) => {
         const data = await resp.text();
-        const html = parse(data);
-        const dd = html
+        const dom = new JSDOM(data);
+        const dd = dom.window.document
             .querySelector(".ulType_food")!
             .querySelectorAll("li")[1]
             .querySelector("dd")!;
