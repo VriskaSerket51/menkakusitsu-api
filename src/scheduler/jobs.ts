@@ -1,6 +1,5 @@
 import fetch, { Response as FetchResponse } from "node-fetch";
 import dayjs from "dayjs";
-import { parse } from "node-html-parser";
 import fs from "fs";
 import path from "path";
 import { execute, logger, query, readAllFiles } from "common-api-ts";
