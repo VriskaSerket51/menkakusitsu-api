@@ -505,7 +505,7 @@ class Specialroom extends V1 {
     async onGetStudentInfo(req: Request, res: Response) {
         const request: v1.GetStudentInfoRequest = req.query as any;
         const studentInfo: v1.UserInfo[] = (await query(
-            "SELECT uid, name, CONCAT(sid, ' ', name) AS value FROM user WHERE state=1 AND permission=1",
+            "SELECT uid, name, CONCAT(sid, ' ', name) AS value FROM user WHERE state=1 AND permission=1 ORDER BY sid",
             []
         )) as any;
         const response: v1.GetStudentInfoResponse = {
