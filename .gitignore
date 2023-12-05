@@ -26,3 +26,7 @@ dist-ssr
 tmp/
 package-lock.json
 .npmrc
+
+# Env
+.env.development
+.env.production
