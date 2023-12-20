@@ -27,6 +27,8 @@ tmp/
 package-lock.json
 .npmrc
 
+src/test/**
+
 # Env
 .env.development
 .env.production
