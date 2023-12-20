@@ -3,7 +3,7 @@ import { Permission, v1 } from "@common-jshs/menkakusitsu-lib";
 import V1 from "..";
 import { execute, query } from "common-api-ts";
 import { ResponseException, HttpException } from "common-api-ts";
-import { createAccessToken, createRefreshoken } from "common-api-ts";
+import { createAccessToken, createRefreshToken } from "common-api-ts";
 import {
     aes256Decrypt,
     aes256Encrypt,
@@ -144,7 +144,7 @@ class Auth extends V1 {
                     "졸업, 휴학, 자퇴 등의 이유로 삭제된 계정입니다."
                 );
             }
-            const refreshToken = createRefreshoken({
+            const refreshToken = createRefreshToken({
                 uid: userInfo.uid,
                 id: /*aes256Decrypt*/ userInfo.id,
                 permission: userInfo.permission,
@@ -206,7 +206,7 @@ class Auth extends V1 {
             );
         }
 
-        const refreshToken = createRefreshoken({
+        const refreshToken = createRefreshToken({
             uid: payload.uid,
             id: payload.id,
             permission: payload.permission,
