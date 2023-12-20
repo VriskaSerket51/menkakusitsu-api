@@ -4,6 +4,7 @@ import V1 from "..";
 import { query } from "common-api-ts";
 import { HttpException } from "common-api-ts";
 import dayjs from "dayjs";
+import { sanitizeRequest } from "../../../utils/Sanitizer";
 
 class Meal extends V1 {
     constructor() {
@@ -20,12 +21,16 @@ class Meal extends V1 {
     }
 
     async onGetMeal(req: Request, res: Response) {
-        const getMealRequest: v1.GetMealRequest = req.params as any;
+        const request: v1.GetMealRequest = req.params as any;
         // if (!getMealRequest.when) {
         // throw new HttpException(400);
         // }
 
-        const today = dayjs(getMealRequest.when);
+        if (!sanitizeRequest(request, "GetMealRequest")) {
+            throw new HttpException(400);
+        }
+
+        const today = dayjs(request.when);
         const tomorrow = today.add(1, "day");
 
         const todayMeal = await query(

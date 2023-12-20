@@ -12,6 +12,7 @@ import {
 import fs from "fs";
 import path from "path";
 import { Permission } from "@common-jshs/menkakusitsu-lib";
+import { sanitizeRequest } from "../../../utils/Sanitizer";
 
 class Specialroom extends V1 {
     constructor() {
@@ -96,9 +97,10 @@ class Specialroom extends V1 {
 
     async onGetApply(req: Request, res: Response) {
         const request: v1.GetApplyRequest = req.query as any;
-        if (request.when === undefined) {
+        if (!sanitizeRequest(request, "GetApplyRequest")) {
             throw new HttpException(400);
         }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const specialroomInfo = await getSpecialroomInfo(
             request.when,
@@ -120,15 +122,10 @@ class Specialroom extends V1 {
 
     async onPostApply(req: Request, res: Response) {
         const request: v1.PostApplyRequest = req.body;
-        if (
-            request.when === undefined ||
-            !request.location ||
-            !request.purpose ||
-            !request.teacherUid ||
-            !request.applicants
-        ) {
+        if (!sanitizeRequest(request, "PostApplyRequest")) {
             throw new HttpException(400);
         }
+
         for (const applicant of request.applicants) {
             const specialroomInfo = await getSpecialroomInfo(
                 request.when,
@@ -180,9 +177,10 @@ class Specialroom extends V1 {
 
     async onDeleteApply(req: Request, res: Response) {
         const request: v1.DeleteApplyRequest = req.body;
-        if (request.when === undefined) {
+        if (!sanitizeRequest(request, "DeleteApplyRequest")) {
             throw new HttpException(400);
         }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const specialroomInfo = await getSpecialroomInfo(
             request.when,
@@ -207,6 +205,10 @@ class Specialroom extends V1 {
 
     async onGetAttendanceInfo(req: Request, res: Response) {
         const request: v1.GetAttendanceInfoRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetAttendanceInfoRequest")) {
+            throw new HttpException(400);
+        }
+
         const info = [
             "출석부 학생 배치는 면학실 자리 배치와 같습니다.",
             "출석부 최하단에 일일 특별실 신청 명단이 있습니다.",
@@ -225,9 +227,10 @@ class Specialroom extends V1 {
 
     async onGetAttendanceList(req: Request, res: Response) {
         const request: v1.GetAttendanceListRequest = req.query as any;
-        if (request.when === undefined) {
+        if (!sanitizeRequest(request, "GetAttendanceListRequest")) {
             throw new HttpException(400);
         }
+
         const information = await query(
             "SELECT B.name, B.applyId, specialroom_apply.isApproved FROM (SELECT A.name, specialroom_apply_student.applyId FROM (SELECT name, uid FROM user) AS A, specialroom_apply_student WHERE A.uid = specialroom_apply_student.studentUid) AS B, specialroom_apply WHERE B.applyId=specialroom_apply.applyId AND specialroom_apply.when=?",
             [request.when]
@@ -294,6 +297,10 @@ class Specialroom extends V1 {
 
     async onGetSpecialroomInfo(req: Request, res: Response) {
         const request: v1.GetInfoRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetInfoRequest")) {
+            throw new HttpException(400);
+        }
+
         const isAuthed =
             Boolean(req.headers.authorization) &&
             req.headers.authorization!.startsWith("Bearer ");
@@ -308,9 +315,10 @@ class Specialroom extends V1 {
 
     async onPutSpecialroomInfo(req: Request, res: Response) {
         const request: v1.PutInfoRequest = req.body;
-        if (!request.information) {
+        if (!sanitizeRequest(request, "PutInfoRequest")) {
             throw new HttpException(400);
         }
+
         for (const specialroomInfo of request.information) {
             await execute(
                 "UPDATE specialroom_apply SET isApproved=? WHERE applyId=?",
@@ -327,6 +335,10 @@ class Specialroom extends V1 {
 
     async onGetManagerInfo(req: Request, res: Response) {
         const request: v1.GetManagerRequest = req.params as any;
+        if (!sanitizeRequest(request, "GetManagerRequest")) {
+            throw new HttpException(400);
+        }
+
         const getManagerQuery = await query(
             "SELECT * FROM specialroom_manager WHERE `when`=?",
             [request.when]
@@ -348,6 +360,10 @@ class Specialroom extends V1 {
 
     async onGetLocationInfo(req: Request, res: Response) {
         const request: v1.GetLocationInfoRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetLocationInfoRequest")) {
+            throw new HttpException(400);
+        }
+
         const locationInfo: v1.LocationInfo[] = [
             {
                 id: 0,
@@ -448,6 +464,10 @@ class Specialroom extends V1 {
 
     async onGetPurposeInfo(req: Request, res: Response) {
         const request: v1.GetPurposeInfoRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetPurposeInfoRequest")) {
+            throw new HttpException(400);
+        }
+
         const purposeInfo: v1.PurposeInfo[] = [
             {
                 id: 100,
@@ -504,6 +524,10 @@ class Specialroom extends V1 {
 
     async onGetStudentInfo(req: Request, res: Response) {
         const request: v1.GetStudentInfoRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetStudentInfoRequest")) {
+            throw new HttpException(400);
+        }
+
         const studentInfo: v1.UserInfo[] = (await query(
             "SELECT uid, name, CONCAT(sid, ' ', name) AS value FROM user WHERE state=1 AND permission=1 ORDER BY sid",
             []
@@ -518,6 +542,10 @@ class Specialroom extends V1 {
 
     async onGetTeacherInfo(req: Request, res: Response) {
         const request: v1.GetTeacherInfoRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetTeacherInfoRequest")) {
+            throw new HttpException(400);
+        }
+
         const teacherInfo: v1.UserInfo[] = (await query(
             "SELECT uid, name, CONCAT(name, ' 선생님') AS value FROM user WHERE state=1 AND permission=2",
             []

@@ -15,6 +15,7 @@ import {
     handleFiles,
 } from "../../../utils/Api";
 import { Permission } from "@common-jshs/menkakusitsu-lib";
+import { sanitizeRequest } from "../../../utils/Sanitizer";
 
 class Bbs extends V1 {
     constructor() {
@@ -80,11 +81,7 @@ class Bbs extends V1 {
 
     async onGetBbsPostList(req: Request, res: Response) {
         const request: v1.GetBbsPostListRequest = req.query as any;
-        if (
-            !request.board ||
-            request.postListSize === undefined ||
-            request.postPage === undefined
-        ) {
+        if (!sanitizeRequest(request, "GetBbsPostListRequest")) {
             throw new HttpException(400);
         }
         const getPostsCountQuery = await query(
@@ -142,7 +139,7 @@ class Bbs extends V1 {
 
     async onGetBbsPost(req: Request, res: Response) {
         const request: v1.GetBbsPostRequest = req.query as any;
-        if (!request.board || request.postId === undefined) {
+        if (!sanitizeRequest(request, "GetBbsPostRequest")) {
             throw new HttpException(400);
         }
         const getbbsPostQuery = await getBbsPost(request.board, request.postId);
@@ -219,14 +216,10 @@ class Bbs extends V1 {
             throw new HttpException(400);
         }
         const request: v1.PostBbsPostRequest = JSON.parse(props);
-        if (
-            !request.title ||
-            !request.content ||
-            !request.header ||
-            !request.board
-        ) {
+        if (!sanitizeRequest(request, "PostBbsPostRequest")) {
             throw new HttpException(400);
         }
+
         if (request.title.length > 20) {
             request.title.substring(0, 30);
         }
@@ -262,20 +255,14 @@ class Bbs extends V1 {
     async onPutBbsPost(req: Request, res: Response) {
         // throw new ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
         const request: v1.PutBbsPostRequest = req.body;
-        if (
-            request.postId === undefined ||
-            !request.board ||
-            !request.title ||
-            !request.content ||
-            !request.header ||
-            request.isPublic === undefined
-        ) {
+        if (!sanitizeRequest(request, "PutBbsPostRequest")) {
             throw new HttpException(400);
         }
-        if (request.title.length > 20) {
+
+        if (request.title && request.title.length > 20) {
             request.title.substring(0, 30);
         }
-        if (request.content.length > 500) {
+        if (request.content && request.content.length > 500) {
             request.content.substring(0, 500);
         }
         const getbbsPostQuery = await getBbsPost(request.board, request.postId);
@@ -307,9 +294,10 @@ class Bbs extends V1 {
 
     async onDeleteBbsPost(req: Request, res: Response) {
         const request: v1.DeleteBbsPostRequest = req.body;
-        if (!request.board || request.postId === undefined) {
+        if (!sanitizeRequest(request, "DeleteBbsPostRequest")) {
             throw new HttpException(400);
         }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const getbbsPostQuery = await getBbsPost(request.board, request.postId);
         if (
@@ -339,6 +327,10 @@ class Bbs extends V1 {
 
     async onGetBbsPostHeaders(req: Request, res: Response) {
         const request: v1.GetBbsPostHeaderRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetBbsPostHeaderRequest")) {
+            throw new HttpException(400);
+        }
+
         const headers = [];
         const payload = getJwtPayload(req.headers.authorization!);
         switch (request.board) {
@@ -369,14 +361,10 @@ class Bbs extends V1 {
 
     async onGetBbsCommentList(req: Request, res: Response) {
         const request: v1.GetBbsCommentListRequest = req.query as any;
-        if (
-            request.postId === undefined ||
-            !request.board ||
-            request.commentListSize === undefined ||
-            request.commentPage === undefined
-        ) {
+        if (!sanitizeRequest(request, "GetBbsCommentListRequest")) {
             throw new HttpException(400);
         }
+
         const getPostsCountQuery = await query(
             "SELECT COUNT(*) as cnt FROM bbs_comment WHERE deletedDate IS NULL AND board=? AND postId=?",
             [request.board, request.postId]
@@ -418,9 +406,10 @@ class Bbs extends V1 {
 
     async onPostBbsComment(req: Request, res: Response) {
         const request: v1.PostBbsCommentRequest = req.body;
-        if (request.postId === undefined || !request.content) {
+        if (!sanitizeRequest(request, "PostBbsCommentRequest")) {
             throw new HttpException(400);
         }
+
         if (request.content.length > 300) {
             request.content.substring(0, 300);
         }
@@ -446,9 +435,10 @@ class Bbs extends V1 {
 
     async onDeleteBbsComment(req: Request, res: Response) {
         const request: v1.DeleteBbsCommentRequest = req.body;
-        if (!request.board || request.postId === undefined) {
+        if (!sanitizeRequest(request, "DeleteBbsCommentRequest")) {
             throw new HttpException(400);
         }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const getbbsCommentQuery = await getBbsComment(
             request.board,

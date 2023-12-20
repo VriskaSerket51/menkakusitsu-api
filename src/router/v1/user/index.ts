@@ -4,12 +4,9 @@ import V1 from "..";
 import { HttpException, ResponseException } from "common-api-ts";
 import { execute, query } from "common-api-ts";
 import { sendPush } from "../../../firebase";
-import {
-    aes256Decrypt,
-    aes256Encrypt,
-    getJwtPayload,
-} from "../../../utils";
+import { aes256Decrypt, aes256Encrypt, getJwtPayload } from "../../../utils";
 import { sendPushToUser } from "../../../utils/Api";
+import { sanitizeRequest } from "../../../utils/Sanitizer";
 
 class User extends V1 {
     constructor() {
@@ -56,18 +53,16 @@ class User extends V1 {
     }
 
     async onPostPush(req: Request, res: Response) {
-        const postPushRequest: v1.PostPushRequest = req.body;
-        if (
-            !postPushRequest.notification ||
-            postPushRequest.targetUid === undefined
-        ) {
+        const request: v1.PostPushRequest = req.body;
+        if (!sanitizeRequest(request, "PostPushRequest")) {
             throw new HttpException(400);
         }
+
         sendPushToUser(
-            postPushRequest.targetUid,
-            postPushRequest.notification.title,
-            postPushRequest.notification.body,
-            postPushRequest.notification.link
+            request.targetUid,
+            request.notification.title,
+            request.notification.body,
+            request.notification.link
         );
         const postPushResponse: v1.PostPushResponse = {
             status: 0,
@@ -77,26 +72,27 @@ class User extends V1 {
     }
 
     async onPutPush(req: Request, res: Response) {
-        const putPushRequest: v1.PutPushRequest = req.body;
-        if (!putPushRequest.pushToken || !putPushRequest.deviceId) {
+        const request: v1.PutPushRequest = req.body;
+        if (!sanitizeRequest(request, "PutPushRequest")) {
             throw new HttpException(400);
         }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const cnt = (
             await query(
                 "SELECT COUNT(*) AS cnt FROM push_token WHERE uid=? AND deviceId=?",
-                [payload.uid, putPushRequest.deviceId]
+                [payload.uid, request.deviceId]
             )
         )[0].cnt;
         if (cnt === 0) {
             await execute(
                 "INSERT INTO push_token(uid, token, deviceId, createdDate) VALUE(?, ?, ?, NOW())",
-                [payload.uid, putPushRequest.pushToken, putPushRequest.deviceId]
+                [payload.uid, request.pushToken, request.deviceId]
             );
         } else {
             await execute(
                 "UPDATE push_token SET token=? WHERE uid=? AND deviceId=?",
-                [payload.uid, putPushRequest.deviceId]
+                [payload.uid, request.deviceId]
             );
         }
         const putPushResponse: v1.PutPushResponse = {
@@ -107,14 +103,15 @@ class User extends V1 {
     }
 
     async onDeletePush(req: Request, res: Response) {
-        const deletePushRequest: v1.DeletePushRequest = req.body;
-        if (!deletePushRequest.devcieId) {
+        const request: v1.DeletePushRequest = req.body;
+        if (!sanitizeRequest(request, "DeletePushRequest")) {
             throw new HttpException(400);
         }
+
         const payload = getJwtPayload(req.headers.authorization!);
         execute("DELETE FROM push_token WHERE uid=? AND deviceId=?", [
             payload.uid,
-            deletePushRequest.devcieId,
+            request.devcieId,
         ]);
         const deletePushResponse: v1.DeletePushResponse = {
             status: 0,
@@ -125,6 +122,10 @@ class User extends V1 {
 
     async onGetMyPrivateInfo(req: Request, res: Response) {
         const request: v1.GetMyPrivateInfoRequest = req.query as any;
+        if (!sanitizeRequest(request, "GetMyPrivateInfoRequest")) {
+            throw new HttpException(400);
+        }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const getUserInfoQuery = await query("SELECT * FROM user WHERE uid=?", [
             payload.uid,
@@ -145,6 +146,10 @@ class User extends V1 {
 
     async onPutEmail(req: Request, res: Response) {
         const request: v1.PutEmailRequest = req.body;
+        if (!sanitizeRequest(request, "PutEmailRequest")) {
+            throw new HttpException(400);
+        }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const getUserInfoQuery = await query("SELECT * FROM user WHERE uid=?", [
             payload.uid,
@@ -187,6 +192,10 @@ class User extends V1 {
 
     async onPutPassword(req: Request, res: Response) {
         const request: v1.PutPasswordRequest = req.body;
+        if (!sanitizeRequest(request, "PutPasswordRequest")) {
+            throw new HttpException(400);
+        }
+
         const payload = getJwtPayload(req.headers.authorization!);
         const getUserInfoQuery = await query("SELECT * FROM user WHERE uid=?", [
             payload.uid,
@@ -205,10 +214,10 @@ class User extends V1 {
                 "이전 비밀번호를 알맞게 입력하지 않았습니다."
             );
         }
-        await execute(
-            "UPDATE user SET password=? WHERE uid=?",
-            [request.newPassword, payload.uid]
-        );
+        await execute("UPDATE user SET password=? WHERE uid=?", [
+            request.newPassword,
+            payload.uid,
+        ]);
         const response: v1.PutEmailResponse = {
             status: 0,
             message: "",

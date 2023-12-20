@@ -11,6 +11,7 @@ import {
     parseBearer,
 } from "../../../utils";
 import dayjs from "dayjs";
+import { sanitizeRequest } from "../../../utils/Sanitizer";
 
 class Auth extends V1 {
     constructor() {
@@ -55,15 +56,10 @@ class Auth extends V1 {
 
     async onPostRegister(req: Request, res: Response) {
         const request: v1.PostRegisterRequest = req.body;
-        if (
-            !request.id ||
-            request.sid == undefined ||
-            !request.name ||
-            !request.email ||
-            !request.password
-        ) {
+        if (!sanitizeRequest(request, "PostRegisterRequest")) {
             throw new HttpException(400);
         }
+
         const day = dayjs();
         if (day.month() > 3) {
             throw new ResponseException(-1, "신입생 등록 기간이 아닙니다.");
@@ -109,9 +105,10 @@ class Auth extends V1 {
 
     async onDeleteSecession(req: Request, res: Response) {
         const request: v1.DeleteSecessionRequest = req.body;
-        if (!request.name) {
+        if (!sanitizeRequest(request, "DeleteSecessionRequest")) {
             throw new HttpException(400);
         }
+
         await execute("UPDATE user SET state=2 WHERE name=?", [request.name]);
         const response: v1.DeleteSecessionResponse = {
             status: 0,
@@ -122,9 +119,10 @@ class Auth extends V1 {
 
     async onPostLogin(req: Request, res: Response) {
         const request: v1.PostLoginRequest = req.body;
-        if (!request.id || !request.password) {
+        if (!sanitizeRequest(request, "PostLoginRequest")) {
             throw new HttpException(400);
         }
+
         const loginQuery = await query(
             "SELECT uid, id, password, email, permission, state FROM user WHERE id=?",
             [/*aes256Encrypt*/ request.id]
@@ -180,6 +178,11 @@ class Auth extends V1 {
     async onPostRefresh(req: Request, res: Response) {
         const payload = parseBearer(req.headers.authorization!);
         const request: v1.PostRefreshRequest = req.body;
+
+        if (!sanitizeRequest(request, "PostRefreshRequest")) {
+            throw new HttpException(400);
+        }
+
         const refreshTokenQuery = await query(
             "SELECT token FROM refresh_token WHERE uid=?",
             [payload.uid]
@@ -229,8 +232,14 @@ class Auth extends V1 {
     }
 
     async onDeleteLogout(req: Request, res: Response) {
-        const request: v1.DeleteLogoutRequest = req.body;
         const payload = parseBearer(req.headers.authorization!);
+
+        const request: v1.DeleteLogoutRequest = req.body;
+
+        if (!sanitizeRequest(request, "DeleteLogoutRequest")) {
+            throw new HttpException(400);
+        }
+
         await execute("UPDATE refresh_token SET token=NULL WHERE uid=?", [
             payload.uid,
         ]);
@@ -243,9 +252,10 @@ class Auth extends V1 {
 
     async onPutForgotPassword(req: Request, res: Response) {
         const request: v1.PutForgotPasswordRequest = req.body;
-        if (!request.id || !request.email) {
+        if (!sanitizeRequest(request, "PutForgotPasswordRequest")) {
             throw new HttpException(400);
         }
+
         request.id = aes256Encrypt(request.id);
         request.email = aes256Encrypt(request.email);
 

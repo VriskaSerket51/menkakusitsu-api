@@ -44,135 +44,135 @@ type RequestType =
     | "PutPushRequest"
     | "DeletePushRequest";
 
-export const checkRequest = (request: unknown, type: RequestType): boolean => {
+export const sanitizeRequest = (request: unknown, type: RequestType): boolean => {
     switch (type) {
         case "PostRegisterRequest":
-            return checkPostRegisterRequest(request as v1.PostRegisterRequest);
+            return sanitizePostRegisterRequest(request as v1.PostRegisterRequest);
         case "DeleteSecessionRequest":
-            return checkDeleteSecessionRequest(
+            return sanitizeDeleteSecessionRequest(
                 request as v1.DeleteSecessionRequest
             );
         case "PostLoginRequest":
-            return checkPostLoginRequest(request as v1.PostLoginRequest);
+            return sanitizePostLoginRequest(request as v1.PostLoginRequest);
         case "DeleteLogoutRequest":
-            return checkDeleteLogoutRequest(request as v1.DeleteLogoutRequest);
+            return sanitizeDeleteLogoutRequest(request as v1.DeleteLogoutRequest);
         case "PostRefreshRequest":
-            return checkPostRefreshRequest(request as v1.PostRefreshRequest);
+            return sanitizePostRefreshRequest(request as v1.PostRefreshRequest);
         case "PutForgotPasswordRequest":
-            return checkPutForgotPasswordRequest(
+            return sanitizePutForgotPasswordRequest(
                 request as v1.PutForgotPasswordRequest
             );
         case "GetBbsPostListRequest":
-            return checkGetBbsPostListRequest(
+            return sanitizeGetBbsPostListRequest(
                 request as v1.GetBbsPostListRequest
             );
         case "GetBbsPostRequest":
-            return checkGetBbsPostRequest(request as v1.GetBbsPostRequest);
+            return sanitizeGetBbsPostRequest(request as v1.GetBbsPostRequest);
         case "PostBbsPostRequest":
-            return checkPostBbsPostRequest(request as v1.PostBbsPostRequest);
+            return sanitizePostBbsPostRequest(request as v1.PostBbsPostRequest);
         case "PutBbsPostRequest":
-            return checkPutBbsPostRequest(request as v1.PutBbsPostRequest);
+            return sanitizePutBbsPostRequest(request as v1.PutBbsPostRequest);
         case "DeleteBbsPostRequest":
-            return checkDeleteBbsPostRequest(
+            return sanitizeDeleteBbsPostRequest(
                 request as v1.DeleteBbsPostRequest
             );
         case "GetBbsPostHeaderRequest":
-            return checkGetBbsPostHeaderRequest(
+            return sanitizeGetBbsPostHeaderRequest(
                 request as v1.GetBbsPostHeaderRequest
             );
         case "GetBbsCommentListRequest":
-            return checkGetBbsCommentListRequest(
+            return sanitizeGetBbsCommentListRequest(
                 request as v1.GetBbsCommentListRequest
             );
         case "PostBbsCommentRequest":
-            return checkPostBbsCommentRequest(
+            return sanitizePostBbsCommentRequest(
                 request as v1.PostBbsCommentRequest
             );
         case "DeleteBbsCommentRequest":
-            return checkDeleteBbsCommentRequest(
+            return sanitizeDeleteBbsCommentRequest(
                 request as v1.DeleteBbsCommentRequest
             );
         case "GetSubjectListRequest":
-            return checkGetSubjectListRequest(
+            return sanitizeGetSubjectListRequest(
                 request as v1.GetSubjectListRequest
             );
         case "GetIdbotChatRequest":
-            return checkGetIdbotChatRequest(request as v1.GetIdbotChatRequest);
+            return sanitizeGetIdbotChatRequest(request as v1.GetIdbotChatRequest);
         case "GetMealRequest":
-            return checkGetMealRequest(request as v1.GetMealRequest);
+            return sanitizeGetMealRequest(request as v1.GetMealRequest);
         case "PutMealRequest":
-            return checkPutMealRequest(request as v1.PutMealRequest);
+            return sanitizePutMealRequest(request as v1.PutMealRequest);
         case "GetApplyRequest":
-            return checkGetApplyRequest(request as v1.GetApplyRequest);
+            return sanitizeGetApplyRequest(request as v1.GetApplyRequest);
         case "PostApplyRequest":
-            return checkPostApplyRequest(request as v1.PostApplyRequest);
+            return sanitizePostApplyRequest(request as v1.PostApplyRequest);
         case "DeleteApplyRequest":
-            return checkDeleteApplyRequest(request as v1.DeleteApplyRequest);
+            return sanitizeDeleteApplyRequest(request as v1.DeleteApplyRequest);
         case "GetAttendanceInfoRequest":
-            return checkGetAttendanceInfoRequest(
+            return sanitizeGetAttendanceInfoRequest(
                 request as v1.GetAttendanceInfoRequest
             );
         case "GetAttendanceListRequest":
-            return checkGetAttendanceListRequest(
+            return sanitizeGetAttendanceListRequest(
                 request as v1.GetAttendanceListRequest
             );
         case "GetInfoRequest":
-            return checkGetInfoRequest(request as v1.GetInfoRequest);
+            return sanitizeGetInfoRequest(request as v1.GetInfoRequest);
         case "PutInfoRequest":
-            return checkPutInfoRequest(request as v1.PutInfoRequest);
+            return sanitizePutInfoRequest(request as v1.PutInfoRequest);
         case "GetManagerRequest":
-            return checkGetManagerRequest(request as v1.GetManagerRequest);
+            return sanitizeGetManagerRequest(request as v1.GetManagerRequest);
         case "GetLocationInfoRequest":
-            return checkGetLocationInfoRequest(
+            return sanitizeGetLocationInfoRequest(
                 request as v1.GetLocationInfoRequest
             );
         case "GetPurposeInfoRequest":
-            return checkGetPurposeInfoRequest(
+            return sanitizeGetPurposeInfoRequest(
                 request as v1.GetPurposeInfoRequest
             );
         case "GetStudentInfoRequest":
-            return checkGetStudentInfoRequest(
+            return sanitizeGetStudentInfoRequest(
                 request as v1.GetStudentInfoRequest
             );
         case "GetTeacherInfoRequest":
-            return checkGetTeacherInfoRequest(
+            return sanitizeGetTeacherInfoRequest(
                 request as v1.GetTeacherInfoRequest
             );
         case "GetOuterStudentInfoRequest":
-            return checkGetOuterStudentInfoRequest(
+            return sanitizeGetOuterStudentInfoRequest(
                 request as v1.GetOuterStudentInfoRequest
             );
         case "PostOuterStudentInfoRequest":
-            return checkPostOuterStudentInfoRequest(
+            return sanitizePostOuterStudentInfoRequest(
                 request as v1.PostOuterStudentInfoRequest
             );
         case "DeleteOuterStudentInfoRequest":
-            return checkDeleteOuterStudentInfoRequest(
+            return sanitizeDeleteOuterStudentInfoRequest(
                 request as v1.DeleteOuterStudentInfoRequest
             );
         case "GetTimetableRequest":
-            return checkGetTimetableRequest(request as v1.GetTimetableRequest);
+            return sanitizeGetTimetableRequest(request as v1.GetTimetableRequest);
         case "PutTimetableRequest":
-            return checkPutTimetableRequest(request as v1.PutTimetableRequest);
+            return sanitizePutTimetableRequest(request as v1.PutTimetableRequest);
         case "GetMyPrivateInfoRequest":
-            return checkGetMyPrivateInfoRequest(
+            return sanitizeGetMyPrivateInfoRequest(
                 request as v1.GetMyPrivateInfoRequest
             );
         case "PutEmailRequest":
-            return checkPutEmailRequest(request as v1.PutEmailRequest);
+            return sanitizePutEmailRequest(request as v1.PutEmailRequest);
         case "PutPasswordRequest":
-            return checkPutPasswordRequest(request as v1.PutPasswordRequest);
+            return sanitizePutPasswordRequest(request as v1.PutPasswordRequest);
         case "PostPushRequest":
-            return checkPostPushRequest(request as v1.PostPushRequest);
+            return sanitizePostPushRequest(request as v1.PostPushRequest);
         case "PutPushRequest":
-            return checkPutPushRequest(request as v1.PutPushRequest);
+            return sanitizePutPushRequest(request as v1.PutPushRequest);
         case "DeletePushRequest":
-            return checkDeletePushRequest(request as v1.DeletePushRequest);
+            return sanitizeDeletePushRequest(request as v1.DeletePushRequest);
     }
     return false;
 };
 
-const checkPostRegisterRequest = (request: v1.PostRegisterRequest): boolean => {
+const sanitizePostRegisterRequest = (request: v1.PostRegisterRequest): boolean => {
     if (
         typeof request.id != "string" ||
         typeof request.sid != "number" ||
@@ -185,7 +185,7 @@ const checkPostRegisterRequest = (request: v1.PostRegisterRequest): boolean => {
     return true;
 };
 
-const checkDeleteSecessionRequest = (
+const sanitizeDeleteSecessionRequest = (
     request: v1.DeleteSecessionRequest
 ): boolean => {
     if (
@@ -198,22 +198,22 @@ const checkDeleteSecessionRequest = (
     return true;
 };
 
-const checkPostLoginRequest = (request: v1.PostLoginRequest): boolean => {
+const sanitizePostLoginRequest = (request: v1.PostLoginRequest): boolean => {
     if (typeof request.id != "string" || typeof request.password != "string") {
         return false;
     }
     return true;
 };
 
-const checkDeleteLogoutRequest = (request: v1.DeleteLogoutRequest): boolean => {
+const sanitizeDeleteLogoutRequest = (request: v1.DeleteLogoutRequest): boolean => {
     return true;
 };
 
-const checkPostRefreshRequest = (request: v1.PostRefreshRequest): boolean => {
+const sanitizePostRefreshRequest = (request: v1.PostRefreshRequest): boolean => {
     return true;
 };
 
-const checkPutForgotPasswordRequest = (
+const sanitizePutForgotPasswordRequest = (
     request: v1.PutForgotPasswordRequest
 ): boolean => {
     if (typeof request.id != "string" || typeof request.email != "string") {
@@ -222,7 +222,7 @@ const checkPutForgotPasswordRequest = (
     return true;
 };
 
-const checkGetBbsPostListRequest = (
+const sanitizeGetBbsPostListRequest = (
     request: v1.GetBbsPostListRequest
 ): boolean => {
     if (
@@ -235,14 +235,14 @@ const checkGetBbsPostListRequest = (
     return true;
 };
 
-const checkGetBbsPostRequest = (request: v1.GetBbsPostRequest): boolean => {
+const sanitizeGetBbsPostRequest = (request: v1.GetBbsPostRequest): boolean => {
     if (typeof request.board != "string" || typeof request.postId != "number") {
         return false;
     }
     return true;
 };
 
-const checkPostBbsPostRequest = (request: v1.PostBbsPostRequest): boolean => {
+const sanitizePostBbsPostRequest = (request: v1.PostBbsPostRequest): boolean => {
     if (
         typeof request.title != "string" ||
         typeof request.content != "string" ||
@@ -255,7 +255,7 @@ const checkPostBbsPostRequest = (request: v1.PostBbsPostRequest): boolean => {
     return true;
 };
 
-const checkPutBbsPostRequest = (request: v1.PutBbsPostRequest): boolean => {
+const sanitizePutBbsPostRequest = (request: v1.PutBbsPostRequest): boolean => {
     if (
         typeof request.board != "string" ||
         typeof request.postId != "number" ||
@@ -269,7 +269,7 @@ const checkPutBbsPostRequest = (request: v1.PutBbsPostRequest): boolean => {
     return true;
 };
 
-const checkDeleteBbsPostRequest = (
+const sanitizeDeleteBbsPostRequest = (
     request: v1.DeleteBbsPostRequest
 ): boolean => {
     if (typeof request.board != "string" || typeof request.postId != "number") {
@@ -278,7 +278,7 @@ const checkDeleteBbsPostRequest = (
     return true;
 };
 
-const checkGetBbsPostHeaderRequest = (
+const sanitizeGetBbsPostHeaderRequest = (
     request: v1.GetBbsPostHeaderRequest
 ): boolean => {
     if (typeof request.board != "string") {
@@ -287,7 +287,7 @@ const checkGetBbsPostHeaderRequest = (
     return true;
 };
 
-const checkGetBbsCommentListRequest = (
+const sanitizeGetBbsCommentListRequest = (
     request: v1.GetBbsCommentListRequest
 ): boolean => {
     if (
@@ -301,7 +301,7 @@ const checkGetBbsCommentListRequest = (
     return true;
 };
 
-const checkPostBbsCommentRequest = (
+const sanitizePostBbsCommentRequest = (
     request: v1.PostBbsCommentRequest
 ): boolean => {
     if (
@@ -314,7 +314,7 @@ const checkPostBbsCommentRequest = (
     return true;
 };
 
-const checkDeleteBbsCommentRequest = (
+const sanitizeDeleteBbsCommentRequest = (
     request: v1.DeleteBbsCommentRequest
 ): boolean => {
     if (
@@ -327,7 +327,7 @@ const checkDeleteBbsCommentRequest = (
     return true;
 };
 
-const checkGetSubjectListRequest = (
+const sanitizeGetSubjectListRequest = (
     request: v1.GetSubjectListRequest
 ): boolean => {
     if (
@@ -339,21 +339,21 @@ const checkGetSubjectListRequest = (
     return true;
 };
 
-const checkGetIdbotChatRequest = (request: v1.GetIdbotChatRequest): boolean => {
+const sanitizeGetIdbotChatRequest = (request: v1.GetIdbotChatRequest): boolean => {
     if (typeof request.chatInput != "string") {
         return false;
     }
     return true;
 };
 
-const checkGetMealRequest = (request: v1.GetMealRequest): boolean => {
+const sanitizeGetMealRequest = (request: v1.GetMealRequest): boolean => {
     if (typeof request.when != "string") {
         return false;
     }
     return true;
 };
 
-const checkMealInfo = (data: v1.MealInfo): boolean => {
+const sanitizeMealInfo = (data: v1.MealInfo): boolean => {
     if (!Array.isArray(data.meals)) {
         return false;
     }
@@ -365,22 +365,22 @@ const checkMealInfo = (data: v1.MealInfo): boolean => {
     return true;
 };
 
-const checkPutMealRequest = (request: v1.PutMealRequest): boolean => {
+const sanitizePutMealRequest = (request: v1.PutMealRequest): boolean => {
     return (
-        checkMealInfo(request.breakfast) &&
-        checkMealInfo(request.lunch) &&
-        checkMealInfo(request.dinner)
+        sanitizeMealInfo(request.breakfast) &&
+        sanitizeMealInfo(request.lunch) &&
+        sanitizeMealInfo(request.dinner)
     );
 };
 
-const checkGetApplyRequest = (request: v1.GetApplyRequest): boolean => {
+const sanitizeGetApplyRequest = (request: v1.GetApplyRequest): boolean => {
     if (typeof request.when != "number") {
         return false;
     }
     return true;
 };
 
-const checkUserInfo = (userInfo: v1.UserInfo) => {
+const sanitizeUserInfo = (userInfo: v1.UserInfo) => {
     if (
         typeof userInfo.uid != "number" ||
         typeof userInfo.value != "string" ||
@@ -391,23 +391,23 @@ const checkUserInfo = (userInfo: v1.UserInfo) => {
     return true;
 };
 
-const checkUserInfoArray = (userInfoArray: v1.UserInfo[]) => {
+const sanitizeUserInfoArray = (userInfoArray: v1.UserInfo[]) => {
     if (!Array.isArray(userInfoArray)) {
         return false;
     }
 
     for (const userInfo of userInfoArray) {
-        if (!checkUserInfo(userInfo)) {
+        if (!sanitizeUserInfo(userInfo)) {
             return false;
         }
     }
     return true;
 };
 
-const checkPostApplyRequest = (request: v1.PostApplyRequest): boolean => {
+const sanitizePostApplyRequest = (request: v1.PostApplyRequest): boolean => {
     if (
         typeof request.teacherUid != "number" ||
-        !checkUserInfoArray(request.applicants) ||
+        !sanitizeUserInfoArray(request.applicants) ||
         typeof request.location != "string" ||
         typeof request.purpose != "string" ||
         typeof request.when != "number"
@@ -417,20 +417,20 @@ const checkPostApplyRequest = (request: v1.PostApplyRequest): boolean => {
     return true;
 };
 
-const checkDeleteApplyRequest = (request: v1.DeleteApplyRequest): boolean => {
+const sanitizeDeleteApplyRequest = (request: v1.DeleteApplyRequest): boolean => {
     if (typeof request.when != "number") {
         return false;
     }
     return true;
 };
 
-const checkGetAttendanceInfoRequest = (
+const sanitizeGetAttendanceInfoRequest = (
     request: v1.GetAttendanceInfoRequest
 ): boolean => {
     return true;
 };
 
-const checkGetAttendanceListRequest = (
+const sanitizeGetAttendanceListRequest = (
     request: v1.GetAttendanceListRequest
 ): boolean => {
     if (typeof request.when != "number") {
@@ -439,16 +439,16 @@ const checkGetAttendanceListRequest = (
     return true;
 };
 
-const checkGetInfoRequest = (request: v1.GetInfoRequest): boolean => {
+const sanitizeGetInfoRequest = (request: v1.GetInfoRequest): boolean => {
     return true;
 };
 
-const checkSpecialroomInfo = (specialroomInfo: v1.SpecialroomInfo) => {
+const sanitizeSpecialroomInfo = (specialroomInfo: v1.SpecialroomInfo) => {
     if (
         typeof specialroomInfo.applyId != "number" ||
         typeof specialroomInfo.state != "number" ||
-        !checkUserInfo(specialroomInfo.master) ||
-        !checkUserInfo(specialroomInfo.teacher) ||
+        !sanitizeUserInfo(specialroomInfo.master) ||
+        !sanitizeUserInfo(specialroomInfo.teacher) ||
         typeof specialroomInfo.applicants != "string" ||
         typeof specialroomInfo.location != "string" ||
         typeof specialroomInfo.purpose != "string" ||
@@ -459,69 +459,69 @@ const checkSpecialroomInfo = (specialroomInfo: v1.SpecialroomInfo) => {
     return true;
 };
 
-const checkSpecialroomInfoArray = (
+const sanitizeSpecialroomInfoArray = (
     specialroomInfoArray: v1.SpecialroomInfo[]
 ) => {
     if (!Array.isArray(specialroomInfoArray)) {
         return false;
     }
     for (const specialroomInfo of specialroomInfoArray) {
-        if (!checkSpecialroomInfo(specialroomInfo)) {
+        if (!sanitizeSpecialroomInfo(specialroomInfo)) {
             return false;
         }
     }
     return true;
 };
 
-const checkPutInfoRequest = (request: v1.PutInfoRequest): boolean => {
-    if (!checkSpecialroomInfoArray(request.information)) {
+const sanitizePutInfoRequest = (request: v1.PutInfoRequest): boolean => {
+    if (!sanitizeSpecialroomInfoArray(request.information)) {
         return false;
     }
     return true;
 };
 
-const checkGetManagerRequest = (request: v1.GetManagerRequest): boolean => {
+const sanitizeGetManagerRequest = (request: v1.GetManagerRequest): boolean => {
     if (typeof request.when != "string") {
         return false;
     }
     return true;
 };
 
-const checkGetLocationInfoRequest = (
+const sanitizeGetLocationInfoRequest = (
     request: v1.GetLocationInfoRequest
 ): boolean => {
     return true;
 };
 
-const checkGetPurposeInfoRequest = (
+const sanitizeGetPurposeInfoRequest = (
     request: v1.GetPurposeInfoRequest
 ): boolean => {
     return true;
 };
 
-const checkGetStudentInfoRequest = (
+const sanitizeGetStudentInfoRequest = (
     request: v1.GetStudentInfoRequest
 ): boolean => {
     return true;
 };
 
-const checkGetTeacherInfoRequest = (
+const sanitizeGetTeacherInfoRequest = (
     request: v1.GetTeacherInfoRequest
 ): boolean => {
     return true;
 };
 
-const checkGetOuterStudentInfoRequest = (
+const sanitizeGetOuterStudentInfoRequest = (
     request: v1.GetOuterStudentInfoRequest
 ): boolean => {
     return true;
 };
 
-const checkOuterStudentInfo = (
+const sanitizeOuterStudentInfo = (
     outerStudentInfo: v1.OuterStudentInfo
 ): boolean => {
     if (
-        !checkUserInfo(outerStudentInfo.student) ||
+        !sanitizeUserInfo(outerStudentInfo.student) ||
         typeof outerStudentInfo.reason != "string" ||
         (outerStudentInfo.until != undefined &&
             typeof outerStudentInfo.until != "string")
@@ -531,16 +531,16 @@ const checkOuterStudentInfo = (
     return true;
 };
 
-const checkPostOuterStudentInfoRequest = (
+const sanitizePostOuterStudentInfoRequest = (
     request: v1.PostOuterStudentInfoRequest
 ): boolean => {
-    if (!checkOuterStudentInfo(request.outerStudentInfo)) {
+    if (!sanitizeOuterStudentInfo(request.outerStudentInfo)) {
         return false;
     }
     return true;
 };
 
-const checkDeleteOuterStudentInfoRequest = (
+const sanitizeDeleteOuterStudentInfoRequest = (
     request: v1.DeleteOuterStudentInfoRequest
 ): boolean => {
     if (typeof request.studentUid != "number") {
@@ -549,14 +549,14 @@ const checkDeleteOuterStudentInfoRequest = (
     return true;
 };
 
-const checkGetTimetableRequest = (request: v1.GetTimetableRequest): boolean => {
+const sanitizeGetTimetableRequest = (request: v1.GetTimetableRequest): boolean => {
     if (typeof request.when != "string") {
         return false;
     }
     return true;
 };
 
-const checkTimetableCell = (timetableCell: v1.TimetableCell) => {
+const sanitizeTimetableCell = (timetableCell: v1.TimetableCell) => {
     if (
         typeof timetableCell.key != "string" ||
         typeof timetableCell.value != "string"
@@ -566,35 +566,35 @@ const checkTimetableCell = (timetableCell: v1.TimetableCell) => {
     return true;
 };
 
-const checkTimetableCellArray = (timetableCellArray: v1.TimetableCell[]) => {
+const sanitizeTimetableCellArray = (timetableCellArray: v1.TimetableCell[]) => {
     if (!Array.isArray(timetableCellArray)) {
         return false;
     }
     for (const specialroomInfo of timetableCellArray) {
-        if (!checkTimetableCell(specialroomInfo)) {
+        if (!sanitizeTimetableCell(specialroomInfo)) {
             return false;
         }
     }
     return true;
 };
 
-const checkPutTimetableRequest = (request: v1.PutTimetableRequest): boolean => {
+const sanitizePutTimetableRequest = (request: v1.PutTimetableRequest): boolean => {
     if (
         typeof request.when != "string" ||
-        !checkTimetableCellArray(request.timetableInfo)
+        !sanitizeTimetableCellArray(request.timetableInfo)
     ) {
         return false;
     }
     return true;
 };
 
-const checkGetMyPrivateInfoRequest = (
+const sanitizeGetMyPrivateInfoRequest = (
     request: v1.GetMyPrivateInfoRequest
 ): boolean => {
     return true;
 };
 
-const checkPutEmailRequest = (request: v1.PutEmailRequest): boolean => {
+const sanitizePutEmailRequest = (request: v1.PutEmailRequest): boolean => {
     if (
         typeof request.oldEmail != "string" ||
         typeof request.newEmail != "string"
@@ -604,7 +604,7 @@ const checkPutEmailRequest = (request: v1.PutEmailRequest): boolean => {
     return true;
 };
 
-const checkPutPasswordRequest = (request: v1.PutPasswordRequest): boolean => {
+const sanitizePutPasswordRequest = (request: v1.PutPasswordRequest): boolean => {
     if (
         typeof request.oldPassword != "string" ||
         typeof request.newPassword != "string"
@@ -614,7 +614,7 @@ const checkPutPasswordRequest = (request: v1.PutPasswordRequest): boolean => {
     return true;
 };
 
-const checkNotification = (notification: any): boolean => {
+const sanitizeNotification = (notification: any): boolean => {
     if (
         typeof notification.title != "string" ||
         typeof notification.body != "string" ||
@@ -625,17 +625,17 @@ const checkNotification = (notification: any): boolean => {
     return true;
 };
 
-const checkPostPushRequest = (request: v1.PostPushRequest): boolean => {
+const sanitizePostPushRequest = (request: v1.PostPushRequest): boolean => {
     if (
         typeof request.targetUid != "number" ||
-        !checkNotification(request.notification)
+        !sanitizeNotification(request.notification)
     ) {
         return false;
     }
     return true;
 };
 
-const checkPutPushRequest = (request: v1.PutPushRequest): boolean => {
+const sanitizePutPushRequest = (request: v1.PutPushRequest): boolean => {
     if (
         typeof request.pushToken != "string" ||
         typeof request.deviceId != "string"
@@ -645,7 +645,7 @@ const checkPutPushRequest = (request: v1.PutPushRequest): boolean => {
     return true;
 };
 
-const checkDeletePushRequest = (request: v1.DeletePushRequest): boolean => {
+const sanitizeDeletePushRequest = (request: v1.DeletePushRequest): boolean => {
     if (typeof request.devcieId != "string") {
         return false;
     }

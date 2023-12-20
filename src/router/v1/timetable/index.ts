@@ -5,6 +5,7 @@ import { execute, query } from "common-api-ts";
 import { HttpException } from "common-api-ts";
 import fs from "fs";
 import path from "path";
+import { sanitizeRequest } from "../../../utils/Sanitizer";
 
 class Timetable extends V1 {
     constructor() {
@@ -27,14 +28,14 @@ class Timetable extends V1 {
     }
 
     async onGetTimetable(req: Request, res: Response) {
-        const getTimetableRequest: v1.GetTimetableRequest = req.params as any;
-        if (!getTimetableRequest.when) {
+        const request: v1.GetTimetableRequest = req.params as any;
+        if (!sanitizeRequest(request, "GetTimetableRequest")) {
             throw new HttpException(400);
         }
 
         const timetableQuery: v1.TimetableCell[] = (await query(
             "SELECT `key`, `value` FROM timetable WHERE `when`=?",
-            [getTimetableRequest.when]
+            [request.when]
         )) as any;
 
         const findValue = (key: string) => {
@@ -45,7 +46,7 @@ class Timetable extends V1 {
             }
             execute(
                 "INSERT INTO timetable(`key`, `value`, `when`) VALUE(?, ?, ?)",
-                [key, "null", getTimetableRequest.when]
+                [key, "null", request.when]
             );
             return "null";
         };
@@ -92,23 +93,23 @@ class Timetable extends V1 {
     }
 
     async onPutTimetable(req: Request, res: Response) {
-        const putTimetableRequest: v1.PutTimetableRequest = req.body;
-        putTimetableRequest.when = req.params.when;
-        if (!putTimetableRequest.when || !putTimetableRequest.timetableInfo) {
+        const request: v1.PutTimetableRequest = req.body;
+        if (!sanitizeRequest(request, "PutTimetableRequest")) {
             throw new HttpException(400);
         }
 
-        for (const timetableCell of putTimetableRequest.timetableInfo) {
+        request.when = req.params.when;
+        if (!request.when || !request.timetableInfo) {
+            throw new HttpException(400);
+        }
+
+        for (const timetableCell of request.timetableInfo) {
             if (!timetableCell.key) {
                 continue;
             }
             await execute(
                 "UPDATE timetable SET `value`=? WHERE `when`=? AND `key`=?",
-                [
-                    timetableCell.value,
-                    putTimetableRequest.when,
-                    timetableCell.key,
-                ]
+                [timetableCell.value, request.when, timetableCell.key]
             );
         }
 

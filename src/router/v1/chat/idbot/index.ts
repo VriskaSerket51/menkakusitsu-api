@@ -3,6 +3,7 @@ import { v1 } from "@common-jshs/menkakusitsu-lib";
 import Chat from "..";
 import fetch from "node-fetch";
 import { HttpException } from "common-api-ts";
+import { sanitizeRequest } from "../../../../utils/Sanitizer";
 
 class Idbot extends Chat {
     constructor() {
@@ -20,9 +21,10 @@ class Idbot extends Chat {
 
     async onGetMessage(req: Request, res: Response) {
         const request: v1.GetIdbotChatRequest = req.query as any;
-        if (!request.chatInput) {
+        if (!sanitizeRequest(request, "GetIdbotChatRequest")) {
             throw new HttpException(400);
         }
+
         const resp = await fetch(
             `http://127.0.0.1:3001/idbot/message?chatInput=${request.chatInput}`
         );
