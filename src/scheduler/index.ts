@@ -3,14 +3,14 @@ import {
     flushDeletedBbsContent,
     flushSpecialroom,
     flushTempFolder,
-    mealUpdate,
+    newMeal,
 } from "./jobs";
 
 export const schedules: Schedule[] = [
     {
         name: "mealUpdate",
         cron: "00 00 00 * * *",
-        job: mealUpdate,
+        job: newMeal,
     },
     {
         name: "flushTempFolder",
