@@ -44,610 +44,1402 @@ type RequestType =
     | "PutPushRequest"
     | "DeletePushRequest";
 
-export const sanitizeRequest = (request: unknown, type: RequestType): boolean => {
+export const sanitizeRequest = (
+    request: unknown,
+    type: RequestType
+): boolean => {
     switch (type) {
         case "PostRegisterRequest":
-            return sanitizePostRegisterRequest(request as v1.PostRegisterRequest);
+            return sanitizePostRegisterRequest(request);
         case "DeleteSecessionRequest":
-            return sanitizeDeleteSecessionRequest(
-                request as v1.DeleteSecessionRequest
-            );
+            return sanitizeDeleteSecessionRequest(request);
         case "PostLoginRequest":
-            return sanitizePostLoginRequest(request as v1.PostLoginRequest);
+            return sanitizePostLoginRequest(request);
         case "DeleteLogoutRequest":
-            return sanitizeDeleteLogoutRequest(request as v1.DeleteLogoutRequest);
+            return sanitizeDeleteLogoutRequest(request);
         case "PostRefreshRequest":
-            return sanitizePostRefreshRequest(request as v1.PostRefreshRequest);
+            return sanitizePostRefreshRequest(request);
         case "PutForgotPasswordRequest":
-            return sanitizePutForgotPasswordRequest(
-                request as v1.PutForgotPasswordRequest
-            );
+            return sanitizePutForgotPasswordRequest(request);
         case "GetBbsPostListRequest":
-            return sanitizeGetBbsPostListRequest(
-                request as v1.GetBbsPostListRequest
-            );
+            return sanitizeGetBbsPostListRequest(request);
         case "GetBbsPostRequest":
-            return sanitizeGetBbsPostRequest(request as v1.GetBbsPostRequest);
+            return sanitizeGetBbsPostRequest(request);
         case "PostBbsPostRequest":
-            return sanitizePostBbsPostRequest(request as v1.PostBbsPostRequest);
+            return sanitizePostBbsPostRequest(request);
         case "PutBbsPostRequest":
-            return sanitizePutBbsPostRequest(request as v1.PutBbsPostRequest);
+            return sanitizePutBbsPostRequest(request);
         case "DeleteBbsPostRequest":
-            return sanitizeDeleteBbsPostRequest(
-                request as v1.DeleteBbsPostRequest
-            );
+            return sanitizeDeleteBbsPostRequest(request);
         case "GetBbsPostHeaderRequest":
-            return sanitizeGetBbsPostHeaderRequest(
-                request as v1.GetBbsPostHeaderRequest
-            );
+            return sanitizeGetBbsPostHeaderRequest(request);
         case "GetBbsCommentListRequest":
-            return sanitizeGetBbsCommentListRequest(
-                request as v1.GetBbsCommentListRequest
-            );
+            return sanitizeGetBbsCommentListRequest(request);
         case "PostBbsCommentRequest":
-            return sanitizePostBbsCommentRequest(
-                request as v1.PostBbsCommentRequest
-            );
+            return sanitizePostBbsCommentRequest(request);
         case "DeleteBbsCommentRequest":
-            return sanitizeDeleteBbsCommentRequest(
-                request as v1.DeleteBbsCommentRequest
-            );
+            return sanitizeDeleteBbsCommentRequest(request);
         case "GetSubjectListRequest":
-            return sanitizeGetSubjectListRequest(
-                request as v1.GetSubjectListRequest
-            );
+            return sanitizeGetSubjectListRequest(request);
         case "GetIdbotChatRequest":
-            return sanitizeGetIdbotChatRequest(request as v1.GetIdbotChatRequest);
+            return sanitizeGetIdbotChatRequest(request);
         case "GetMealRequest":
-            return sanitizeGetMealRequest(request as v1.GetMealRequest);
+            return sanitizeGetMealRequest(request);
         case "PutMealRequest":
-            return sanitizePutMealRequest(request as v1.PutMealRequest);
+            return sanitizePutMealRequest(request);
         case "GetApplyRequest":
-            return sanitizeGetApplyRequest(request as v1.GetApplyRequest);
+            return sanitizeGetApplyRequest(request);
         case "PostApplyRequest":
-            return sanitizePostApplyRequest(request as v1.PostApplyRequest);
+            return sanitizePostApplyRequest(request);
         case "DeleteApplyRequest":
-            return sanitizeDeleteApplyRequest(request as v1.DeleteApplyRequest);
+            return sanitizeDeleteApplyRequest(request);
         case "GetAttendanceInfoRequest":
-            return sanitizeGetAttendanceInfoRequest(
-                request as v1.GetAttendanceInfoRequest
-            );
+            return sanitizeGetAttendanceInfoRequest(request);
         case "GetAttendanceListRequest":
-            return sanitizeGetAttendanceListRequest(
-                request as v1.GetAttendanceListRequest
-            );
+            return sanitizeGetAttendanceListRequest(request);
         case "GetInfoRequest":
-            return sanitizeGetInfoRequest(request as v1.GetInfoRequest);
+            return sanitizeGetInfoRequest(request);
         case "PutInfoRequest":
-            return sanitizePutInfoRequest(request as v1.PutInfoRequest);
+            return sanitizePutInfoRequest(request);
         case "GetManagerRequest":
-            return sanitizeGetManagerRequest(request as v1.GetManagerRequest);
+            return sanitizeGetManagerRequest(request);
         case "GetLocationInfoRequest":
-            return sanitizeGetLocationInfoRequest(
-                request as v1.GetLocationInfoRequest
-            );
+            return sanitizeGetLocationInfoRequest(request);
         case "GetPurposeInfoRequest":
-            return sanitizeGetPurposeInfoRequest(
-                request as v1.GetPurposeInfoRequest
-            );
+            return sanitizeGetPurposeInfoRequest(request);
         case "GetStudentInfoRequest":
-            return sanitizeGetStudentInfoRequest(
-                request as v1.GetStudentInfoRequest
-            );
+            return sanitizeGetStudentInfoRequest(request);
         case "GetTeacherInfoRequest":
-            return sanitizeGetTeacherInfoRequest(
-                request as v1.GetTeacherInfoRequest
-            );
+            return sanitizeGetTeacherInfoRequest(request);
         case "GetOuterStudentInfoRequest":
-            return sanitizeGetOuterStudentInfoRequest(
-                request as v1.GetOuterStudentInfoRequest
-            );
+            return sanitizeGetOuterStudentInfoRequest(request);
         case "PostOuterStudentInfoRequest":
-            return sanitizePostOuterStudentInfoRequest(
-                request as v1.PostOuterStudentInfoRequest
-            );
+            return sanitizePostOuterStudentInfoRequest(request);
         case "DeleteOuterStudentInfoRequest":
-            return sanitizeDeleteOuterStudentInfoRequest(
-                request as v1.DeleteOuterStudentInfoRequest
-            );
+            return sanitizeDeleteOuterStudentInfoRequest(request);
         case "GetTimetableRequest":
-            return sanitizeGetTimetableRequest(request as v1.GetTimetableRequest);
+            return sanitizeGetTimetableRequest(request);
         case "PutTimetableRequest":
-            return sanitizePutTimetableRequest(request as v1.PutTimetableRequest);
+            return sanitizePutTimetableRequest(request);
         case "GetMyPrivateInfoRequest":
-            return sanitizeGetMyPrivateInfoRequest(
-                request as v1.GetMyPrivateInfoRequest
-            );
+            return sanitizeGetMyPrivateInfoRequest(request);
         case "PutEmailRequest":
-            return sanitizePutEmailRequest(request as v1.PutEmailRequest);
+            return sanitizePutEmailRequest(request);
         case "PutPasswordRequest":
-            return sanitizePutPasswordRequest(request as v1.PutPasswordRequest);
+            return sanitizePutPasswordRequest(request);
         case "PostPushRequest":
-            return sanitizePostPushRequest(request as v1.PostPushRequest);
+            return sanitizePostPushRequest(request);
         case "PutPushRequest":
-            return sanitizePutPushRequest(request as v1.PutPushRequest);
+            return sanitizePutPushRequest(request);
         case "DeletePushRequest":
-            return sanitizeDeletePushRequest(request as v1.DeletePushRequest);
+            return sanitizeDeletePushRequest(request);
     }
     return false;
 };
 
-const sanitizePostRegisterRequest = (request: v1.PostRegisterRequest): boolean => {
+function sanitizeDefaultResponse(checker: any) {
     if (
-        typeof request.id != "string" ||
-        typeof request.sid != "number" ||
-        typeof request.name != "string" ||
-        typeof request.email != "string" ||
-        typeof request.password != "string"
+        typeof checker.status == "string" &&
+        !checker.status.isEmpty() &&
+        !Number.isNaN(Number(checker.status))
+    ) {
+        checker.status = Number(checker.status);
+    }
+
+    if (
+        typeof checker.status != "number" ||
+        typeof checker.message != "string"
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeDeleteSecessionRequest = (
-    request: v1.DeleteSecessionRequest
-): boolean => {
+function sanitizePostRegisterRequest(checker: any) {
     if (
-        (request.uid != undefined && typeof request.uid != "number") ||
-        (request.id != undefined && typeof request.id != "string") ||
-        (request.name != undefined && typeof request.name != "string")
+        typeof checker.sid == "string" &&
+        !checker.sid.isEmpty() &&
+        !Number.isNaN(Number(checker.sid))
+    ) {
+        checker.sid = Number(checker.sid);
+    }
+
+    if (
+        typeof checker.id != "string" ||
+        typeof checker.sid != "number" ||
+        typeof checker.name != "string" ||
+        typeof checker.email != "string" ||
+        typeof checker.password != "string"
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizePostLoginRequest = (request: v1.PostLoginRequest): boolean => {
-    if (typeof request.id != "string" || typeof request.password != "string") {
-        return false;
-    }
+function sanitizePostRegisterResponse(checker: any) {
     return true;
-};
+}
 
-const sanitizeDeleteLogoutRequest = (request: v1.DeleteLogoutRequest): boolean => {
-    return true;
-};
-
-const sanitizePostRefreshRequest = (request: v1.PostRefreshRequest): boolean => {
-    return true;
-};
-
-const sanitizePutForgotPasswordRequest = (
-    request: v1.PutForgotPasswordRequest
-): boolean => {
-    if (typeof request.id != "string" || typeof request.email != "string") {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeGetBbsPostListRequest = (
-    request: v1.GetBbsPostListRequest
-): boolean => {
+function sanitizeDeleteSecessionRequest(checker: any) {
     if (
-        typeof request.board != "string" ||
-        typeof request.postPage != "number" ||
-        typeof request.postListSize != "number"
+        typeof checker.uid == "string" &&
+        !checker.uid.isEmpty() &&
+        !Number.isNaN(Number(checker.uid))
+    ) {
+        checker.uid = Number(checker.uid);
+    }
+
+    if (
+        (checker.uid != undefined && typeof checker.uid != "number") ||
+        (checker.id != undefined && typeof checker.id != "string") ||
+        (checker.name != undefined && typeof checker.name != "string")
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeGetBbsPostRequest = (request: v1.GetBbsPostRequest): boolean => {
-    if (typeof request.board != "string" || typeof request.postId != "number") {
+function sanitizeDeleteSecessionResponse(checker: any) {
+    return true;
+}
+
+function sanitizePostLoginRequest(checker: any) {
+    if (typeof checker.id != "string" || typeof checker.password != "string") {
         return false;
     }
     return true;
-};
+}
 
-const sanitizePostBbsPostRequest = (request: v1.PostBbsPostRequest): boolean => {
+function sanitizePostLoginResponse(checker: any) {
     if (
-        typeof request.title != "string" ||
-        typeof request.content != "string" ||
-        typeof request.header != "string" ||
-        typeof request.board != "string" ||
-        typeof request.isPublic != "boolean"
+        typeof checker.accessToken != "string" ||
+        typeof checker.refreshToken != "string" ||
+        (checker.callbacks != undefined &&
+            !sanitizestringArray(checker.callbacks))
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizePutBbsPostRequest = (request: v1.PutBbsPostRequest): boolean => {
+function sanitizeDeleteLogoutRequest(checker: any) {
+    return true;
+}
+
+function sanitizeDeleteLogoutResponse(checker: any) {
+    return true;
+}
+
+function sanitizePostRefreshRequest(checker: any) {
+    return true;
+}
+
+function sanitizePostRefreshResponse(checker: any) {
     if (
-        typeof request.board != "string" ||
-        typeof request.postId != "number" ||
-        (request.title != undefined && typeof request.title != "string") ||
-        (request.content != undefined && typeof request.content != "string") ||
-        (request.header != undefined && typeof request.header != "string") ||
-        (request.isPublic != undefined && typeof request.isPublic != "boolean")
+        typeof checker.accessToken != "string" ||
+        typeof checker.refreshToken != "string"
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeDeleteBbsPostRequest = (
-    request: v1.DeleteBbsPostRequest
-): boolean => {
-    if (typeof request.board != "string" || typeof request.postId != "number") {
+function sanitizePutForgotPasswordRequest(checker: any) {
+    if (typeof checker.id != "string" || typeof checker.email != "string") {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeGetBbsPostHeaderRequest = (
-    request: v1.GetBbsPostHeaderRequest
-): boolean => {
-    if (typeof request.board != "string") {
-        return false;
-    }
+function sanitizePutForgotPasswordResponse(checker: any) {
     return true;
-};
+}
 
-const sanitizeGetBbsCommentListRequest = (
-    request: v1.GetBbsCommentListRequest
-): boolean => {
+function sanitizeBbsPost(checker: any) {
     if (
-        typeof request.board != "string" ||
-        typeof request.postId != "number" ||
-        typeof request.commentPage != "number" ||
-        typeof request.commentListSize != "number"
+        typeof checker.id == "string" &&
+        !checker.id.isEmpty() &&
+        !Number.isNaN(Number(checker.id))
+    ) {
+        checker.id = Number(checker.id);
+    }
+
+    if (
+        typeof checker.postType == "string" &&
+        !checker.postType.isEmpty() &&
+        !Number.isNaN(Number(checker.postType))
+    ) {
+        checker.postType = Number(checker.postType);
+    }
+
+    if (
+        typeof checker.commentCount == "string" &&
+        !checker.commentCount.isEmpty() &&
+        !Number.isNaN(Number(checker.commentCount))
+    ) {
+        checker.commentCount = Number(checker.commentCount);
+    }
+
+    if (
+        typeof checker.isPublic == "string" &&
+        (checker.isPublic == "true" || checker.isPublic == "false")
+    ) {
+        checker.isPublic = checker.isPublic == "true";
+    }
+
+    if (
+        typeof checker.id != "number" ||
+        !sanitizeUserInfo(checker.owner) ||
+        typeof checker.title != "string" ||
+        typeof checker.content != "string" ||
+        typeof checker.header != "string" ||
+        typeof checker.board != "string" ||
+        typeof checker.postType != "number" ||
+        typeof checker.commentCount != "number" ||
+        typeof checker.createdDate != "string" ||
+        typeof checker.isPublic != "boolean"
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizePostBbsCommentRequest = (
-    request: v1.PostBbsCommentRequest
-): boolean => {
+function sanitizeBbsComment(checker: any) {
     if (
-        typeof request.board != "string" ||
-        typeof request.postId != "number" ||
-        typeof request.content != "string"
+        typeof checker.id == "string" &&
+        !checker.id.isEmpty() &&
+        !Number.isNaN(Number(checker.id))
+    ) {
+        checker.id = Number(checker.id);
+    }
+
+    if (
+        typeof checker.id != "number" ||
+        !sanitizeUserInfo(checker.owner) ||
+        typeof checker.content != "string" ||
+        typeof checker.createdDate != "string"
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeDeleteBbsCommentRequest = (
-    request: v1.DeleteBbsCommentRequest
-): boolean => {
+function sanitizeGetBbsPostListRequest(checker: any) {
     if (
-        typeof request.board != "string" ||
-        typeof request.postId != "number" ||
-        typeof request.commentId != "number"
+        typeof checker.postPage == "string" &&
+        !checker.postPage.isEmpty() &&
+        !Number.isNaN(Number(checker.postPage))
+    ) {
+        checker.postPage = Number(checker.postPage);
+    }
+
+    if (
+        typeof checker.postListSize == "string" &&
+        !checker.postListSize.isEmpty() &&
+        !Number.isNaN(Number(checker.postListSize))
+    ) {
+        checker.postListSize = Number(checker.postListSize);
+    }
+
+    if (
+        typeof checker.board != "string" ||
+        typeof checker.postPage != "number" ||
+        typeof checker.postListSize != "number"
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeGetSubjectListRequest = (
-    request: v1.GetSubjectListRequest
-): boolean => {
+function sanitizeGetBbsPostListResponse(checker: any) {
     if (
-        typeof request.grade != "number" ||
-        typeof request.semester != "number"
+        typeof checker.postCount == "string" &&
+        !checker.postCount.isEmpty() &&
+        !Number.isNaN(Number(checker.postCount))
+    ) {
+        checker.postCount = Number(checker.postCount);
+    }
+
+    if (
+        typeof checker.postCount != "number" ||
+        !sanitizeBbsPostArray(checker.list)
     ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeGetIdbotChatRequest = (request: v1.GetIdbotChatRequest): boolean => {
-    if (typeof request.chatInput != "string") {
+function sanitizeGetBbsPostRequest(checker: any) {
+    if (
+        typeof checker.postId == "string" &&
+        !checker.postId.isEmpty() &&
+        !Number.isNaN(Number(checker.postId))
+    ) {
+        checker.postId = Number(checker.postId);
+    }
+
+    if (typeof checker.board != "string" || typeof checker.postId != "number") {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeGetMealRequest = (request: v1.GetMealRequest): boolean => {
-    if (typeof request.when != "string") {
+function sanitizeGetBbsPostResponse(checker: any) {
+    if (
+        !sanitizeBbsPost(checker.post) ||
+        (checker.attachments != undefined &&
+            !sanitizeFileInfoArray(checker.attachments))
+    ) {
         return false;
     }
     return true;
-};
+}
 
-const sanitizeMealInfo = (data: v1.MealInfo): boolean => {
-    if (!Array.isArray(data.meals)) {
+function sanitizePostBbsPostRequest(checker: any) {
+    if (
+        typeof checker.isPublic == "string" &&
+        (checker.isPublic == "true" || checker.isPublic == "false")
+    ) {
+        checker.isPublic = checker.isPublic == "true";
+    }
+
+    if (
+        typeof checker.title != "string" ||
+        typeof checker.content != "string" ||
+        typeof checker.header != "string" ||
+        typeof checker.board != "string" ||
+        typeof checker.isPublic != "boolean"
+    ) {
         return false;
     }
-    for (const meal of data.meals) {
-        if (typeof meal != "string") {
+    return true;
+}
+
+function sanitizePostBbsPostResponse(checker: any) {
+    if (
+        typeof checker.postId == "string" &&
+        !checker.postId.isEmpty() &&
+        !Number.isNaN(Number(checker.postId))
+    ) {
+        checker.postId = Number(checker.postId);
+    }
+
+    if (typeof checker.postId != "number") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutBbsPostRequest(checker: any) {
+    if (
+        typeof checker.postId == "string" &&
+        !checker.postId.isEmpty() &&
+        !Number.isNaN(Number(checker.postId))
+    ) {
+        checker.postId = Number(checker.postId);
+    }
+
+    if (
+        typeof checker.isPublic == "string" &&
+        (checker.isPublic == "true" || checker.isPublic == "false")
+    ) {
+        checker.isPublic = checker.isPublic == "true";
+    }
+
+    if (
+        typeof checker.board != "string" ||
+        typeof checker.postId != "number" ||
+        (checker.title != undefined && typeof checker.title != "string") ||
+        (checker.content != undefined && typeof checker.content != "string") ||
+        (checker.header != undefined && typeof checker.header != "string") ||
+        (checker.isPublic != undefined && typeof checker.isPublic != "boolean")
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutBbsPostResponse(checker: any) {
+    return true;
+}
+
+function sanitizeDeleteBbsPostRequest(checker: any) {
+    if (
+        typeof checker.postId == "string" &&
+        !checker.postId.isEmpty() &&
+        !Number.isNaN(Number(checker.postId))
+    ) {
+        checker.postId = Number(checker.postId);
+    }
+
+    if (typeof checker.board != "string" || typeof checker.postId != "number") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeDeleteBbsPostResponse(checker: any) {
+    return true;
+}
+
+function sanitizeGetBbsPostHeaderRequest(checker: any) {
+    if (typeof checker.board != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetBbsPostHeaderResponse(checker: any) {
+    if (!sanitizestringArray(checker.headers)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetBbsCommentListRequest(checker: any) {
+    if (
+        typeof checker.postId == "string" &&
+        !checker.postId.isEmpty() &&
+        !Number.isNaN(Number(checker.postId))
+    ) {
+        checker.postId = Number(checker.postId);
+    }
+
+    if (
+        typeof checker.commentPage == "string" &&
+        !checker.commentPage.isEmpty() &&
+        !Number.isNaN(Number(checker.commentPage))
+    ) {
+        checker.commentPage = Number(checker.commentPage);
+    }
+
+    if (
+        typeof checker.commentListSize == "string" &&
+        !checker.commentListSize.isEmpty() &&
+        !Number.isNaN(Number(checker.commentListSize))
+    ) {
+        checker.commentListSize = Number(checker.commentListSize);
+    }
+
+    if (
+        typeof checker.board != "string" ||
+        typeof checker.postId != "number" ||
+        typeof checker.commentPage != "number" ||
+        typeof checker.commentListSize != "number"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetBbsCommentListResponse(checker: any) {
+    if (
+        typeof checker.commentCount == "string" &&
+        !checker.commentCount.isEmpty() &&
+        !Number.isNaN(Number(checker.commentCount))
+    ) {
+        checker.commentCount = Number(checker.commentCount);
+    }
+
+    if (
+        !sanitizeBbsCommentArray(checker.list) ||
+        typeof checker.commentCount != "number"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostBbsCommentRequest(checker: any) {
+    if (
+        typeof checker.postId == "string" &&
+        !checker.postId.isEmpty() &&
+        !Number.isNaN(Number(checker.postId))
+    ) {
+        checker.postId = Number(checker.postId);
+    }
+
+    if (
+        typeof checker.board != "string" ||
+        typeof checker.postId != "number" ||
+        typeof checker.content != "string"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostBbsCommentResponse(checker: any) {
+    if (
+        typeof checker.commentId == "string" &&
+        !checker.commentId.isEmpty() &&
+        !Number.isNaN(Number(checker.commentId))
+    ) {
+        checker.commentId = Number(checker.commentId);
+    }
+
+    if (typeof checker.commentId != "number") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeDeleteBbsCommentRequest(checker: any) {
+    if (
+        typeof checker.postId == "string" &&
+        !checker.postId.isEmpty() &&
+        !Number.isNaN(Number(checker.postId))
+    ) {
+        checker.postId = Number(checker.postId);
+    }
+
+    if (
+        typeof checker.commentId == "string" &&
+        !checker.commentId.isEmpty() &&
+        !Number.isNaN(Number(checker.commentId))
+    ) {
+        checker.commentId = Number(checker.commentId);
+    }
+
+    if (
+        typeof checker.board != "string" ||
+        typeof checker.postId != "number" ||
+        typeof checker.commentId != "number"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeDeleteBbsCommentResponse(checker: any) {
+    return true;
+}
+
+function sanitizeSubject(checker: any) {
+    if (
+        typeof checker.id == "string" &&
+        !checker.id.isEmpty() &&
+        !Number.isNaN(Number(checker.id))
+    ) {
+        checker.id = Number(checker.id);
+    }
+
+    if (
+        typeof checker.multiplier == "string" &&
+        !checker.multiplier.isEmpty() &&
+        !Number.isNaN(Number(checker.multiplier))
+    ) {
+        checker.multiplier = Number(checker.multiplier);
+    }
+
+    if (
+        typeof checker.id != "number" ||
+        typeof checker.name != "string" ||
+        typeof checker.multiplier != "number"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetSubjectListRequest(checker: any) {
+    if (
+        typeof checker.grade == "string" &&
+        !checker.grade.isEmpty() &&
+        !Number.isNaN(Number(checker.grade))
+    ) {
+        checker.grade = Number(checker.grade);
+    }
+
+    if (
+        typeof checker.semester == "string" &&
+        !checker.semester.isEmpty() &&
+        !Number.isNaN(Number(checker.semester))
+    ) {
+        checker.semester = Number(checker.semester);
+    }
+
+    if (
+        typeof checker.grade != "number" ||
+        typeof checker.semester != "number"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetSubjectListResponse(checker: any) {
+    if (!sanitizeSubjectArray(checker.list)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetIdbotChatRequest(checker: any) {
+    if (typeof checker.chatInput != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetIdbotChatResponse(checker: any) {
+    if (typeof checker.chatOutput != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeFileInfo(checker: any) {
+    if (
+        !sanitizeUserInfo(checker.owner) ||
+        typeof checker.fileName != "string" ||
+        typeof checker.downloadLink != "string" ||
+        typeof checker.mimeType != "string"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeMealInfo(checker: any) {
+    if (!sanitizestringArray(checker.meals)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetMealRequest(checker: any) {
+    if (typeof checker.when != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetMealResponse(checker: any) {
+    if (
+        !sanitizeMealInfo(checker.breakfast) ||
+        !sanitizeMealInfo(checker.lunch) ||
+        !sanitizeMealInfo(checker.dinner)
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutMealRequest(checker: any) {
+    if (
+        !sanitizeMealInfo(checker.breakfast) ||
+        !sanitizeMealInfo(checker.lunch) ||
+        !sanitizeMealInfo(checker.dinner)
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutMealResponse(checker: any) {
+    if (
+        !sanitizeMealInfo(checker.breakfast) ||
+        !sanitizeMealInfo(checker.lunch) ||
+        !sanitizeMealInfo(checker.dinner)
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetApplyRequest(checker: any) {
+    if (
+        typeof checker.when == "string" &&
+        !checker.when.isEmpty() &&
+        !Number.isNaN(Number(checker.when))
+    ) {
+        checker.when = Number(checker.when);
+    }
+
+    if (typeof checker.when != "number") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetApplyResponse(checker: any) {
+    if (!sanitizeSpecialroomInfo(checker.specialroomInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostApplyRequest(checker: any) {
+    if (
+        typeof checker.teacherUid == "string" &&
+        !checker.teacherUid.isEmpty() &&
+        !Number.isNaN(Number(checker.teacherUid))
+    ) {
+        checker.teacherUid = Number(checker.teacherUid);
+    }
+
+    if (
+        typeof checker.when == "string" &&
+        !checker.when.isEmpty() &&
+        !Number.isNaN(Number(checker.when))
+    ) {
+        checker.when = Number(checker.when);
+    }
+
+    if (
+        typeof checker.teacherUid != "number" ||
+        !sanitizeUserInfoArray(checker.applicants) ||
+        typeof checker.location != "string" ||
+        typeof checker.purpose != "string" ||
+        typeof checker.when != "number"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostApplyResponse(checker: any) {
+    return true;
+}
+
+function sanitizeDeleteApplyRequest(checker: any) {
+    if (
+        typeof checker.when == "string" &&
+        !checker.when.isEmpty() &&
+        !Number.isNaN(Number(checker.when))
+    ) {
+        checker.when = Number(checker.when);
+    }
+
+    if (typeof checker.when != "number") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeDeleteApplyResponse(checker: any) {
+    return true;
+}
+
+function sanitizeGetAttendanceInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetAttendanceInfoResponse(checker: any) {
+    if (!sanitizestringArray(checker.info)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetAttendanceListRequest(checker: any) {
+    if (
+        typeof checker.when == "string" &&
+        !checker.when.isEmpty() &&
+        !Number.isNaN(Number(checker.when))
+    ) {
+        checker.when = Number(checker.when);
+    }
+
+    if (typeof checker.when != "number") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeAttendanceList(checker: any) {
+    if (
+        !sanitizestringArrayArray(checker.big) ||
+        !sanitizestringArrayArray(checker.small)
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetAttendanceListResponse(checker: any) {
+    if (!sanitizeAttendanceList(checker.list)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeSpecialroomInfo(checker: any) {
+    if (
+        typeof checker.applyId == "string" &&
+        !checker.applyId.isEmpty() &&
+        !Number.isNaN(Number(checker.applyId))
+    ) {
+        checker.applyId = Number(checker.applyId);
+    }
+
+    if (
+        typeof checker.state == "string" &&
+        !checker.state.isEmpty() &&
+        !Number.isNaN(Number(checker.state))
+    ) {
+        checker.state = Number(checker.state);
+    }
+
+    if (
+        typeof checker.when == "string" &&
+        !checker.when.isEmpty() &&
+        !Number.isNaN(Number(checker.when))
+    ) {
+        checker.when = Number(checker.when);
+    }
+
+    if (
+        typeof checker.applyId != "number" ||
+        typeof checker.state != "number" ||
+        !sanitizeUserInfo(checker.master) ||
+        !sanitizeUserInfo(checker.teacher) ||
+        typeof checker.applicants != "string" ||
+        typeof checker.location != "string" ||
+        typeof checker.purpose != "string" ||
+        typeof checker.when != "number"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetInfoResponse(checker: any) {
+    if (!sanitizeSpecialroomInfoArray(checker.information)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutInfoRequest(checker: any) {
+    if (!sanitizeSpecialroomInfoArray(checker.information)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutInfoResponse(checker: any) {
+    if (!sanitizeSpecialroomInfoArray(checker.information)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeLocationInfo(checker: any) {
+    if (
+        typeof checker.id == "string" &&
+        !checker.id.isEmpty() &&
+        !Number.isNaN(Number(checker.id))
+    ) {
+        checker.id = Number(checker.id);
+    }
+
+    if (typeof checker.id != "number" || typeof checker.value != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetManagerRequest(checker: any) {
+    if (typeof checker.when != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetManagerResponse(checker: any) {
+    if (!sanitizeUserInfo(checker.manager)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetLocationInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetLocationInfoResponse(checker: any) {
+    if (!sanitizeLocationInfoArray(checker.locationInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePurposeInfo(checker: any) {
+    if (
+        typeof checker.id == "string" &&
+        !checker.id.isEmpty() &&
+        !Number.isNaN(Number(checker.id))
+    ) {
+        checker.id = Number(checker.id);
+    }
+
+    if (typeof checker.id != "number" || typeof checker.value != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetPurposeInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetPurposeInfoResponse(checker: any) {
+    if (!sanitizePurposeInfoArray(checker.purposeInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetStudentInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetStudentInfoResponse(checker: any) {
+    if (!sanitizeUserInfoArray(checker.studentInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetTeacherInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetTeacherInfoResponse(checker: any) {
+    if (!sanitizeUserInfoArray(checker.teacherInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeOuterStudentInfo(checker: any) {
+    if (
+        typeof checker.until == "string" &&
+        !checker.until.isEmpty() &&
+        !Number.isNaN(Number(checker.until))
+    ) {
+        checker.until = Number(checker.until);
+    }
+
+    if (
+        !sanitizeUserInfo(checker.student) ||
+        typeof checker.reason != "string" ||
+        (checker.until != undefined && typeof checker.until != "number")
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetOuterStudentInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetOuterStudentInfoResponse(checker: any) {
+    if (!sanitizeOuterStudentInfoArray(checker.outerStudentInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostOuterStudentInfoRequest(checker: any) {
+    if (!sanitizeOuterStudentInfo(checker.outerStudentInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostOuterStudentInfoResponse(checker: any) {
+    return true;
+}
+
+function sanitizeDeleteOuterStudentInfoRequest(checker: any) {
+    if (
+        typeof checker.studentUid == "string" &&
+        !checker.studentUid.isEmpty() &&
+        !Number.isNaN(Number(checker.studentUid))
+    ) {
+        checker.studentUid = Number(checker.studentUid);
+    }
+
+    if (typeof checker.studentUid != "number") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeDeleteOuterStudentInfoResponse(checker: any) {
+    return true;
+}
+
+function sanitizeTimetable(checker: any) {
+    if (!sanitizeTimetableCellArrayArray(checker.timetableInfo)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeTimetableCell(checker: any) {
+    if (typeof checker.key != "string" || typeof checker.value != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetTimetableRequest(checker: any) {
+    if (typeof checker.when != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetTimetableResponse(checker: any) {
+    if (!sanitizeTimetable(checker.timetable)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutTimetableRequest(checker: any) {
+    if (
+        typeof checker.when != "string" ||
+        !sanitizeTimetableCellArray(checker.timetableInfo)
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutTimetableResponse(checker: any) {
+    if (!sanitizeTimetable(checker.timetable)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeUserInfo(checker: any) {
+    if (
+        typeof checker.uid == "string" &&
+        !checker.uid.isEmpty() &&
+        !Number.isNaN(Number(checker.uid))
+    ) {
+        checker.uid = Number(checker.uid);
+    }
+
+    if (
+        typeof checker.uid != "number" ||
+        typeof checker.value != "string" ||
+        typeof checker.name != "string"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeUserPrivateInfo(checker: any) {
+    if (
+        typeof checker.uid == "string" &&
+        !checker.uid.isEmpty() &&
+        !Number.isNaN(Number(checker.uid))
+    ) {
+        checker.uid = Number(checker.uid);
+    }
+
+    if (
+        typeof checker.sid == "string" &&
+        !checker.sid.isEmpty() &&
+        !Number.isNaN(Number(checker.sid))
+    ) {
+        checker.sid = Number(checker.sid);
+    }
+
+    if (
+        (checker.uid != undefined && typeof checker.uid != "number") ||
+        (checker.sid != undefined && typeof checker.sid != "number") ||
+        (checker.id != undefined && typeof checker.id != "string") ||
+        (checker.name != undefined && typeof checker.name != "string") ||
+        (checker.email != undefined && typeof checker.email != "string") ||
+        (checker.password != undefined && typeof checker.password != "string")
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeGetMyPrivateInfoRequest(checker: any) {
+    return true;
+}
+
+function sanitizeGetMyPrivateInfoResponse(checker: any) {
+    if (!sanitizeUserPrivateInfo(checker.private)) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutEmailRequest(checker: any) {
+    if (
+        typeof checker.oldEmail != "string" ||
+        typeof checker.newEmail != "string"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutEmailResponse(checker: any) {
+    if (typeof checker.newEmail != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutPasswordRequest(checker: any) {
+    if (
+        typeof checker.oldPassword != "string" ||
+        typeof checker.newPassword != "string"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutPasswordResponse(checker: any) {
+    if (typeof checker.newPassword != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeNotification(checker: any) {
+    if (
+        typeof checker.title != "string" ||
+        typeof checker.body != "string" ||
+        (checker.link != undefined && typeof checker.link != "string")
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostPushRequest(checker: any) {
+    if (
+        typeof checker.targetUid == "string" &&
+        !checker.targetUid.isEmpty() &&
+        !Number.isNaN(Number(checker.targetUid))
+    ) {
+        checker.targetUid = Number(checker.targetUid);
+    }
+
+    if (
+        typeof checker.targetUid != "number" ||
+        !sanitizeNotification(checker.notification)
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePostPushResponse(checker: any) {
+    return true;
+}
+
+function sanitizePutPushRequest(checker: any) {
+    if (
+        typeof checker.pushToken != "string" ||
+        typeof checker.deviceId != "string"
+    ) {
+        return false;
+    }
+    return true;
+}
+
+function sanitizePutPushResponse(checker: any) {
+    return true;
+}
+
+function sanitizeDeletePushRequest(checker: any) {
+    if (typeof checker.devcieId != "string") {
+        return false;
+    }
+    return true;
+}
+
+function sanitizeDeletePushResponse(checker: any) {
+    return true;
+}
+
+function sanitizestringArray(checker: any) {
+    if (!Array.isArray(checker)) {
+        return false;
+    }
+
+    for (let i = 0; i < checker.length; i++) {
+        if (typeof checker[i] != "string") {
             return false;
         }
     }
     return true;
-};
+}
 
-const sanitizePutMealRequest = (request: v1.PutMealRequest): boolean => {
-    return (
-        sanitizeMealInfo(request.breakfast) &&
-        sanitizeMealInfo(request.lunch) &&
-        sanitizeMealInfo(request.dinner)
-    );
-};
-
-const sanitizeGetApplyRequest = (request: v1.GetApplyRequest): boolean => {
-    if (typeof request.when != "number") {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeUserInfo = (userInfo: v1.UserInfo) => {
-    if (
-        typeof userInfo.uid != "number" ||
-        typeof userInfo.value != "string" ||
-        typeof userInfo.name != "string"
-    ) {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeUserInfoArray = (userInfoArray: v1.UserInfo[]) => {
-    if (!Array.isArray(userInfoArray)) {
+function sanitizeBbsPostArray(checker: any) {
+    if (!Array.isArray(checker)) {
         return false;
     }
 
-    for (const userInfo of userInfoArray) {
-        if (!sanitizeUserInfo(userInfo)) {
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeBbsPost(checker[i])) {
             return false;
         }
     }
     return true;
-};
+}
 
-const sanitizePostApplyRequest = (request: v1.PostApplyRequest): boolean => {
-    if (
-        typeof request.teacherUid != "number" ||
-        !sanitizeUserInfoArray(request.applicants) ||
-        typeof request.location != "string" ||
-        typeof request.purpose != "string" ||
-        typeof request.when != "number"
-    ) {
+function sanitizeFileInfoArray(checker: any) {
+    if (!Array.isArray(checker)) {
         return false;
     }
-    return true;
-};
 
-const sanitizeDeleteApplyRequest = (request: v1.DeleteApplyRequest): boolean => {
-    if (typeof request.when != "number") {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeGetAttendanceInfoRequest = (
-    request: v1.GetAttendanceInfoRequest
-): boolean => {
-    return true;
-};
-
-const sanitizeGetAttendanceListRequest = (
-    request: v1.GetAttendanceListRequest
-): boolean => {
-    if (typeof request.when != "number") {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeGetInfoRequest = (request: v1.GetInfoRequest): boolean => {
-    return true;
-};
-
-const sanitizeSpecialroomInfo = (specialroomInfo: v1.SpecialroomInfo) => {
-    if (
-        typeof specialroomInfo.applyId != "number" ||
-        typeof specialroomInfo.state != "number" ||
-        !sanitizeUserInfo(specialroomInfo.master) ||
-        !sanitizeUserInfo(specialroomInfo.teacher) ||
-        typeof specialroomInfo.applicants != "string" ||
-        typeof specialroomInfo.location != "string" ||
-        typeof specialroomInfo.purpose != "string" ||
-        typeof specialroomInfo.when != "number"
-    ) {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeSpecialroomInfoArray = (
-    specialroomInfoArray: v1.SpecialroomInfo[]
-) => {
-    if (!Array.isArray(specialroomInfoArray)) {
-        return false;
-    }
-    for (const specialroomInfo of specialroomInfoArray) {
-        if (!sanitizeSpecialroomInfo(specialroomInfo)) {
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeFileInfo(checker[i])) {
             return false;
         }
     }
     return true;
-};
+}
 
-const sanitizePutInfoRequest = (request: v1.PutInfoRequest): boolean => {
-    if (!sanitizeSpecialroomInfoArray(request.information)) {
+function sanitizeBbsCommentArray(checker: any) {
+    if (!Array.isArray(checker)) {
         return false;
     }
-    return true;
-};
 
-const sanitizeGetManagerRequest = (request: v1.GetManagerRequest): boolean => {
-    if (typeof request.when != "string") {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeGetLocationInfoRequest = (
-    request: v1.GetLocationInfoRequest
-): boolean => {
-    return true;
-};
-
-const sanitizeGetPurposeInfoRequest = (
-    request: v1.GetPurposeInfoRequest
-): boolean => {
-    return true;
-};
-
-const sanitizeGetStudentInfoRequest = (
-    request: v1.GetStudentInfoRequest
-): boolean => {
-    return true;
-};
-
-const sanitizeGetTeacherInfoRequest = (
-    request: v1.GetTeacherInfoRequest
-): boolean => {
-    return true;
-};
-
-const sanitizeGetOuterStudentInfoRequest = (
-    request: v1.GetOuterStudentInfoRequest
-): boolean => {
-    return true;
-};
-
-const sanitizeOuterStudentInfo = (
-    outerStudentInfo: v1.OuterStudentInfo
-): boolean => {
-    if (
-        !sanitizeUserInfo(outerStudentInfo.student) ||
-        typeof outerStudentInfo.reason != "string" ||
-        (outerStudentInfo.until != undefined &&
-            typeof outerStudentInfo.until != "string")
-    ) {
-        return false;
-    }
-    return true;
-};
-
-const sanitizePostOuterStudentInfoRequest = (
-    request: v1.PostOuterStudentInfoRequest
-): boolean => {
-    if (!sanitizeOuterStudentInfo(request.outerStudentInfo)) {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeDeleteOuterStudentInfoRequest = (
-    request: v1.DeleteOuterStudentInfoRequest
-): boolean => {
-    if (typeof request.studentUid != "number") {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeGetTimetableRequest = (request: v1.GetTimetableRequest): boolean => {
-    if (typeof request.when != "string") {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeTimetableCell = (timetableCell: v1.TimetableCell) => {
-    if (
-        typeof timetableCell.key != "string" ||
-        typeof timetableCell.value != "string"
-    ) {
-        return false;
-    }
-    return true;
-};
-
-const sanitizeTimetableCellArray = (timetableCellArray: v1.TimetableCell[]) => {
-    if (!Array.isArray(timetableCellArray)) {
-        return false;
-    }
-    for (const specialroomInfo of timetableCellArray) {
-        if (!sanitizeTimetableCell(specialroomInfo)) {
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeBbsComment(checker[i])) {
             return false;
         }
     }
     return true;
-};
+}
 
-const sanitizePutTimetableRequest = (request: v1.PutTimetableRequest): boolean => {
-    if (
-        typeof request.when != "string" ||
-        !sanitizeTimetableCellArray(request.timetableInfo)
-    ) {
+function sanitizeSubjectArray(checker: any) {
+    if (!Array.isArray(checker)) {
         return false;
     }
-    return true;
-};
 
-const sanitizeGetMyPrivateInfoRequest = (
-    request: v1.GetMyPrivateInfoRequest
-): boolean => {
-    return true;
-};
-
-const sanitizePutEmailRequest = (request: v1.PutEmailRequest): boolean => {
-    if (
-        typeof request.oldEmail != "string" ||
-        typeof request.newEmail != "string"
-    ) {
-        return false;
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeSubject(checker[i])) {
+            return false;
+        }
     }
     return true;
-};
+}
 
-const sanitizePutPasswordRequest = (request: v1.PutPasswordRequest): boolean => {
-    if (
-        typeof request.oldPassword != "string" ||
-        typeof request.newPassword != "string"
-    ) {
+function sanitizeUserInfoArray(checker: any) {
+    if (!Array.isArray(checker)) {
         return false;
     }
-    return true;
-};
 
-const sanitizeNotification = (notification: any): boolean => {
-    if (
-        typeof notification.title != "string" ||
-        typeof notification.body != "string" ||
-        (notification.link != undefined && typeof notification.link != "string")
-    ) {
-        return false;
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeUserInfo(checker[i])) {
+            return false;
+        }
     }
     return true;
-};
+}
 
-const sanitizePostPushRequest = (request: v1.PostPushRequest): boolean => {
-    if (
-        typeof request.targetUid != "number" ||
-        !sanitizeNotification(request.notification)
-    ) {
+function sanitizestringArrayArray(checker: any) {
+    if (!Array.isArray(checker)) {
         return false;
     }
-    return true;
-};
 
-const sanitizePutPushRequest = (request: v1.PutPushRequest): boolean => {
-    if (
-        typeof request.pushToken != "string" ||
-        typeof request.deviceId != "string"
-    ) {
-        return false;
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizestringArray(checker[i])) {
+            return false;
+        }
     }
     return true;
-};
+}
 
-const sanitizeDeletePushRequest = (request: v1.DeletePushRequest): boolean => {
-    if (typeof request.devcieId != "string") {
+function sanitizeSpecialroomInfoArray(checker: any) {
+    if (!Array.isArray(checker)) {
         return false;
     }
+
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeSpecialroomInfo(checker[i])) {
+            return false;
+        }
+    }
     return true;
-};
+}
+
+function sanitizeLocationInfoArray(checker: any) {
+    if (!Array.isArray(checker)) {
+        return false;
+    }
+
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeLocationInfo(checker[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function sanitizePurposeInfoArray(checker: any) {
+    if (!Array.isArray(checker)) {
+        return false;
+    }
+
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizePurposeInfo(checker[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function sanitizeOuterStudentInfoArray(checker: any) {
+    if (!Array.isArray(checker)) {
+        return false;
+    }
+
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeOuterStudentInfo(checker[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function sanitizeTimetableCellArrayArray(checker: any) {
+    if (!Array.isArray(checker)) {
+        return false;
+    }
+
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeTimetableCellArray(checker[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function sanitizeTimetableCellArray(checker: any) {
+    if (!Array.isArray(checker)) {
+        return false;
+    }
+
+    for (let i = 0; i < checker.length; i++) {
+        if (!sanitizeTimetableCell(checker[i])) {
+            return false;
+        }
+    }
+    return true;
+}
