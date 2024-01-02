@@ -36,7 +36,7 @@
     },
     "dependencies": {
         "@common-jshs/menkakusitsu-lib": "^1.14.1",
-        "common-api-ts": "^1.0.8",
+        "common-api-ts": "^1.3.4",
         "cors": "^2.8.5",
         "cross-env": "^7.0.3",
         "crypto-js": "^4.1.1",
