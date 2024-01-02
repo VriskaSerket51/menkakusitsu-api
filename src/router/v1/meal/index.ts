@@ -14,7 +14,6 @@ class Meal extends V1 {
             {
                 method: "get",
                 path: "/now",
-                // authType: "access",
                 controller: this.onGetMeal,
             },
         ];
@@ -22,9 +21,6 @@ class Meal extends V1 {
 
     async onGetMeal(req: Request, res: Response) {
         const request: v1.GetMealRequest = req.params as any;
-        // if (!getMealRequest.when) {
-        // throw new HttpException(400);
-        // }
 
         if (!sanitizeRequest(request, "GetMealRequest")) {
             throw new HttpException(400);
