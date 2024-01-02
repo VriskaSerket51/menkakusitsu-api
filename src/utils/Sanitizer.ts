@@ -1,5 +1,3 @@
-import { v1 } from "@common-jshs/menkakusitsu-lib";
-
 type RequestType =
     | "PostRegisterRequest"
     | "DeleteSecessionRequest"
@@ -140,7 +138,7 @@ export const sanitizeRequest = (
 function sanitizeDefaultResponse(checker: any) {
     if (
         typeof checker.status == "string" &&
-        !checker.status.isEmpty() &&
+        Boolean(checker.status.trim()) &&
         !Number.isNaN(Number(checker.status))
     ) {
         checker.status = Number(checker.status);
@@ -158,7 +156,7 @@ function sanitizeDefaultResponse(checker: any) {
 function sanitizePostRegisterRequest(checker: any) {
     if (
         typeof checker.sid == "string" &&
-        !checker.sid.isEmpty() &&
+        Boolean(checker.sid.trim()) &&
         !Number.isNaN(Number(checker.sid))
     ) {
         checker.sid = Number(checker.sid);
@@ -183,7 +181,7 @@ function sanitizePostRegisterResponse(checker: any) {
 function sanitizeDeleteSecessionRequest(checker: any) {
     if (
         typeof checker.uid == "string" &&
-        !checker.uid.isEmpty() &&
+        Boolean(checker.uid.trim()) &&
         !Number.isNaN(Number(checker.uid))
     ) {
         checker.uid = Number(checker.uid);
@@ -258,7 +256,7 @@ function sanitizePutForgotPasswordResponse(checker: any) {
 function sanitizeBbsPost(checker: any) {
     if (
         typeof checker.id == "string" &&
-        !checker.id.isEmpty() &&
+        Boolean(checker.id.trim()) &&
         !Number.isNaN(Number(checker.id))
     ) {
         checker.id = Number(checker.id);
@@ -266,7 +264,7 @@ function sanitizeBbsPost(checker: any) {
 
     if (
         typeof checker.postType == "string" &&
-        !checker.postType.isEmpty() &&
+        Boolean(checker.postType.trim()) &&
         !Number.isNaN(Number(checker.postType))
     ) {
         checker.postType = Number(checker.postType);
@@ -274,7 +272,7 @@ function sanitizeBbsPost(checker: any) {
 
     if (
         typeof checker.commentCount == "string" &&
-        !checker.commentCount.isEmpty() &&
+        Boolean(checker.commentCount.trim()) &&
         !Number.isNaN(Number(checker.commentCount))
     ) {
         checker.commentCount = Number(checker.commentCount);
@@ -307,7 +305,7 @@ function sanitizeBbsPost(checker: any) {
 function sanitizeBbsComment(checker: any) {
     if (
         typeof checker.id == "string" &&
-        !checker.id.isEmpty() &&
+        Boolean(checker.id.trim()) &&
         !Number.isNaN(Number(checker.id))
     ) {
         checker.id = Number(checker.id);
@@ -327,7 +325,7 @@ function sanitizeBbsComment(checker: any) {
 function sanitizeGetBbsPostListRequest(checker: any) {
     if (
         typeof checker.postPage == "string" &&
-        !checker.postPage.isEmpty() &&
+        Boolean(checker.postPage.trim()) &&
         !Number.isNaN(Number(checker.postPage))
     ) {
         checker.postPage = Number(checker.postPage);
@@ -335,7 +333,7 @@ function sanitizeGetBbsPostListRequest(checker: any) {
 
     if (
         typeof checker.postListSize == "string" &&
-        !checker.postListSize.isEmpty() &&
+        Boolean(checker.postListSize.trim()) &&
         !Number.isNaN(Number(checker.postListSize))
     ) {
         checker.postListSize = Number(checker.postListSize);
@@ -354,7 +352,7 @@ function sanitizeGetBbsPostListRequest(checker: any) {
 function sanitizeGetBbsPostListResponse(checker: any) {
     if (
         typeof checker.postCount == "string" &&
-        !checker.postCount.isEmpty() &&
+        Boolean(checker.postCount.trim()) &&
         !Number.isNaN(Number(checker.postCount))
     ) {
         checker.postCount = Number(checker.postCount);
@@ -372,7 +370,7 @@ function sanitizeGetBbsPostListResponse(checker: any) {
 function sanitizeGetBbsPostRequest(checker: any) {
     if (
         typeof checker.postId == "string" &&
-        !checker.postId.isEmpty() &&
+        Boolean(checker.postId.trim()) &&
         !Number.isNaN(Number(checker.postId))
     ) {
         checker.postId = Number(checker.postId);
@@ -418,7 +416,7 @@ function sanitizePostBbsPostRequest(checker: any) {
 function sanitizePostBbsPostResponse(checker: any) {
     if (
         typeof checker.postId == "string" &&
-        !checker.postId.isEmpty() &&
+        Boolean(checker.postId.trim()) &&
         !Number.isNaN(Number(checker.postId))
     ) {
         checker.postId = Number(checker.postId);
@@ -433,7 +431,7 @@ function sanitizePostBbsPostResponse(checker: any) {
 function sanitizePutBbsPostRequest(checker: any) {
     if (
         typeof checker.postId == "string" &&
-        !checker.postId.isEmpty() &&
+        Boolean(checker.postId.trim()) &&
         !Number.isNaN(Number(checker.postId))
     ) {
         checker.postId = Number(checker.postId);
@@ -466,7 +464,7 @@ function sanitizePutBbsPostResponse(checker: any) {
 function sanitizeDeleteBbsPostRequest(checker: any) {
     if (
         typeof checker.postId == "string" &&
-        !checker.postId.isEmpty() &&
+        Boolean(checker.postId.trim()) &&
         !Number.isNaN(Number(checker.postId))
     ) {
         checker.postId = Number(checker.postId);
@@ -499,7 +497,7 @@ function sanitizeGetBbsPostHeaderResponse(checker: any) {
 function sanitizeGetBbsCommentListRequest(checker: any) {
     if (
         typeof checker.postId == "string" &&
-        !checker.postId.isEmpty() &&
+        Boolean(checker.postId.trim()) &&
         !Number.isNaN(Number(checker.postId))
     ) {
         checker.postId = Number(checker.postId);
@@ -507,7 +505,7 @@ function sanitizeGetBbsCommentListRequest(checker: any) {
 
     if (
         typeof checker.commentPage == "string" &&
-        !checker.commentPage.isEmpty() &&
+        Boolean(checker.commentPage.trim()) &&
         !Number.isNaN(Number(checker.commentPage))
     ) {
         checker.commentPage = Number(checker.commentPage);
@@ -515,7 +513,7 @@ function sanitizeGetBbsCommentListRequest(checker: any) {
 
     if (
         typeof checker.commentListSize == "string" &&
-        !checker.commentListSize.isEmpty() &&
+        Boolean(checker.commentListSize.trim()) &&
         !Number.isNaN(Number(checker.commentListSize))
     ) {
         checker.commentListSize = Number(checker.commentListSize);
@@ -535,7 +533,7 @@ function sanitizeGetBbsCommentListRequest(checker: any) {
 function sanitizeGetBbsCommentListResponse(checker: any) {
     if (
         typeof checker.commentCount == "string" &&
-        !checker.commentCount.isEmpty() &&
+        Boolean(checker.commentCount.trim()) &&
         !Number.isNaN(Number(checker.commentCount))
     ) {
         checker.commentCount = Number(checker.commentCount);
@@ -553,7 +551,7 @@ function sanitizeGetBbsCommentListResponse(checker: any) {
 function sanitizePostBbsCommentRequest(checker: any) {
     if (
         typeof checker.postId == "string" &&
-        !checker.postId.isEmpty() &&
+        Boolean(checker.postId.trim()) &&
         !Number.isNaN(Number(checker.postId))
     ) {
         checker.postId = Number(checker.postId);
@@ -572,7 +570,7 @@ function sanitizePostBbsCommentRequest(checker: any) {
 function sanitizePostBbsCommentResponse(checker: any) {
     if (
         typeof checker.commentId == "string" &&
-        !checker.commentId.isEmpty() &&
+        Boolean(checker.commentId.trim()) &&
         !Number.isNaN(Number(checker.commentId))
     ) {
         checker.commentId = Number(checker.commentId);
@@ -587,7 +585,7 @@ function sanitizePostBbsCommentResponse(checker: any) {
 function sanitizeDeleteBbsCommentRequest(checker: any) {
     if (
         typeof checker.postId == "string" &&
-        !checker.postId.isEmpty() &&
+        Boolean(checker.postId.trim()) &&
         !Number.isNaN(Number(checker.postId))
     ) {
         checker.postId = Number(checker.postId);
@@ -595,7 +593,7 @@ function sanitizeDeleteBbsCommentRequest(checker: any) {
 
     if (
         typeof checker.commentId == "string" &&
-        !checker.commentId.isEmpty() &&
+        Boolean(checker.commentId.trim()) &&
         !Number.isNaN(Number(checker.commentId))
     ) {
         checker.commentId = Number(checker.commentId);
@@ -618,7 +616,7 @@ function sanitizeDeleteBbsCommentResponse(checker: any) {
 function sanitizeSubject(checker: any) {
     if (
         typeof checker.id == "string" &&
-        !checker.id.isEmpty() &&
+        Boolean(checker.id.trim()) &&
         !Number.isNaN(Number(checker.id))
     ) {
         checker.id = Number(checker.id);
@@ -626,7 +624,7 @@ function sanitizeSubject(checker: any) {
 
     if (
         typeof checker.multiplier == "string" &&
-        !checker.multiplier.isEmpty() &&
+        Boolean(checker.multiplier.trim()) &&
         !Number.isNaN(Number(checker.multiplier))
     ) {
         checker.multiplier = Number(checker.multiplier);
@@ -645,7 +643,7 @@ function sanitizeSubject(checker: any) {
 function sanitizeGetSubjectListRequest(checker: any) {
     if (
         typeof checker.grade == "string" &&
-        !checker.grade.isEmpty() &&
+        Boolean(checker.grade.trim()) &&
         !Number.isNaN(Number(checker.grade))
     ) {
         checker.grade = Number(checker.grade);
@@ -653,7 +651,7 @@ function sanitizeGetSubjectListRequest(checker: any) {
 
     if (
         typeof checker.semester == "string" &&
-        !checker.semester.isEmpty() &&
+        Boolean(checker.semester.trim()) &&
         !Number.isNaN(Number(checker.semester))
     ) {
         checker.semester = Number(checker.semester);
@@ -709,9 +707,6 @@ function sanitizeMealInfo(checker: any) {
 }
 
 function sanitizeGetMealRequest(checker: any) {
-    if (typeof checker.when != "string") {
-        return false;
-    }
     return true;
 }
 
@@ -751,7 +746,7 @@ function sanitizePutMealResponse(checker: any) {
 function sanitizeGetApplyRequest(checker: any) {
     if (
         typeof checker.when == "string" &&
-        !checker.when.isEmpty() &&
+        Boolean(checker.when.trim()) &&
         !Number.isNaN(Number(checker.when))
     ) {
         checker.when = Number(checker.when);
@@ -773,7 +768,7 @@ function sanitizeGetApplyResponse(checker: any) {
 function sanitizePostApplyRequest(checker: any) {
     if (
         typeof checker.teacherUid == "string" &&
-        !checker.teacherUid.isEmpty() &&
+        Boolean(checker.teacherUid.trim()) &&
         !Number.isNaN(Number(checker.teacherUid))
     ) {
         checker.teacherUid = Number(checker.teacherUid);
@@ -781,7 +776,7 @@ function sanitizePostApplyRequest(checker: any) {
 
     if (
         typeof checker.when == "string" &&
-        !checker.when.isEmpty() &&
+        Boolean(checker.when.trim()) &&
         !Number.isNaN(Number(checker.when))
     ) {
         checker.when = Number(checker.when);
@@ -806,7 +801,7 @@ function sanitizePostApplyResponse(checker: any) {
 function sanitizeDeleteApplyRequest(checker: any) {
     if (
         typeof checker.when == "string" &&
-        !checker.when.isEmpty() &&
+        Boolean(checker.when.trim()) &&
         !Number.isNaN(Number(checker.when))
     ) {
         checker.when = Number(checker.when);
@@ -836,7 +831,7 @@ function sanitizeGetAttendanceInfoResponse(checker: any) {
 function sanitizeGetAttendanceListRequest(checker: any) {
     if (
         typeof checker.when == "string" &&
-        !checker.when.isEmpty() &&
+        Boolean(checker.when.trim()) &&
         !Number.isNaN(Number(checker.when))
     ) {
         checker.when = Number(checker.when);
@@ -868,7 +863,7 @@ function sanitizeGetAttendanceListResponse(checker: any) {
 function sanitizeSpecialroomInfo(checker: any) {
     if (
         typeof checker.applyId == "string" &&
-        !checker.applyId.isEmpty() &&
+        Boolean(checker.applyId.trim()) &&
         !Number.isNaN(Number(checker.applyId))
     ) {
         checker.applyId = Number(checker.applyId);
@@ -876,7 +871,7 @@ function sanitizeSpecialroomInfo(checker: any) {
 
     if (
         typeof checker.state == "string" &&
-        !checker.state.isEmpty() &&
+        Boolean(checker.state.trim()) &&
         !Number.isNaN(Number(checker.state))
     ) {
         checker.state = Number(checker.state);
@@ -884,7 +879,7 @@ function sanitizeSpecialroomInfo(checker: any) {
 
     if (
         typeof checker.when == "string" &&
-        !checker.when.isEmpty() &&
+        Boolean(checker.when.trim()) &&
         !Number.isNaN(Number(checker.when))
     ) {
         checker.when = Number(checker.when);
@@ -933,7 +928,7 @@ function sanitizePutInfoResponse(checker: any) {
 function sanitizeLocationInfo(checker: any) {
     if (
         typeof checker.id == "string" &&
-        !checker.id.isEmpty() &&
+        Boolean(checker.id.trim()) &&
         !Number.isNaN(Number(checker.id))
     ) {
         checker.id = Number(checker.id);
@@ -973,7 +968,7 @@ function sanitizeGetLocationInfoResponse(checker: any) {
 function sanitizePurposeInfo(checker: any) {
     if (
         typeof checker.id == "string" &&
-        !checker.id.isEmpty() &&
+        Boolean(checker.id.trim()) &&
         !Number.isNaN(Number(checker.id))
     ) {
         checker.id = Number(checker.id);
@@ -1021,7 +1016,7 @@ function sanitizeGetTeacherInfoResponse(checker: any) {
 function sanitizeOuterStudentInfo(checker: any) {
     if (
         typeof checker.until == "string" &&
-        !checker.until.isEmpty() &&
+        Boolean(checker.until.trim()) &&
         !Number.isNaN(Number(checker.until))
     ) {
         checker.until = Number(checker.until);
@@ -1062,7 +1057,7 @@ function sanitizePostOuterStudentInfoResponse(checker: any) {
 function sanitizeDeleteOuterStudentInfoRequest(checker: any) {
     if (
         typeof checker.studentUid == "string" &&
-        !checker.studentUid.isEmpty() &&
+        Boolean(checker.studentUid.trim()) &&
         !Number.isNaN(Number(checker.studentUid))
     ) {
         checker.studentUid = Number(checker.studentUid);
@@ -1126,7 +1121,7 @@ function sanitizePutTimetableResponse(checker: any) {
 function sanitizeUserInfo(checker: any) {
     if (
         typeof checker.uid == "string" &&
-        !checker.uid.isEmpty() &&
+        Boolean(checker.uid.trim()) &&
         !Number.isNaN(Number(checker.uid))
     ) {
         checker.uid = Number(checker.uid);
@@ -1145,7 +1140,7 @@ function sanitizeUserInfo(checker: any) {
 function sanitizeUserPrivateInfo(checker: any) {
     if (
         typeof checker.uid == "string" &&
-        !checker.uid.isEmpty() &&
+        Boolean(checker.uid.trim()) &&
         !Number.isNaN(Number(checker.uid))
     ) {
         checker.uid = Number(checker.uid);
@@ -1153,7 +1148,7 @@ function sanitizeUserPrivateInfo(checker: any) {
 
     if (
         typeof checker.sid == "string" &&
-        !checker.sid.isEmpty() &&
+        Boolean(checker.sid.trim()) &&
         !Number.isNaN(Number(checker.sid))
     ) {
         checker.sid = Number(checker.sid);
@@ -1231,7 +1226,7 @@ function sanitizeNotification(checker: any) {
 function sanitizePostPushRequest(checker: any) {
     if (
         typeof checker.targetUid == "string" &&
-        !checker.targetUid.isEmpty() &&
+        Boolean(checker.targetUid.trim()) &&
         !Number.isNaN(Number(checker.targetUid))
     ) {
         checker.targetUid = Number(checker.targetUid);
