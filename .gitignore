@@ -27,7 +27,7 @@ tmp/
 package-lock.json
 .npmrc
 
-src/test/**
+/test/**
 src/files/
 
 # Env
