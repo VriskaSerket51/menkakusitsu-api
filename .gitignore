@@ -28,7 +28,7 @@ package-lock.json
 .npmrc
 
 /test/**
-src/files/
+/files/**
 
 # Env
 .env.development
