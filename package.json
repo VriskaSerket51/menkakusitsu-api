@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@common-jshs/menkakusitsu-lib": "^1.14.1",
-    "@ireves/common-api": "^1.4.4",
+    "@ireves/common-api": "^1.4.5",
     "@types/crypto-js": "^4.1.1",
     "@types/express-fileupload": "^1.4.1",
     "@types/helmet": "^4.0.0",
