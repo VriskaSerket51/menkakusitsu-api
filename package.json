@@ -14,7 +14,7 @@
     "url": "git+https://github.com/VriskaSerket51/menkakusitsu-back.git"
   },
   "author": "VriskaSerket51",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://github.com/VriskaSerket51/menkakusitsu-back/issues"
   },
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@common-jshs/menkakusitsu-lib": "^1.14.1",
-    "@ireves/common-api": "^1.4.7",
+    "@ireves/common-api": "^1.4.9",
     "@types/crypto-js": "^4.1.1",
     "@types/express-fileupload": "^1.4.1",
     "@types/helmet": "^4.0.0",
