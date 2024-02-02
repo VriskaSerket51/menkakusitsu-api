@@ -4,6 +4,7 @@ import path from "path";
 const serviceAccount = require(path.join(
   __dirname,
   "..",
+  "..",
   "files",
   "serviceAccount.json"
 ));
