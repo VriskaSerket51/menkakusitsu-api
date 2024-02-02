@@ -85,7 +85,7 @@ class Bbs extends V1 {
     const offset = (request.postPage - 1) * request.postListSize;
     const postDataList = await CommonApi.getAllAsync(
       "SELECT * FROM bbs_post WHERE deletedDate IS NULL AND board=? ORDER BY `type` ASC, id DESC LIMIT ?, ?",
-      [request.board, offset, Number(request.postListSize)]
+      [request.board, String(offset), String(request.postListSize)]
     );
 
     const userInfo = await Api.getUserInfoList();
@@ -159,7 +159,7 @@ class Bbs extends V1 {
 
     const attachments = await CommonApi.getAllAsync(
       "SELECT * FROM bbs_file WHERE postId=?",
-      request.postId
+      [request.postId]
     );
 
     const post: v1.BbsPost = {
@@ -369,7 +369,12 @@ class Bbs extends V1 {
     const offset = (request.commentPage - 1) * request.commentListSize;
     const commentList = await CommonApi.getAllAsync(
       "SELECT * FROM bbs_comment WHERE deletedDate IS NULL AND board=? AND postId=? ORDER BY id DESC LIMIT ?, ?",
-      [request.board, request.postId, offset, Number(request.commentListSize)]
+      [
+        request.board,
+        request.postId,
+        String(offset),
+        String(request.commentListSize),
+      ]
     );
 
     const userInfo = await Api.getUserInfoList();
