@@ -1,4 +1,4 @@
-import V1 from "..";
+import V1 from ".";
 
 class Chat extends V1 {
     constructor() {
