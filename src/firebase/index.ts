@@ -1,13 +1,12 @@
 import firebase from "firebase-admin";
+import fs from "fs";
 import path from "path";
 
-const serviceAccount = require(path.join(
-  __dirname,
-  "..",
-  "..",
-  "files",
-  "serviceAccount.json"
-));
+const serviceAccount = fs
+  .readFileSync(
+    path.join(__dirname, "..", "..", "files", "serviceAccount.json")
+  )
+  .toString("utf-8");
 
 export const initializeFirebase = () => {
   firebase.initializeApp({
