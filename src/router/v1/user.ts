@@ -2,8 +2,8 @@ import CommonApi from "@ireves/common-api";
 import { v1 } from "@common-jshs/menkakusitsu-lib";
 import { Request, Response } from "express";
 
-import V1 from ".";
-import { Api, Utility, Sanitizer } from "../../utils";
+import V1 from "@/router/v1";
+import { Api, Utility, Sanitizer } from "@/utils";
 
 class User extends V1 {
   constructor() {

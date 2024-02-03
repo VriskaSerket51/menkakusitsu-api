@@ -1,11 +1,12 @@
-import dotenv from "dotenv";
 import CommonApi from "@ireves/common-api";
-import config from "./config";
-import { initializeFirebase } from "./firebase";
+import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import path from "path";
-import { schedules } from "./scheduler";
-import { customRouterMiddleware } from "./middlewares";
+
+import config from "@/config";
+import { initializeFirebase } from "@/firebase";
+import { schedules } from "@/scheduler";
+import { customRouterMiddleware } from "@/middlewares";
 
 dotenv.config();
 

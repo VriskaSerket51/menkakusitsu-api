@@ -4,8 +4,8 @@ import { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
 
-import V1 from ".";
-import { Sanitizer } from "../../utils";
+import V1 from "@/router/v1";
+import { Sanitizer } from "@/utils";
 
 class Timetable extends V1 {
   constructor() {

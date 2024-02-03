@@ -3,8 +3,8 @@ import { v1 } from "@common-jshs/menkakusitsu-lib";
 import { Request, Response } from "express";
 import dayjs from "dayjs";
 
-import V1 from ".";
-import { Sanitizer } from "../../utils";
+import V1 from "@/router/v1";
+import { Sanitizer } from "@/utils";
 
 class Meal extends V1 {
   constructor() {

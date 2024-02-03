@@ -4,8 +4,8 @@ import { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
 
-import V1 from ".";
-import { Api, Utility, Sanitizer } from "../../utils";
+import V1 from "@/router/v1";
+import { Api, Utility, Sanitizer } from "@/utils";
 
 class Specialroom extends V1 {
   constructor() {

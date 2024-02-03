@@ -3,8 +3,8 @@ import { v1 } from "@common-jshs/menkakusitsu-lib";
 import { Request, Response } from "express";
 import fetch from "node-fetch";
 
-import Chat from "./chat";
-import { Sanitizer } from "../../utils";
+import Chat from "@/router/v1/chat";
+import { Sanitizer } from "@/utils";
 
 class Idbot extends Chat {
   constructor() {

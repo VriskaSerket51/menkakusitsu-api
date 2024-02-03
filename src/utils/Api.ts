@@ -7,10 +7,10 @@ import FormData from "form-data";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-import { escapeUserName } from "./Utility";
-import { DeletedUser } from "./Constant";
-import { sendPush } from "../firebase";
-import config from "../config";
+import { sendPush } from "@/firebase";
+import config from "@/config";
+import { escapeUserName } from "@/utils/Utility";
+import { DeletedUser } from "@/utils/Constant";
 
 export interface FileData {
   name: string;

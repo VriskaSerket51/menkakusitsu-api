@@ -2,7 +2,7 @@ import { TokenPayload } from "@common-jshs/menkakusitsu-lib";
 import cryptoJs from "crypto-js";
 import jwt from "jsonwebtoken";
 
-import config from "../config";
+import config from "@/config";
 
 export const checkAuthAsync = async (bearer: string) => {
   return new Promise<boolean>((resolve) => {

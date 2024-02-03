@@ -1,8 +1,8 @@
 import CommonApi from "@ireves/common-api";
 import { Request, Response } from "express";
 
-import V1 from ".";
-import { Api, Utility } from "../../utils";
+import V1 from "@/router/v1";
+import { Api, Utility } from "@/utils";
 
 class Files extends V1 {
   constructor() {

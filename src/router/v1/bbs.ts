@@ -2,9 +2,9 @@ import CommonApi from "@ireves/common-api";
 import { v1, Permission } from "@common-jshs/menkakusitsu-lib";
 import { Request, Response } from "express";
 
-import V1 from ".";
-import { Api, Sanitizer, Utility } from "../../utils";
-import config from "../../config";
+import config from "@/config";
+import V1 from "@/router/v1";
+import { Api, Sanitizer, Utility } from "@/utils";
 
 class Bbs extends V1 {
   constructor() {

@@ -1,16 +1,10 @@
-import { Request, Response } from "express";
 import CommonApi from "@ireves/common-api";
 import { Permission, v1 } from "@common-jshs/menkakusitsu-lib";
+import { Request, Response } from "express";
 import dayjs from "dayjs";
 
-import V1 from ".";
-import {
-  aes256Decrypt,
-  aes256Encrypt,
-  getJwtPayload,
-  parseBearer,
-} from "../../utils/Utility";
-import { sanitizeRequest } from "../../utils/Sanitizer";
+import V1 from "@/router/v1";
+import { Sanitizer, Utility } from "@/utils";
 
 class Auth extends V1 {
   constructor() {
@@ -55,7 +49,7 @@ class Auth extends V1 {
 
   async onPostRegister(req: Request, res: Response) {
     const request: v1.PostRegisterRequest = req.body;
-    if (!sanitizeRequest(request, "PostRegisterRequest")) {
+    if (!Sanitizer.sanitizeRequest(request, "PostRegisterRequest")) {
       throw new CommonApi.HttpException(400);
     }
 
@@ -99,7 +93,7 @@ class Auth extends V1 {
 
   async onDeleteSecession(req: Request, res: Response) {
     const request: v1.DeleteSecessionRequest = req.body;
-    if (!sanitizeRequest(request, "DeleteSecessionRequest")) {
+    if (!Sanitizer.sanitizeRequest(request, "DeleteSecessionRequest")) {
       throw new CommonApi.HttpException(400);
     }
 
@@ -115,20 +109,20 @@ class Auth extends V1 {
 
   async onPostLogin(req: Request, res: Response) {
     const request: v1.PostLoginRequest = req.body;
-    if (!sanitizeRequest(request, "PostLoginRequest")) {
+    if (!Sanitizer.sanitizeRequest(request, "PostLoginRequest")) {
       throw new CommonApi.HttpException(400);
     }
 
     const user = await CommonApi.getFirstAsync(
       "SELECT uid, id, password, email, permission, state FROM user WHERE id=?",
-      [/*aes256Encrypt*/ request.id]
+      [request.id]
     );
 
     if (!user) {
       throw new CommonApi.ResponseException(-1, "아이디가 존재하지 않습니다.");
     }
 
-    if (user.password === /*aes256Encrypt*/ request.password) {
+    if (user.password === request.password) {
       if (user.state == 0) {
         throw new CommonApi.ResponseException(-2, "승인 대기 중인 계정입니다.");
       }
@@ -140,7 +134,7 @@ class Auth extends V1 {
       }
       const refreshToken = CommonApi.createRefreshToken({
         uid: user.uid,
-        id: /*aes256Decrypt*/ user.id,
+        id: user.id,
         permission: user.permission,
       });
       await CommonApi.runAsync(
@@ -159,7 +153,7 @@ class Auth extends V1 {
         message: "",
         accessToken: CommonApi.createAccessToken({
           uid: user.uid,
-          id: /*aes256Decrypt*/ user.id,
+          id: user.id,
           permission: user.permission,
         }),
         refreshToken: refreshToken,
@@ -172,10 +166,10 @@ class Auth extends V1 {
   }
 
   async onPostRefresh(req: Request, res: Response) {
-    const payload = parseBearer(req.headers.authorization!);
+    const payload = Utility.parseBearer(req.headers.authorization!);
     const request: v1.PostRefreshRequest = req.body;
 
-    if (!sanitizeRequest(request, "PostRefreshRequest")) {
+    if (!Sanitizer.sanitizeRequest(request, "PostRefreshRequest")) {
       throw new CommonApi.HttpException(400);
     }
 
@@ -188,10 +182,10 @@ class Auth extends V1 {
       throw new CommonApi.ResponseException(-1, "로그아웃 된 계정입니다.");
     }
 
-    const originPayload = getJwtPayload(refresh_token.token);
+    const originPayload = Utility.getJwtPayload(refresh_token.token);
 
     if (payload.jti != originPayload.jti) {
-      await CommonApi.execute(
+      await CommonApi.runAsync(
         "UPDATE refresh_token SET token=NULL WHERE uid=?",
         [payload.uid]
       );
@@ -225,11 +219,11 @@ class Auth extends V1 {
   }
 
   async onDeleteLogout(req: Request, res: Response) {
-    const payload = parseBearer(req.headers.authorization!);
+    const payload = Utility.parseBearer(req.headers.authorization!);
 
     const request: v1.DeleteLogoutRequest = req.body;
 
-    if (!sanitizeRequest(request, "DeleteLogoutRequest")) {
+    if (!Sanitizer.sanitizeRequest(request, "DeleteLogoutRequest")) {
       throw new CommonApi.HttpException(400);
     }
 
@@ -246,12 +240,9 @@ class Auth extends V1 {
 
   async onPutForgotPassword(req: Request, res: Response) {
     const request: v1.PutForgotPasswordRequest = req.body;
-    if (!sanitizeRequest(request, "PutForgotPasswordRequest")) {
+    if (!Sanitizer.sanitizeRequest(request, "PutForgotPasswordRequest")) {
       throw new CommonApi.HttpException(400);
     }
-
-    request.id = aes256Encrypt(request.id);
-    request.email = aes256Encrypt(request.email);
 
     const user = await CommonApi.getFirstAsync(
       "SELECT * FROM user WHERE id=?",

@@ -4,7 +4,7 @@ import {
   flushSpecialroom,
   flushTempFolder,
   newMeal,
-} from "./jobs";
+} from "@/scheduler/jobs";
 
 export const schedules: CommonApi.Schedule[] = [
   {
