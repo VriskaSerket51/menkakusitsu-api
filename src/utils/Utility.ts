@@ -1,8 +1,17 @@
 import { TokenPayload } from "@common-jshs/menkakusitsu-lib";
+import fs from "fs";
+import path from "path";
 import cryptoJs from "crypto-js";
 import jwt from "jsonwebtoken";
 
 import config from "@/config";
+
+export const readFromFileFolder = (fileName: string) => {
+  return fs.readFileSync(
+    path.join(__dirname, "..", "..", "files", fileName),
+    "utf-8"
+  );
+};
 
 export const checkAuthAsync = async (bearer: string) => {
   return new Promise<boolean>((resolve) => {

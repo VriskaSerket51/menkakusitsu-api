@@ -1,8 +1,6 @@
 import CommonApi from "@ireves/common-api";
 import { v1, Permission } from "@common-jshs/menkakusitsu-lib";
 import { Request, Response } from "express";
-import fs from "fs";
-import path from "path";
 
 import V1 from "@/router/v1";
 import { Api, Utility, Sanitizer } from "@/utils";
@@ -234,8 +232,8 @@ class Specialroom extends V1 {
         }
       }
     };
-    const parseAttendanceList = (path: string): string[][] => {
-      const csv = fs.readFileSync(path, "utf-8");
+    const parseAttendanceList = (fileName: string): string[][] => {
+      const csv = Utility.readFromFileFolder(fileName);
       const rows = csv.split("\n");
       const result: string[][] = [];
       for (let i = 0; i < rows.length; i++) {
@@ -262,26 +260,8 @@ class Specialroom extends V1 {
       status: 0,
       message: "",
       list: {
-        big: parseAttendanceList(
-          path.join(
-            __dirname,
-            "..",
-            "..",
-            "..",
-            "files",
-            "attendance_list_big.csv"
-          )
-        ),
-        small: parseAttendanceList(
-          path.join(
-            __dirname,
-            "..",
-            "..",
-            "..",
-            "files",
-            "attendance_list_small.csv"
-          )
-        ),
+        big: parseAttendanceList("attendance_list_big.csv"),
+        small: parseAttendanceList("attendance_list_small.csv"),
       },
     };
     res.status(200).json(response);
