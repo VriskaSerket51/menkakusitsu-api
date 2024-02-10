@@ -2,11 +2,11 @@ import firebase from "firebase-admin";
 
 import { Utility } from "@/utils";
 
-const serviceAccount = Utility.readFromFileFolder("serviceAccount.json")
+const serviceAccount = Utility.readFromFileFolder("serviceAccount.json");
 
 export const initializeFirebase = () => {
   firebase.initializeApp({
-    credential: firebase.credential.cert(serviceAccount),
+    credential: firebase.credential.cert(JSON.parse(serviceAccount)),
   });
 };
 
