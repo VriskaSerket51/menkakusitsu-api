@@ -12,7 +12,7 @@ import config from "@/config";
 import { escapeUserName } from "@/utils/Utility";
 import { DeletedUser } from "@/utils/Constant";
 
-export interface FileData {
+export type FileData = {
   name: string;
   endpoint: string;
 }

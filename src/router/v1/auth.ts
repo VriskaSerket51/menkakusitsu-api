@@ -76,12 +76,12 @@ class Auth extends V1 {
     }
     if (count.nameCnt > 0) {
       throw new CommonApi.ResponseException(
-        -3,
+        -4,
         "이미 가입된 이름입니다.\n자신이 가입한 적이 없다면 관리자에게 문의하세요."
       );
     }
     await CommonApi.runAsync(
-      "INSERT INTO menkakusitsu.user (sid, name, email, id, password, state) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO user (sid, name, email, id, password, state) VALUES (?, ?, ?, ?, ?)",
       [request.sid, request.name, request.email, request.id, request.password]
     );
     const response: v1.PostRegisterResponse = {
