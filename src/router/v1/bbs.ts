@@ -202,7 +202,6 @@ class Bbs extends V1 {
   }
 
   async onPostBbsPost(req: Request, res: Response) {
-    // throw new CommonApi.ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
     const props = req.body.props;
     if (!props) {
       throw new CommonApi.HttpException(400);
@@ -212,7 +211,7 @@ class Bbs extends V1 {
       throw new CommonApi.HttpException(400);
     }
 
-    if (request.title.length > 20) {
+    if (request.title.length > 30) {
       request.title.substring(0, 30);
     }
     if (request.content.length > 500) {
@@ -245,13 +244,12 @@ class Bbs extends V1 {
   }
 
   async onPutBbsPost(req: Request, res: Response) {
-    // throw new CommonApi.ResponseException(-1, "현재 글을 작성하실 수 없습니다.");
     const request: v1.PutBbsPostRequest = req.body;
     if (!Sanitizer.sanitizeRequest(request, "PutBbsPostRequest")) {
       throw new CommonApi.HttpException(400);
     }
 
-    if (request.title && request.title.length > 20) {
+    if (request.title && request.title.length > 30) {
       request.title.substring(0, 30);
     }
     if (request.content && request.content.length > 500) {
