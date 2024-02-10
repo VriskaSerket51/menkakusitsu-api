@@ -366,7 +366,7 @@ class Bbs extends V1 {
     const commentCount = Number(bbs_comment_count.cnt);
     const offset = (request.commentPage - 1) * request.commentListSize;
     const commentList = await CommonApi.getAllAsync(
-      "SELECT * FROM bbs_comment WHERE deletedDate IS NULL AND board=? AND postId=? ORDER BY id DESC LIMIT ?, ?",
+      "SELECT * FROM bbs_comment WHERE deletedDate IS NULL AND board=? AND postId=? ORDER BY id ASC LIMIT ?, ?",
       [
         request.board,
         request.postId,
