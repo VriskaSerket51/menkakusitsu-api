@@ -133,7 +133,13 @@ const getMeal = async (day: dayjs.Dayjs) => {
 };
 
 const pickMeal = (tr: Element, day: number, meal: string[]) => {
-  for (const p of tr.querySelectorAll("td").item(day).querySelectorAll("p")) {
+  const tdList = tr.querySelectorAll("td");
+
+  if (tdList.length <= day) {
+    return;
+  }
+
+  for (const p of tdList.item(day).querySelectorAll("p")) {
     if (p.className == "") {
       p.innerHTML.split("<br>").forEach((data) => meal.push(data));
     }
