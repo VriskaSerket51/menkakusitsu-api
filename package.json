@@ -2,12 +2,12 @@
   "name": "menkakusitsu-back",
   "version": "1.0.0",
   "description": "Back end server of menkakusitsu",
-  "main": "index.ts",
   "scripts": {
     "test": "cross-env NODE_ENV=production ts-node-dev --transpile-only --respawn -r tsconfig-paths/register --watch \"test/**/*.ts\" --trace-warnings --trace-uncaught -- ./test/index.ts",
     "build": "rimraf dist/ && tsc && tsc-alias",
     "start": "npm run build && cross-env NODE_ENV=production node ./dist/index.js",
-    "dev": "cross-env NODE_ENV=development ts-node-dev --transpile-only --respawn -r tsconfig-paths/register --watch \"src/**/*.ts\" --trace-warnings --trace-uncaught -- ./src/index.ts"
+    "dev": "cross-env NODE_ENV=development ts-node-dev --transpile-only --respawn -r tsconfig-paths/register --watch \"src/**/*.ts\" --trace-warnings --trace-uncaught -- ./src/index.ts",
+    "bun:start": "bun run build && cross-env NODE_ENV=production bun ./dist/index.js"
   },
   "repository": {
     "type": "git",
