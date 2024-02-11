@@ -58,8 +58,12 @@ export const mealUpdate = async () => {
 };
 
 export const flushTempFolder = async () => {
+  const tmpFolderPath = path.join(__dirname, "..", "..", "tmp");
+  if (!fs.existsSync(tmpFolderPath)) {
+    fs.mkdirSync(tmpFolderPath);
+  }
   const tempFiles: string[] = [];
-  CommonApi.readAllFiles(path.join(__dirname, "..", "..", "tmp"), tempFiles);
+  CommonApi.readAllFiles(tmpFolderPath, tempFiles);
   for (const tempFile of tempFiles) {
     fs.unlinkSync(tempFile);
   }
@@ -136,7 +140,7 @@ const pickMeal = (tr: Element, day: number, meal: string[]) => {
   if (tr == null) {
     return;
   }
-  
+
   const paragraphs = tr.querySelectorAll("td").item(day);
   if (paragraphs == null) {
     return;
