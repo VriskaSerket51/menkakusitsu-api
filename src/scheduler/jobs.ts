@@ -6,57 +6,6 @@ import path from "path";
 import { JSDOM } from "jsdom";
 import { URLSearchParams } from "url";
 
-export const mealUpdate = async () => {
-  await CommonApi.runAsync("DELETE FROM meal");
-
-  const today = dayjs();
-  const tomorrow = today.add(1, "day");
-
-  const parseHtml = async (resp: FetchResponse) => {
-    const data = await resp.text();
-    const dom = new JSDOM(data);
-    const dd = dom.window.document
-      .querySelector(".ulType_food")!
-      .querySelectorAll("li")[1]
-      .querySelector("dd")!;
-    const meals: string[] = dd.innerHTML.split("<br>");
-    return meals;
-  };
-
-  const breakfast = await parseHtml(
-    await fetch(
-      `http://jeju-s.jje.hs.kr/jeju-s/food/${tomorrow.year()}/${
-        tomorrow.month() + 1
-      }/${tomorrow.date()}/breakfast`
-    )
-  );
-  const lunch = await parseHtml(
-    await fetch(
-      `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${
-        today.month() + 1
-      }/${today.date()}/lunch`
-    )
-  );
-  const dinner = await parseHtml(
-    await fetch(
-      `http://jeju-s.jje.hs.kr/jeju-s/food/${today.year()}/${
-        today.month() + 1
-      }/${today.date()}/dinner`
-    )
-  );
-
-  await CommonApi.runAsync(
-    "INSERT INTO meal(`when`, breakfast, lunch, dinner) VALUES(?, NULL, ?, ?), (?, ?, NULL, NULL)",
-    [
-      today.format("YYYY-MM-DD"),
-      lunch.join(","),
-      dinner.join(","),
-      tomorrow.format("YYYY-MM-DD"),
-      breakfast.join(","),
-    ]
-  );
-};
-
 export const flushTempFolder = async () => {
   const tmpFolderPath = path.join(__dirname, "..", "..", "tmp");
   if (!fs.existsSync(tmpFolderPath)) {
@@ -153,7 +102,7 @@ const pickMeal = (tr: Element, day: number, meal: string[]) => {
   }
 };
 
-export const newMeal = async () => {
+export const newMealUpdate = async () => {
   await CommonApi.runAsync("DELETE FROM meal");
   const today = dayjs();
   const tomorrow = today.add(1, "day");

@@ -3,14 +3,14 @@ import {
   flushDeletedBbsContent,
   flushSpecialroom,
   flushTempFolder,
-  newMeal,
+  newMealUpdate,
 } from "@/scheduler/jobs";
 
 export const schedules: CommonApi.Schedule[] = [
   {
-    name: "mealUpdate",
+    name: "newMealUpdate",
     cron: "00 00 00 * * *",
-    job: newMeal,
+    job: newMealUpdate,
   },
   {
     name: "flushTempFolder",
