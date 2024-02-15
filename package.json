@@ -1,5 +1,5 @@
 {
-  "name": "menkakusitsu-back",
+  "name": "menkakusitsu-api",
   "version": "1.0.0",
   "description": "Back end server of menkakusitsu",
   "scripts": {
