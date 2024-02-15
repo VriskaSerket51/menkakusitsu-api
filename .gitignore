@@ -25,6 +25,7 @@ dist-ssr
 
 tmp/
 .npmrc
+package-lock.json
 
 /test/**
 /files/**
