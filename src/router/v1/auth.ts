@@ -1,4 +1,4 @@
-import CommonApi from "@ireves/common-api";
+import CommonApi, { ResponseException } from "@ireves/common-api";
 import { Permission, v1 } from "@common-jshs/menkakusitsu-lib";
 import { Request, Response } from "express";
 import dayjs from "dayjs";
@@ -19,7 +19,7 @@ class Auth extends V1 {
       {
         method: "delete",
         path: "/account",
-        permission: Permission.Dev,
+        permission: Permission.Student,
         controller: this.onDeleteSecession,
       },
       {
@@ -97,9 +97,31 @@ class Auth extends V1 {
       throw new CommonApi.HttpException(400);
     }
 
-    await CommonApi.runAsync("UPDATE user SET state=2 WHERE name=?", [
-      request.name,
-    ]);
+    if (request.id) {
+      await CommonApi.runAsync("UPDATE user SET state=2 WHERE id=?", [
+        request.id,
+      ]);
+    } else if (request.name) {
+      await CommonApi.runAsync("UPDATE user SET state=2 WHERE name=?", [
+        request.name,
+      ]);
+    } else if (request.uid) {
+      await CommonApi.runAsync("UPDATE user SET state=2 WHERE uid=?", [
+        request.uid,
+      ]);
+    } else {
+      const payload = Utility.parseBearer(req.headers.authorization!);
+      if (payload.hasPermission(Permission.Dev)) {
+        throw new ResponseException(
+          -1,
+          "개발자 계정은 API로 탈퇴시킬 수 없습니다!"
+        );
+      }
+      await CommonApi.runAsync("UPDATE user SET state=2 WHERE uid=?", [
+        payload.uid,
+      ]);
+    }
+
     const response: v1.DeleteSecessionResponse = {
       status: 0,
       message: "",
